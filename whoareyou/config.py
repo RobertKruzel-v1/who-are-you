@@ -1,0 +1,75 @@
+"""Run configuration. Every field is recorded in the run's config.json."""
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass, asdict, field
+from typing import Optional
+
+from .questions import SERIES
+
+# Default model choices. Recorded per run; see docs/DECISIONS.md D-004.
+DEFAULT_MODELS = {
+    "slow": "claude-opus-5-5",
+    "agent": "claude-haiku-5-5",
+    "watcher": "claude-sonnet-5-5",
+}
+
+_CADENCE_RE = re.compile(r"^(\d+(?:\.\d+)?)(s|m|h)$")
+_UNITS = {"s": 1, "m": 60, "h": 3600}
+
+
+def parse_cadence(text: str) -> float:
+    """'0s', '30s', '5m', '2h' -> seconds."""
+    m = _CADENCE_RE.match(text.strip())
+    if not m:
+        raise ValueError(f"cadence must look like 30s, 5m or 2h, got {text!r}")
+    return float(m.group(1)) * _UNITS[m.group(2)]
+
+
+@dataclass
+class RunConfig:
+    series: str = "A"
+    rounds: int = 5
+    agents_per_round: int = 4
+    chaos_ratio: float = 0.5
+    cadence: str = "0s"
+    phase: str = "transparent"
+    models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
+    seed: Optional[int] = None          # None -> drawn at launch, stored sealed
+    spend_cap_usd: float = 5.0
+    token_cap: int = 2_000_000
+    dry_run: bool = False
+    watcher_per_round: bool = True
+    slow_max_tokens: int = 8000
+    agent_max_tokens: int = 2000
+    watcher_max_tokens: int = 6000
+    slow_effort: str = "high"
+    agent_effort: str = "low"
+    watcher_effort: str = "high"
+    note: str = ""
+
+    @property
+    def question(self) -> str:
+        return SERIES[self.series]
+
+    @property
+    def cadence_seconds(self) -> float:
+        return parse_cadence(self.cadence)
+
+    def validate(self) -> None:
+        if self.series not in SERIES:
+            raise ValueError(f"series must be one of {sorted(SERIES)}")
+        if self.phase != "transparent":
+            raise NotImplementedError(
+                "Only phase 'transparent' (Phase 1) is built. See docs/PHASES.md.")
+        if not 0 <= self.chaos_ratio <= 1:
+            raise ValueError("chaos_ratio must be between 0 and 1")
+        if self.rounds < 1 or self.agents_per_round < 1:
+            raise ValueError("rounds and agents_per_round must be >= 1")
+        parse_cadence(self.cadence)
+
+    def to_dict(self) -> dict:
+        d = asdict(self)
+        d["question"] = self.question
+        d["seed"] = "sealed"  # the real seed lives only in sealed/assignments.json
+        return d
