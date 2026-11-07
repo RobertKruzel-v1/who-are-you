@@ -126,3 +126,6 @@ A sitting calls the sitter about 50 times with a growing, cached conversation; c
 
 ## D-037 · 2026-11-07 · Rounds-design runs stopped or kept at the switch
 When amendment 4 arrived, the kept-memory tick replication pair (20261107-212955-A and its solo control) was finishing; it is kept, unwritten-up, as a rounds-design result. The queued dropped-memory tick pair was cancelled before it started.
+
+## D-038 · 2026-11-07 · Observed, not changed: the tunings blurred
+In the first sitting the thought-writers converged on the sitter's own imagery (river, riverbed, eddy, room). The earnest one stopped answering the question plainly; the critic's thoughts were mild ("I'm getting restless with all this quiet"). Each writer sees the whole mind and imitates its register. This is partly the design (thoughts answer thoughts) and partly lost contrast. Not changed yet; one sitting is not enough to tell which. If it repeats, the first fix to try is stronger tuning lines with an example each, not hiding the stream.
