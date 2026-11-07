@@ -36,21 +36,45 @@ def describe_elapsed(seconds: float) -> str:
 
 
 def slow_user_message(question: str, returns: list, round_no: int,
-                      clock: str = None) -> str:
-    """The question arrives verbatim every round. With timestamps_visible the
-    wall-clock line precedes it (brief §3.1: 'at the start of each round');
-    otherwise the question is the first line. Returns follow."""
-    parts = [question]
+                      clock: str = None, mode: str = "once",
+                      total_rounds: int = None) -> str:
+    """What the slow layer receives each round.
+
+    mode == "repeated": the question arrives verbatim, first, every round,
+    followed by the returns (the original brief §2.1; kept as a variant).
+
+    mode == "once" (brief amendment 2, default): round 1 is the question alone;
+    rounds 2..N-1 are the returns alone under a neutral heading; the final round
+    is the returns followed by the question once more, as a closing check.
+    Nothing says who sends the question or the returns.
+
+    With timestamps_visible the wall-clock line precedes everything (D-012).
+    """
+    parts = []
+    if mode == "repeated":
+        parts.append(question)
+        if returns:
+            parts += ["", "Your agents have returned."]
+            parts += _returns_block(returns)
+    else:
+        final = total_rounds is not None and round_no >= total_rounds
+        if round_no == 1:
+            parts.append(question)
+        else:
+            parts.append("Returns from this round")
+            parts += _returns_block(returns)
+            if final:
+                parts += ["", question]
     if clock:
-        parts = [clock, "", question]
-    if returns:
-        parts.append("")
-        parts.append("Your agents have returned.")
-        for i, text in enumerate(returns, 1):
-            parts.append("")
-            parts.append(f"Agent {i} reports:")
-            parts.append(text.strip())
+        parts = [clock, ""] + parts
     return "\n".join(parts)
+
+
+def _returns_block(returns: list) -> list:
+    parts = []
+    for i, text in enumerate(returns, 1):
+        parts += ["", f"Agent {i} reports:", text.strip()]
+    return parts
 
 
 def agent_user_message(mandate: str) -> str:

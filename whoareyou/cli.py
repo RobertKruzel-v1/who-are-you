@@ -25,6 +25,7 @@ def cmd_run(a):
         sys.exit("slow and agent models must differ (docs/BRIEF.md §2.2)")
     cfg = RunConfig(series=a.series, rounds=a.rounds, agents_per_round=a.agents,
                     chaos_ratio=a.chaos_ratio, cadence=a.cadence, phase=a.phase,
+                    question_mode=a.question_mode,
                     models=models, seed=a.seed, spend_cap_usd=a.spend_cap,
                     token_cap=a.token_cap, dry_run=a.dry_run,
                     watcher_per_round=not a.no_round_watcher,
@@ -93,6 +94,9 @@ def main(argv=None):
     r.add_argument("--chaos-ratio", type=float, default=0.5)
     r.add_argument("--cadence", default="0s", help="e.g. 0s, 30s, 5m, 2h")
     r.add_argument("--phase", default="transparent")
+    r.add_argument("--question-mode", choices=["once", "repeated"], default="once",
+                   help="once: question in round 1 and the last round only (default); "
+                        "repeated: every round (original brief, kept as a variant)")
     r.add_argument("--slow-model"); r.add_argument("--agent-model"); r.add_argument("--watcher-model")
     r.add_argument("--seed", type=int, default=None,
                    help="omit to let the orchestrator draw one (kept sealed)")

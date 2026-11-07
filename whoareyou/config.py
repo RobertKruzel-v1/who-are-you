@@ -34,6 +34,7 @@ class RunConfig:
     chaos_ratio: float = 0.5
     cadence: str = "0s"
     phase: str = "transparent"
+    question_mode: str = "once"        # once | repeated (brief amendment 2)
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
     seed: Optional[int] = None          # None -> drawn at launch, stored sealed
     spend_cap_usd: float = 5.0
@@ -63,6 +64,8 @@ class RunConfig:
         if self.phase != "transparent":
             raise NotImplementedError(
                 "Only phase 'transparent' (Phase 1) is built. See docs/PHASES.md.")
+        if self.question_mode not in ("once", "repeated"):
+            raise ValueError("question_mode must be 'once' or 'repeated'")
         if not 0 <= self.chaos_ratio <= 1:
             raise ValueError("chaos_ratio must be between 0 and 1")
         if self.rounds < 1 or self.agents_per_round < 1:

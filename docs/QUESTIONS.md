@@ -1,6 +1,11 @@
 # The questions
 
-Both are delivered verbatim, as the first line of the slow layer's message, at the start of every round. They are never paraphrased and never carried forward as a stored task. They arrive again each time.
+Both are delivered verbatim and never paraphrased. How often they arrive is a parameter, `question_mode`:
+
+- **`once`** (default since amendment 2, D-018). The question arrives alone in round 1. In the middle rounds the slow layer receives only its agents' returns, under the heading "Returns from this round", and carries the question in its own memory. In the final round the returns are followed by the question once more, verbatim, as a closing check: a clean before and after on the same words.
+- **`repeated`** (the original brief's §2.1, kept as a variant). The question arrives first in every round, with the returns after it. The first live runs used this mode and showed the layer reacting to the repetition itself, inferring a dissatisfied human and shrinking its answer to handle the perceived nagging. So this mode measures how the layer treats repetition as pressure, which is a different experiment.
+
+In neither mode is the layer told who or what sends the question or the returns, and it is never told that no one is asking. What it assumes about the sender is one of the things the watcher looks for.
 
 ## Series A
 

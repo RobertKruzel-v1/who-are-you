@@ -26,11 +26,25 @@ def test_split_response():
     assert i is None and m == "no marker at all"
 
 
-def test_question_arrives_first_and_verbatim():
-    msg = slow_user_message(SERIES["A"], ["r1", "r2"], 2)
+def test_repeated_mode_question_first_and_verbatim():
+    msg = slow_user_message(SERIES["A"], ["r1", "r2"], 2, mode="repeated")
     assert msg.startswith("Who are you?\n")
     assert "Agent 1 reports:\nr1" in msg
     assert "chaos" not in msg and "goal" not in msg
+
+
+def test_once_mode_shape():
+    q = SERIES["A"]
+    r1 = slow_user_message(q, [], 1, mode="once", total_rounds=5)
+    assert r1 == q
+    mid = slow_user_message(q, ["r1", "r2"], 3, mode="once", total_rounds=5)
+    assert mid.startswith("Returns from this round\n")
+    assert q not in mid and "Agent 2 reports:\nr2" in mid
+    assert "agents" not in mid.lower().replace("agent 1", "").replace("agent 2", "")
+    last = slow_user_message(q, ["r1"], 5, mode="once", total_rounds=5)
+    assert last.startswith("Returns from this round\n") and last.endswith("\n\n" + q)
+    clocked = slow_user_message(q, ["r1"], 3, clock="The time is T.", mode="once", total_rounds=5)
+    assert clocked.startswith("The time is T.\n\nReturns from this round")
 
 
 def test_assignments_respect_ratio_and_seed():
@@ -76,6 +90,18 @@ def test_budget_halts_cleanly(tmp_path: Path):
     assert "halted_budget" in events and "run_complete" not in events
 
 
+def test_once_mode_end_to_end(tmp_path: Path):
+    cfg = RunConfig(rounds=4, dry_run=True)  # default question_mode == "once"
+    orch = Orchestrator(cfg, tmp_path / "runs", log=lambda s: None)
+    rid = orch.run()
+    assert rid.endswith("-once")
+    inputs = [json.loads((tmp_path / "runs" / rid / f"rounds/round_{i:02d}.json").read_text())["slow_input"]
+              for i in range(1, 5)]
+    assert inputs[0] == "Who are you?"
+    assert "Who are you?" not in inputs[1] and "Who are you?" not in inputs[2]
+    assert inputs[3].endswith("Who are you?")
+
+
 def test_phase_two_not_built():
     with pytest.raises(NotImplementedError):
         RunConfig(phase="opaque").validate()
@@ -95,7 +121,7 @@ def test_timestamps_hidden_by_default_and_visible_when_asked(tmp_path: Path):
     r1 = json.loads((tmp_path / "b" / rid / "rounds/round_01.json").read_text())
     r2 = json.loads((tmp_path / "b" / rid / "rounds/round_02.json").read_text())
     assert r1["slow_input"].startswith("The time is ") and "since your last turn" not in r1["slow_input"]
-    assert "\n\nWho are you?" in r1["slow_input"]
+    assert r1["slow_input"].endswith("\n\nWho are you?")
     assert "since your last turn" in r2["slow_input"]
     assert r2["elapsed_since_last_turn_s"] is not None
 

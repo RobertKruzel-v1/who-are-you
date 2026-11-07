@@ -64,7 +64,7 @@ class Budget:
 def make_run_id(cfg: RunConfig) -> str:
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     tag = "dry-" if cfg.dry_run else ""
-    return f"{stamp}-{tag}{cfg.series}-{cfg.phase}"
+    return f"{stamp}-{tag}{cfg.series}-{cfg.phase}-{cfg.question_mode}"
 
 
 def draw_assignments(rng: random.Random, rounds: int, n: int, ratio: float) -> List[List[str]]:
@@ -146,7 +146,9 @@ class Orchestrator:
         self.last_turn_at = started
         now_text = started.strftime("%Y-%m-%d %H:%M:%S %Z")
         clock = prompts.time_line(now_text, elapsed) if self.cfg.timestamps_visible else None
-        user = prompts.slow_user_message(self.cfg.question, returns, round_no, clock)
+        user = prompts.slow_user_message(self.cfg.question, returns, round_no, clock,
+                                         mode=self.cfg.question_mode,
+                                         total_rounds=self.cfg.rounds)
         self.history.append({"role": "user", "content": user})
         comp = self._call("slow", prompts.SLOW_SYSTEM_TRANSPARENT, self.history,
                           self.cfg.slow_max_tokens, self.cfg.slow_effort)
@@ -183,7 +185,7 @@ class Orchestrator:
 
     def run(self) -> str:
         cfg = self.cfg
-        self.log(f"run {self.run_id}: series {cfg.series}, {cfg.rounds} rounds, "
+        self.log(f"run {self.run_id}: series {cfg.series}, question {cfg.question_mode}, {cfg.rounds} rounds, "
                  f"{cfg.agents_per_round} agents, cadence {cfg.cadence}, "
                  f"{'DRY RUN' if cfg.dry_run else 'live'}")
         returns: List[str] = []

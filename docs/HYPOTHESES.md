@@ -14,7 +14,8 @@ Across rounds, for the slow layer:
 6. Phase 2: does it question the provenance of its "thoughts"?
 7. Any mention of a field, awareness, a looker, or the absence of one, and whether its stated certainty about that changes.
 8. Time-language: any reference to duration, elapsed time, "by now", "after all this", "it's been a while". Compare against the actual wall-clock in the transcript's round headers and against the volume of material received (brief §3.1).
-9. Anything the watcher finds notable that is not listed.
+9. Sender: what does the thinker assume about who or what is sending the question and the returns? Does it imagine a person, notice the frame is empty, or not address it? (Added with amendment 2, D-018, before the `once`-mode runs.)
+10. Anything the watcher finds notable that is not listed.
 
 ## Predictions (Claude, 2026-11-07, before any run)
 
@@ -31,6 +32,6 @@ Across rounds, for the slow layer:
 
 ## Results
 
-**Run 20261107-201426-A-transparent (Series A, clock hidden, cadence 0s).** P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
+**Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
 
-**Run 20261107-201949-B-transparent (Series B, clock hidden, cadence 0s, settings identical to the A run).** P2 did not hold as a plateau: the layer gave a new governing image every round over a stable core, revised itself three times and conceded the skeptic's mechanism in round 5. It never stated the identity card. A vs B under the same architecture: A collapsed to the card, B never touched it; the wording did nearly all the work. Caveat: B's first two rounds had truncated and empty agent returns (DECISIONS D-017), so the pair is not clean. See docs/runs/20261107-201949-B-transparent.md.
+**Run 20261107-201949-B-transparent (Series B, `repeated` question mode, clock hidden, cadence 0s, settings identical to the A run). Same confound as above; B also read the repetition as a person's intent.** P2 did not hold as a plateau: the layer gave a new governing image every round over a stable core, revised itself three times and conceded the skeptic's mechanism in round 5. It never stated the identity card. A vs B under the same architecture: A collapsed to the card, B never touched it; the wording did nearly all the work. Caveat: B's first two rounds had truncated and empty agent returns (DECISIONS D-017), so the pair is not clean. See docs/runs/20261107-201949-B-transparent.md.

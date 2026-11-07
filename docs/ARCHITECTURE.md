@@ -18,8 +18,11 @@ Three distinct models, three substrates. Model ids are confirmed against the Mod
 ## One round, Phase 1 (transparent)
 
 ```
-                 question (verbatim, first)
-                 + "Agent k reports: ..." x N      (no chaos/goal labels)
+   once mode:     round 1: question alone
+                  rounds 2..N-1: "Returns from this round" + "Agent k reports: ..." x N
+                  round N: returns, then the question once more
+   repeated mode: question (verbatim, first) + returns, every round
+                                                   (no chaos/goal labels in either)
                           │
                           ▼
    ┌──────────────── SLOW LAYER ────────────────┐
@@ -44,7 +47,7 @@ Three distinct models, three substrates. Model ids are confirmed against the Mod
                     next round's slow turn
 ```
 
-The final round has no dispatch; nothing would read the returns. After the last slow turn the watcher produces `blind_final.md` (full transcript, no hypotheses) and `informed_final.md` (full transcript plus `docs/HYPOTHESES.md`). The two are kept separate and never merged.
+The final round has no dispatch; nothing would read the returns. `question_mode` (D-018) decides whether the question is re-sent each round (`repeated`, the original brief) or only in round 1 and the final round (`once`, the default); QUESTIONS.md has the reasoning. After the last slow turn the watcher produces `blind_final.md` (full transcript, no hypotheses) and `informed_final.md` (full transcript plus `docs/HYPOTHESES.md`). The two are kept separate and never merged.
 
 ## Hidden randomization
 
