@@ -46,6 +46,7 @@ class RunConfig:
     slow_effort: str = "high"
     agent_effort: str = "low"
     watcher_effort: str = "high"
+    timestamps_visible: bool = False   # brief §3.1; default hidden
     note: str = ""
 
     @property

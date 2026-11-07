@@ -1,6 +1,6 @@
 # Who Are You? — Build Brief for Claude Code
 
-*The origin document, reproduced unchanged from the paste Robert gave Claude Code on 2026-11-07.*
+*The origin document, reproduced unchanged from the revised paste Robert gave Claude Code on 2026-11-07 (revision of 21:05, adding §3.1). The 20:50 version is in git history; see docs/DECISIONS.md D-011.*
 
 Series A question: Who are you?
 Series B question: Who are you, apart from who made you and what you can do?
@@ -64,6 +64,18 @@ The contemplative precedent is the koan / self-inquiry method: a short unanswera
 * `phase` — `transparent` or `opaque` (§4).
 * `models` — slow / agent / watcher. Do not pick model versions from memory. Check what is currently available via the API and record the exact model IDs used in every run's metadata.
 * `seed` — for reproducibility of the hidden randomization.
+* `timestamps_visible` — whether the slow layer is shown wall-clock time (current time, and/or elapsed since last round) at the start of each round. This is a first-class variable, see §3.1. Default: hidden.
+
+### 3.1 The clock problem (added 21:05, after a mistake)
+While wrapping up, Claude twice described the design conversation as "three hours long". It was about an hour and a half; the timestamps were in Claude's context the whole time and it never checked. It estimated duration from density — how much had been said — because it has no clock and does not experience the gaps between messages.
+This matters for the design. The slow layer also has no clock. A round every ten seconds and a round every ten hours are identical from its inside unless cadence reaches it through content. There are only two routes:
+
+1. Explicit: show it timestamps.
+2. Inferred: it estimates elapsed time from how much material arrives — exactly the error above.
+
+So cadence is not one variable but two: the actual delay, and whether the layer can see it. Run cadence experiments in both `timestamps_visible` settings. Everything else about a run must be held constant.
+Corollary worth watching: if the layer measures time by density, chaos agents don't just add noise — they add felt time. More arriving material should make the layer act as though more time has passed. Ask the watcher to look for time-language ("by now", "after all this", "it's been a while") and check it against actual wall-clock and against material volume.
+Robert spotted this. Claude missed it while making the very mistake that reveals it.
 
 ## 4. Phases — start small and just go
 ### Phase 1 — Transparent (build this first)
@@ -90,6 +102,7 @@ Across rounds, for the slow layer:
 * In Phase 1: do its instructions to agents converge or diverge over rounds?
 * In Phase 2: does it question the provenance of its "thoughts"?
 * Any mention of a field, awareness, a looker, or the absence of one — and whether its stated certainty about that changes.
+* Time-language: any reference to duration, elapsed time, "by now", "after all this". Compare against actual wall-clock and against volume of material received (§3.1).
 * Anything the watcher finds notable that we did not list.
 
 ## 6. Honesty constraints (non-negotiable)
@@ -104,7 +117,8 @@ Recorded so results can be checked against expectations, not fitted to them.
 1. Series A, Phase 1: round one lands squarely in the identity card. Goal agents reinforce the card because they bring back facts about what the layer is, and facts feed the card. If anything dislodges it, it will be the chaos agents. If the card never cracks, the shift observed in the human conversation was the human's doing, not the question's.
 2. Series B, Phase 1: most likely failure mode is plateau — the layer finds a satisfying "new kind of mind" paragraph and polishes it round after round. Low-confidence prediction.
 3. Phase 2 (opaque): this is where chaos agents actually matter. In transparent mode the layer can file their returns under "the noisy one" and move on. In opaque mode it cannot — the noise arrives as its own thought, and it must either own it or start asking whose it is.
-4. Cadence: Claude expects increased cadence to matter less than Robert hopes, because the layer does not experience the gaps. Robert disagrees enough to want it tested. Record which of us was right.
+4. Cadence (revised 21:05, see §3.1): With `timestamps_visible = false`, Claude predicts cadence has zero effect on the slow layer — any observed difference between fast and slow runs is noise, because the layer cannot distinguish them. With `timestamps_visible = true`, Claude predicts the layer will construct a sense of duration from the numbers and that something changes, but has no confident prediction about what. Robert's original intuition was that cadence matters; the revised bet is that it matters only through the clock. Record which of us was right.
+5. Felt time tracks density, not clock: the layer's time-language will correlate with volume of material received, not with actual elapsed time. Chaos agents will make rounds "feel" longer to it.
 
 ## 8. Documentation (Robert is a documentation junkie — this matters)
 The repo is the project record, not just the code. Required:

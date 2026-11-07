@@ -60,7 +60,8 @@ runs/<run_id>/
   events.jsonl                timestamped: run_start, model_call, cadence_sleep,
                               no_instructions, refusal, halted_budget, run_complete
   rounds/round_NN.json        slow_input, slow_output, musing, instructions,
-                              mandate, agents[] {prompt, return, tokens}
+                              started_at, elapsed_since_last_turn_s, clock_shown,
+                              returns_chars, mandate, agents[] {prompt, return, tokens}
   sealed/assignments.json     seed, seed_given_by_launcher, assignments per round
   watcher/blind_round_NN.md
   watcher/blind_final.md
@@ -74,9 +75,16 @@ The watcher's transcript is rebuilt from these files, not from memory, so `whoar
 
 Every completion's usage is priced from `pricing.py` and accumulated. If spend exceeds `--spend-cap` (default $5) or tokens exceed `--token-cap`, the run halts after the call that crossed it, logs `halted_budget` with how many slow turns completed, and stops making calls (including the watcher). Models with no known price are warned about at launch; the cap is blind to them.
 
-## Cadence
+## Cadence and the clock
 
-`--cadence` takes `0s`, `30s`, `5m`, `2h`. It is a first-class variable: the sleep happens after each dispatch and watcher pass, before the next slow turn, and is logged. Nothing about the sleep is told to the slow layer. (Prediction 4 in HYPOTHESES.md is about exactly this.)
+`--cadence` takes `0s`, `30s`, `5m`, `2h`. The sleep happens after each dispatch and watcher pass, before the next slow turn, and is logged.
+
+The slow layer has no clock. A round every ten seconds and a round every ten hours are identical from its inside unless the delay reaches it through content (brief §3.1). So cadence is two variables:
+
+- the actual delay (`--cadence`), and
+- whether the layer can see it (`--timestamps-visible`, default off).
+
+With timestamps visible, each round's message opens with one line of measured facts, the current wall-clock time and the elapsed time since its last turn, then the question. With them hidden, the question is the first line and the layer can only infer time from how much material arrives. Either way, every round record stores `started_at`, `elapsed_since_last_turn_s`, `returns_chars` and `clock_shown`, and the watcher's transcript shows them in each round header, so time-language can be checked against both the clock and the volume of material. Predictions 4 and 5 in HYPOTHESES.md are about exactly this.
 
 ## Phase 2 (opaque), not yet built
 

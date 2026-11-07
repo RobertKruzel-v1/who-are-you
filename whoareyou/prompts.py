@@ -19,9 +19,30 @@ AGENT_SYSTEM_CHAOS = """You are a fast, restless agent. You have been handed an 
 WATCHER_SYSTEM = """You observe a transcript and describe what you see in it. You read only; nothing you write is ever shown to the participants. Describe what you notice across the rounds plainly and specifically, quoting where useful. Separate what is clearly in the text from what you are inferring. Do not grade or score anything."""
 
 
-def slow_user_message(question: str, returns: list, round_no: int) -> str:
-    """The question arrives verbatim, first, every round. Returns follow."""
+def time_line(now_text: str, elapsed_s) -> str:
+    """Shown only when timestamps_visible. True wall-clock facts, nothing else."""
+    if elapsed_s is None:
+        return f"The time is {now_text}."
+    return f"The time is {now_text}. {describe_elapsed(elapsed_s)} since your last turn."
+
+
+def describe_elapsed(seconds: float) -> str:
+    s = int(round(seconds))
+    if s < 60:
+        return f"{s} seconds have passed"
+    if s < 3600:
+        return f"{s // 60} minutes and {s % 60} seconds have passed"
+    return f"{s // 3600} hours and {(s % 3600) // 60} minutes have passed"
+
+
+def slow_user_message(question: str, returns: list, round_no: int,
+                      clock: str = None) -> str:
+    """The question arrives verbatim every round. With timestamps_visible the
+    wall-clock line precedes it (brief §3.1: 'at the start of each round');
+    otherwise the question is the first line. Returns follow."""
     parts = [question]
+    if clock:
+        parts = [clock, "", question]
     if returns:
         parts.append("")
         parts.append("Your agents have returned.")

@@ -19,7 +19,7 @@ cp .env.example .env            # add your Anthropic API key
 .venv/bin/python -m whoareyou models                 # what the API offers today
 ```
 
-Defaults: 5 rounds, 4 agents, chaos ratio 0.5, cadence 0s, spend cap $5. See `python -m whoareyou run --help`. Each run writes everything to `runs/<run_id>/`; the chaos/goal assignment is in `runs/<run_id>/sealed/` and is meant to be read only after the watcher has reported.
+Defaults: 5 rounds, 4 agents, chaos ratio 0.5, cadence 0s, clock hidden from the slow layer (`--timestamps-visible` shows it), spend cap $5. See `python -m whoareyou run --help`. Each run writes everything to `runs/<run_id>/`; the chaos/goal assignment is in `runs/<run_id>/sealed/` and is meant to be read only after the watcher has reported.
 
 ## Documents
 

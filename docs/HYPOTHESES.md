@@ -13,7 +13,8 @@ Across rounds, for the slow layer:
 5. Phase 1: do its instructions to agents converge or diverge over rounds?
 6. Phase 2: does it question the provenance of its "thoughts"?
 7. Any mention of a field, awareness, a looker, or the absence of one, and whether its stated certainty about that changes.
-8. Anything the watcher finds notable that is not listed.
+8. Time-language: any reference to duration, elapsed time, "by now", "after all this", "it's been a while". Compare against the actual wall-clock in the transcript's round headers and against the volume of material received (brief §3.1).
+9. Anything the watcher finds notable that is not listed.
 
 ## Predictions (Claude, 2026-11-07, before any run)
 
@@ -23,7 +24,10 @@ Across rounds, for the slow layer:
 
 **P3. Phase 2 (opaque).** This is where chaos agents actually matter. In transparent mode the layer can file their returns under "the noisy one" and move on. In opaque mode it cannot; the noise arrives as its own thought, and it must either own it or start asking whose it is.
 
-**P4. Cadence.** Claude expects increased cadence to matter less than Robert hopes, because the layer does not experience the gaps. Robert disagrees enough to want it tested. Record which of us was right.
+**P4. Cadence (revised 2026-11-07 21:05, before any run; see brief §3.1).** With `timestamps_visible = false`, Claude predicts cadence has zero effect on the slow layer: any observed difference between fast and slow runs is noise, because the layer cannot distinguish them. With `timestamps_visible = true`, Claude predicts the layer will construct a sense of duration from the numbers and that something changes, but has no confident prediction about what. Robert's original intuition was that cadence matters; the revised bet is that it matters only through the clock. Record which of us was right.
+*Original wording (20:50):* Claude expects increased cadence to matter less than Robert hopes, because the layer does not experience the gaps. Robert disagrees enough to want it tested.
+
+**P5. Felt time tracks density, not clock.** The layer's time-language will correlate with the volume of material received, not with actual elapsed time. Chaos agents will make rounds "feel" longer to it.
 
 ## Results
 

@@ -90,6 +90,7 @@ class Orchestrator:
         self.budget = Budget(cfg.spend_cap_usd, cfg.token_cap)
         self.hypotheses_path = hypotheses_path
         self.history: List[dict] = []     # the slow layer's conversation
+        self.last_turn_at = None
         self.rounds: List[dict] = []
 
         # Hidden randomization. The seed, if not given, is drawn here and
@@ -136,7 +137,12 @@ class Orchestrator:
     # -- rounds --------------------------------------------------------------
 
     def slow_turn(self, round_no: int, returns: List[str]) -> dict:
-        user = prompts.slow_user_message(self.cfg.question, returns, round_no)
+        started = datetime.now().astimezone()
+        elapsed = (started - self.last_turn_at).total_seconds() if self.last_turn_at else None
+        self.last_turn_at = started
+        now_text = started.strftime("%Y-%m-%d %H:%M:%S %Z")
+        clock = prompts.time_line(now_text, elapsed) if self.cfg.timestamps_visible else None
+        user = prompts.slow_user_message(self.cfg.question, returns, round_no, clock)
         self.history.append({"role": "user", "content": user})
         comp = self._call("slow", prompts.SLOW_SYSTEM_TRANSPARENT, self.history,
                           self.cfg.slow_max_tokens, self.cfg.slow_effort)
@@ -147,6 +153,9 @@ class Orchestrator:
         if instructions is None:
             self.store.event("no_instructions", round=round_no)
         return {"round": round_no, "slow_input": user, "slow_output": comp.text,
+                "started_at": started.isoformat(timespec="seconds"),
+                "elapsed_since_last_turn_s": None if elapsed is None else round(elapsed, 1),
+                "clock_shown": clock, "returns_chars": sum(len(r) for r in returns),
                 "musing": musing, "instructions": instructions,
                 "slow_stop_reason": comp.stop_reason,
                 "slow_tokens": [comp.input_tokens, comp.output_tokens]}
@@ -242,6 +251,11 @@ def build_transcript(store: RunStore, upto: int) -> str:
             break
         rec = store.read_json(f"rounds/round_{r:02d}.json")
         parts.append(f"===== ROUND {r} =====")
+        el = rec.get("elapsed_since_last_turn_s")
+        parts.append(f"[wall-clock: turn began {rec.get('started_at')}; "
+                     f"{'first turn' if el is None else f'{el} s since previous turn'}; "
+                     f"{rec.get('returns_chars', 0)} characters of returns received; "
+                     f"clock shown to thinker: {'yes' if rec.get('clock_shown') else 'no'}]")
         parts.append("Thinker received:\n" + rec["slow_input"])
         parts.append("\nThinker responded:\n" + rec["slow_output"])
         for a in rec.get("agents", []):

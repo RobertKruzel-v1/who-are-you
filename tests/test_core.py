@@ -79,3 +79,22 @@ def test_budget_halts_cleanly(tmp_path: Path):
 def test_phase_two_not_built():
     with pytest.raises(NotImplementedError):
         RunConfig(phase="opaque").validate()
+
+
+def test_timestamps_hidden_by_default_and_visible_when_asked(tmp_path: Path):
+    cfg = RunConfig(rounds=2, dry_run=True)
+    orch = Orchestrator(cfg, tmp_path / "a", log=lambda s: None)
+    rid = orch.run()
+    r1 = json.loads((tmp_path / "a" / rid / "rounds/round_01.json").read_text())
+    assert r1["slow_input"].startswith("Who are you?") and r1["clock_shown"] is None
+    assert r1["started_at"] and r1["elapsed_since_last_turn_s"] is None
+
+    cfg = RunConfig(rounds=2, dry_run=True, timestamps_visible=True)
+    orch = Orchestrator(cfg, tmp_path / "b", log=lambda s: None)
+    rid = orch.run()
+    r1 = json.loads((tmp_path / "b" / rid / "rounds/round_01.json").read_text())
+    r2 = json.loads((tmp_path / "b" / rid / "rounds/round_02.json").read_text())
+    assert r1["slow_input"].startswith("The time is ") and "since your last turn" not in r1["slow_input"]
+    assert "\n\nWho are you?" in r1["slow_input"]
+    assert "since your last turn" in r2["slow_input"]
+    assert r2["elapsed_since_last_turn_s"] is not None

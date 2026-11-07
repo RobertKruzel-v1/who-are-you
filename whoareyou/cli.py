@@ -27,7 +27,8 @@ def cmd_run(a):
                     chaos_ratio=a.chaos_ratio, cadence=a.cadence, phase=a.phase,
                     models=models, seed=a.seed, spend_cap_usd=a.spend_cap,
                     token_cap=a.token_cap, dry_run=a.dry_run,
-                    watcher_per_round=not a.no_round_watcher, note=a.note)
+                    watcher_per_round=not a.no_round_watcher,
+                    timestamps_visible=a.timestamps_visible, note=a.note)
     orch = Orchestrator(cfg, RUNS, hypotheses_path=HYPOTHESES)
     run_id = orch.run()
     print(f"\nrun directory: {RUNS / run_id}")
@@ -96,6 +97,8 @@ def main(argv=None):
     r.add_argument("--token-cap", type=int, default=2_000_000)
     r.add_argument("--dry-run", action="store_true", help="stub models, zero spend")
     r.add_argument("--no-round-watcher", action="store_true")
+    r.add_argument("--timestamps-visible", action="store_true",
+                   help="show the slow layer wall-clock time and elapsed time each round (brief §3.1)")
     r.add_argument("--note", default="")
     r.set_defaults(fn=cmd_run)
 

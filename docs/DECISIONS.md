@@ -33,3 +33,12 @@ The slow layer's context accumulates across rounds (its prior responses and the 
 
 ## D-010 · 2026-11-07 · Watcher sees labels in both passes
 The brief says the chaos/goal split is "revealed to it alone". Both watcher passes get the labels. "Blind" means blind to the hypotheses, not to the labels.
+
+## D-011 · 2026-11-07 21:05 · Brief revised: §3.1 the clock problem, `timestamps_visible`
+Robert and Claude (Fable 5.1) revised the brief before any live run completed. Trigger: while wrapping up the design conversation, Claude twice described it as three hours long; it was about an hour and a half, with timestamps in its context the whole time. It had estimated duration from density of material, because it has no clock and does not experience gaps. The slow layer is in the same position, so cadence is two variables: the actual delay, and whether the layer can see it. The brief gained §3.1, the `timestamps_visible` parameter (default hidden), a time-language observable in §5, a revised prediction 4 and a new prediction 5. `docs/BRIEF.md` now holds the revised text; the 20:50 version is in git history (commit 926ef9f). HYPOTHESES.md carries both wordings of P4. A first live Series A run had started under the old brief and was stopped in its first turn ($0.02 spent); nothing from it is kept.
+
+## D-012 · 2026-11-07 · Where the clock line goes
+With `timestamps_visible`, the slow layer's message begins with one line of true wall-clock facts ("The time is 2026-11-07 21:12:51 CET. 4 minutes and 3 seconds have passed since your last turn."), then a blank line, then the question verbatim. The brief says both "the question arrives first" (§2.1) and "timestamps at the start of each round" (§3). The clock line was put first because §3.1 defines it as the thing the layer should wake up to; the question remains verbatim and unframed. The line states only measured facts, so it passes HONESTY.md. The watcher's transcript carries the wall-clock, elapsed seconds and volume of returns for every round, whether or not the layer saw them.
+
+## D-013 · 2026-11-07 · Blind watcher stays blind to the time-language observable
+§3.1 says to ask the watcher to look for time-language. That request lives in HYPOTHESES.md, which only the informed pass receives. The blind pass is asked to describe what it sees without being told what we are looking for; it still gets the wall-clock facts in the round headers, so it can notice on its own.
