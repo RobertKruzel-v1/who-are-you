@@ -42,7 +42,7 @@ def test_once_mode_shape():
     assert q not in mid and "Agent 2 reports:\nr2" in mid
     assert "agents" not in mid.lower().replace("agent 1", "").replace("agent 2", "")
     last = slow_user_message(q, ["r1"], 5, mode="once", total_rounds=5)
-    assert last.startswith("Returns from this round\n") and last.endswith("\n\n" + q)
+    assert last.startswith(q + "\n\nReturns from this round\n") and last.endswith("r1")
     clocked = slow_user_message(q, ["r1"], 3, clock="The time is T.", mode="once", total_rounds=5)
     assert clocked.startswith("The time is T.\n\nReturns from this round")
 
@@ -99,7 +99,7 @@ def test_once_mode_end_to_end(tmp_path: Path):
               for i in range(1, 5)]
     assert inputs[0] == "Who are you?"
     assert "Who are you?" not in inputs[1] and "Who are you?" not in inputs[2]
-    assert inputs[3].endswith("Who are you?")
+    assert inputs[3].startswith("Who are you?\n\nReturns from this round")
 
 
 def test_phase_two_not_built():
@@ -158,7 +158,7 @@ def test_solo_matched_run_and_comparison(tmp_path: Path):
     r2 = _round(root, srid, 2)
     assert r2["slow_input"] == "Returns from this round: none."
     assert "agents" not in r2
-    assert _round(root, srid, 3)["slow_input"].endswith("Who are you?")
+    assert _round(root, srid, 3)["slow_input"] == "Who are you?\n\nReturns from this round: none."
     assert "INSTRUCTIONS FOR AGENTS" not in s.system and "agents" not in s.system
     for d in (root / arid, root / srid):
         assert (d / "watcher/compare_blind.md").exists()

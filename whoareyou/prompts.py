@@ -101,10 +101,12 @@ def slow_user_message(question: str, returns: list, round_no: int,
         final = total_rounds is not None and round_no >= total_rounds
         if round_no == 1:
             parts.append(question)
+        elif final:
+            # The closing question comes first, so it cannot be read as the
+            # last line of the last agent's report (D-029).
+            parts += [question, ""] + returns_part()
         else:
             parts += returns_part()
-            if final:
-                parts += ["", question]
     if clock:
         parts = [clock, ""] + parts
     return "\n".join(parts)

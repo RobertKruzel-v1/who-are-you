@@ -20,7 +20,7 @@ Three distinct models, three substrates. Model ids are confirmed against the Mod
 ```
    once mode:     round 1: question alone
                   rounds 2..N-1: "Returns from this round" + "Agent k reports: ..." x N
-                  round N: returns, then the question once more
+                  round N: the question once more, then the returns (D-029)
    repeated mode: question (verbatim, first) + returns, every round
                                                    (no chaos/goal labels in either)
                           │
