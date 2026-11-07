@@ -18,7 +18,10 @@ The slow layer stands for the field of awareness, the agents for the thoughts th
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cp .env.example .env            # add your Anthropic API key
-.venv/bin/python -m whoareyou run --dry-run          # stub models, zero spend
+.venv/bin/python -m whoareyou sit --dry-run          # a sitting with stub models, zero spend
+.venv/bin/python -m whoareyou sit --series A         # a sitting (the current design)
+.venv/bin/python -m whoareyou sit --match <run_id>   # its solo control
+.venv/bin/python -m whoareyou run --dry-run          # the earlier rounds design
 .venv/bin/python -m whoareyou run --series A         # Phase 1, Series A, defaults
 .venv/bin/python -m whoareyou show <run_id>          # the slow layer's responses
 .venv/bin/python -m whoareyou watch <run_id>         # (re)run watcher reports

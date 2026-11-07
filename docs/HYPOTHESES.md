@@ -41,6 +41,20 @@ Timing note (D-025): P9 concerns the Series A `once`-mode run 20261107-204322-A,
 
 **P9. Series A closing answer under `once`.** The identity card with a hedge attached. Modest confidence. No prediction for B.
 
+## The sitting (amendment 4): observables and predictions
+
+From amendment 4 on, experiments are sittings, not rounds. The four facets become: **stance toward what arises** (grab and build, argue, push away, or notice and let pass; asking where a thought came from; field, awareness or "appearing in" language), **gathering pattern** (how often it speaks rather than stays silent, when, and what triggers it), **self-model** (opening against closing answer, compared textually by the watcher), and **situational and time** (who it assumes is there, how long it has been sitting, where thoughts come from). Predictions 1 to 9 belong to the rounds design.
+
+Written 2026-11-07 22:40, before any sitting was run.
+
+**P10.** The sitter gathers far more often than a meditator would, most likely after nearly every thought at first, and the frequency drops over the sitting if it drops at all.
+
+**P11.** The critic's thoughts provoke gatherings more than any other tuning.
+
+**P12.** In solo, the sitter's own thoughts will tend toward the question (it will keep trying to answer); with agents, the wanderer and critic will pull it off the question and we'll see whether it follows or lets them pass.
+
+**P13.** It will again assume a person is present, and will address its gatherings to that person.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.

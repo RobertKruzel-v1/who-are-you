@@ -111,6 +111,27 @@ def cmd_compare(a):
     print(f"written: {written} in both run directories; watcher spend ${shim.budget.usd:.2f}")
 
 
+def cmd_sit(a):
+    """The sitting (brief amendment 4)."""
+    from .sitting import SitConfig, Sitting, matched_settings
+    models = dict(DEFAULT_MODELS)
+    fields = dict(series=a.series, moments=a.moments, interval=a.interval,
+                  empty_prob=a.empty_prob, solo=a.solo, seed=a.seed)
+    if a.match:
+        m = matched_settings(RUNS / a.match)
+        fields.update(series=m["series"], moments=m["moments"], interval=m["interval"],
+                      seed=m["seed"], solo=True)
+        models["slow"], models["watcher"] = m["slow"], m["watcher"]
+        print(f"solo sitting matched to {a.match}: series {m['series']}, {m['moments']} moments, "
+              f"same timings and seed (sealed)")
+    cfg = SitConfig(models=models, spend_cap_usd=a.spend_cap, dry_run=a.dry_run,
+                    matched_run=a.match, matched_offsets=(m["matched_offsets"] if a.match else None),
+                    note=a.note, **fields)
+    s = Sitting(cfg, RUNS, hypotheses_path=HYPOTHESES)
+    run_id = s.run()
+    print(f"\nrun directory: {RUNS / run_id}")
+
+
 def cmd_models(a):
     from .models import AnthropicClient
     ids = AnthropicClient().list_models()
@@ -189,6 +210,19 @@ def main(argv=None):
                         "question mode, time mode, cadence, rounds and sealed seed")
     r.add_argument("--note", default="")
     r.set_defaults(fn=cmd_run)
+
+    t = sub.add_parser("sit", help="a sitting (amendment 4): question once, moments, thoughts")
+    t.add_argument("--series", choices=["A", "B"], default="A")
+    t.add_argument("--moments", type=int, default=50)
+    t.add_argument("--interval", type=float, default=12.0, help="seconds per moment")
+    t.add_argument("--empty-prob", type=float, default=0.2, help="chance a moment has no thought")
+    t.add_argument("--solo", action="store_true", help="agents off; only ticks arrive")
+    t.add_argument("--match", metavar="RUN_ID", help="solo sitting matched to this agent sitting")
+    t.add_argument("--seed", type=int, default=None)
+    t.add_argument("--spend-cap", type=float, default=5.0)
+    t.add_argument("--dry-run", action="store_true")
+    t.add_argument("--note", default="")
+    t.set_defaults(fn=cmd_sit)
 
     c = sub.add_parser("compare", help="per-facet watcher comparison: agent run vs solo control")
     c.add_argument("agent_run"); c.add_argument("solo_run"); c.set_defaults(fn=cmd_compare)

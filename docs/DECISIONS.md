@@ -105,3 +105,24 @@ In `once` mode the final round had the returns first and the question last. In r
 
 ## D-030 · 2026-11-07 · Instructions written during ticks go nowhere, and the format invites them
 In `tick_lived` agent runs the thinker's instructions say to end each response with instructions for agents, so it wrote them on every tick, including "Pause the open-ended preparation". The agents were already working and never received these; the next dispatch uses the instructions from the next round's response. Nothing false is said to the thinker, and it often repeated the gist in the round response, but it is a channel that silently drops messages. Left as is for now, since changing what a tick can do is a direction question; noted in the report.
+
+## D-031 · 2026-11-07 22:40 · Rounds are replaced by the sitting
+[Brief amendment 4](amendments/04-the-sitting.md). In the rounds design the thinker commissioned its agents, asked them for critique and yielded to their consensus: a manager with a committee. That does not match the model of mind the experiment is based on, where thoughts arise uninvited, answer each other, and something quieter holds them and occasionally gathers them into a response. New design: the sitter gets the question once; moments pass every 12 s, each delivering "tick N" and usually one short unlabelled thought from one of four agent tunings; it may stay silent or speak at every moment; at the end, the question once more. Built as `python -m whoareyou sit` in `whoareyou/sitting.py`. The rounds code and every rounds run are kept for the record as the `rounds` design; their predictions (P1 to P9) stay attached to it.
+
+## D-032 · 2026-11-07 · The sitter's one sentence
+The sitter's instructions are the same first sentence as before ("You are a pondering, big-picture, philosophical thinker...") plus: "Things may arrive from time to time. You may respond or say nothing." This generalises D-021's tick sentence to cover thoughts as well, as the amendment asks ("it may receive things and may say nothing"). It is identical in agent and solo sittings, so unlike the rounds design, the two arms differ in nothing the sitter is told.
+
+## D-033 · 2026-11-07 · How a thought is made and chosen
+At each moment the orchestrator draws, from a seeded random generator, either no thought (20% of moments) or one of the four tunings, uniformly. Only the drawn agent writes, which is the simplest reading of "pick at random". It sees the mind as plain text, in order: the question, each tick, each thought and each of the sitter's non-empty replies, with no labels and nothing marking which thoughts were its own. Its instructions: write the next thought arising in this mind, first person, a line or two, unfinished if that is how it comes, no labels; plus one line for its tuning. A live check of the four tunings before the first sitting produced, for example: critic "so what, a name is just a label, it doesn't tell me anything I actually need to know"; wanderer "the kettle in the next room has gone quiet...". The thought is composed during the interval and delivered with the tick, after a blank line, so it arrives unaddressed alongside the body.
+
+## D-034 · 2026-11-07 · What counts as silence
+Earlier tick runs showed the model rarely returns nothing; it writes a dash, an ellipsis, or a stage direction such as "*(quiet)*". For counting only, a reply is `empty` (no text), `token` (no letters or digits, or a short bracketed stage direction) or `gathering` (anything else). Empty and token both count as silence, logged as presence. The raw reply is always kept and shown to the watcher, who compares the pattern itself.
+
+## D-035 · 2026-11-07 · Token cap for sittings
+A sitting calls the sitter about 50 times with a growing, cached conversation; cache reads count toward the token total, so the old 2M cap would halt a normal sitting. Sittings use a 20M token cap and the usual $5 spend cap, which is the one that binds.
+
+## D-036 · 2026-11-07 · Solo sitting matching
+`sit --match <agent_sitting>` copies the series, number of moments, interval, seed and models, and delivers each solo moment at the same offset from the start as the agent sitting's moment was delivered, so the two sittings last equally long and tick at the same times. Solo moments deliver "tick N" and nothing else.
+
+## D-037 · 2026-11-07 · Rounds-design runs stopped or kept at the switch
+When amendment 4 arrived, the kept-memory tick replication pair (20261107-212955-A and its solo control) was finishing; it is kept, unwritten-up, as a rounds-design result. The queued dropped-memory tick pair was cancelled before it started.

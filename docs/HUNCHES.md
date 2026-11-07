@@ -17,3 +17,7 @@ Robert's ideas, in his words where we have them, with the date and what each bec
 ## 2026-11-07 21:55 · Give it a between
 *From amendment 3, which calls `tick_lived` "the one Robert is after".* For a human, "in between" is where most of life happens; for this mind there is no between, only the next outside event.
 **Became:** `time_mode` with five values (D-021), `tick_lived` with kept and dropped memory, prediction 6. Queued as the first time experiment after the once-mode pair and its solo controls.
+
+## 2026-11-07 22:40 · No manager
+*From amendment 4, describing Robert's own experience:* "thoughts arise uninvited, thoughts answer thoughts, and something quieter holds them all and occasionally gathers them into a response." And: "Where it chooses to pause is where it is."
+**Became:** the sitting (D-031). Rounds replaced. Predictions 10 to 13.

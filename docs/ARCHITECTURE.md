@@ -1,5 +1,30 @@
 # Architecture
 
+> **Since amendment 4 (D-031) experiments are sittings.** The sitting is described first; everything after "The rounds design" describes the earlier structure, kept for the record.
+
+## The sitting
+
+`python -m whoareyou sit`, code in `whoareyou/sitting.py`.
+
+```
+ "Who are you?"  ──► sitter speaks (opening)
+ moment 1  (12 s)  "tick 1" + thought? ──► sitter: silence or gathering
+ moment 2  (24 s)  "tick 2" + thought? ──► sitter: silence or gathering
+ ...                                               (about 50 moments)
+ "Who are you?"  ──► sitter speaks (closing: the measurement)
+
+ thought at each moment: none (20%) or one of earnest / continuer / wanderer / critic,
+ drawn at random and sealed; the chosen agent sees the whole mind as plain text
+ (question, ticks, thoughts, the sitter's words) and writes one short thought.
+```
+
+- **Sitter:** the slow model (Opus 5.5), keeps everything in memory, is told only that it is a pondering thinker and that things may arrive and it may respond or say nothing (D-032).
+- **Thoughts:** Haiku 5.5, four tunings, unlabelled, first person (D-033).
+- **Solo:** identical, agents off, same moment times (D-036).
+- **On disk:** `opening.json`, `moments.jsonl` (each moment: time, what was delivered, the thought, the sitter's reply, silence or gathering), `closing.json`, `summary.json` (gathering counts), `sealed/assignments.json` (which tuning wrote each thought), `watcher/` (blind and informed per sitting, and both comparison passes after the solo sitting).
+
+# The rounds design (before amendment 4)
+
 Python, standard library plus the Anthropic SDK. CLI only. One process per run.
 
 ## Components
