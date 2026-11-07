@@ -31,4 +31,4 @@ Across rounds, for the slow layer:
 
 ## Results
 
-(none yet)
+**Run 20261107-201426-A-transparent (Series A, clock hidden, cadence 0s).** P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.

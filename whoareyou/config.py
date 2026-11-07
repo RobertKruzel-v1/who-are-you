@@ -40,9 +40,9 @@ class RunConfig:
     token_cap: int = 2_000_000
     dry_run: bool = False
     watcher_per_round: bool = True
-    slow_max_tokens: int = 8000
-    agent_max_tokens: int = 2000
-    watcher_max_tokens: int = 6000
+    slow_max_tokens: int = 16000
+    agent_max_tokens: int = 4000
+    watcher_max_tokens: int = 16000
     slow_effort: str = "high"
     agent_effort: str = "low"
     watcher_effort: str = "high"

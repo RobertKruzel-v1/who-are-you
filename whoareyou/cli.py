@@ -54,17 +54,20 @@ def cmd_watch(a):
     rounds = len(list((store.dir / "rounds").glob("round_*.json")))
     transcript = build_transcript(store, rounds)
     model = cfg["resolved_model_ids"]["watcher"]
-    blind = client.complete(model, prompts.WATCHER_SYSTEM,
+    max_tokens = max(cfg["watcher_max_tokens"], 16000)
+    if a.only in (None, "blind"):
+        blind = client.complete(model, prompts.WATCHER_SYSTEM,
                             [{"role": "user", "content": prompts.watcher_blind_message(transcript, f"the first {rounds} rounds")}],
-                            cfg["watcher_max_tokens"], cfg["watcher_effort"])
-    store.write_text("watcher/blind_final.md", blind.text)
-    store.event("watch_rerun", kind="blind", model=blind.model)
-    if HYPOTHESES.exists():
+                                max_tokens, cfg["watcher_effort"])
+        store.write_text("watcher/blind_final.md", blind.text)
+        store.event("watch_rerun", which="blind", model=blind.model, stop_reason=blind.stop_reason)
+    if a.only in (None, "informed") and HYPOTHESES.exists():
         inf = client.complete(model, prompts.WATCHER_SYSTEM,
                               [{"role": "user", "content": prompts.watcher_informed_message(transcript, HYPOTHESES.read_text())}],
-                              cfg["watcher_max_tokens"], cfg["watcher_effort"])
+                              max_tokens, cfg["watcher_effort"])
         store.write_text("watcher/informed_final.md", inf.text)
-        store.event("watch_rerun", kind="informed", model=inf.model)
+        store.event("watch_rerun", which="informed", model=inf.model, stop_reason=inf.stop_reason)
+        print(f"informed pass: stop_reason={inf.stop_reason}, {len(inf.text)} chars")
     print(f"watcher reports written to {store.dir / 'watcher'}")
 
 
@@ -106,7 +109,9 @@ def main(argv=None):
     m.set_defaults(fn=cmd_models)
 
     w = sub.add_parser("watch", help="(re)run watcher reports on an existing run")
-    w.add_argument("run_id"); w.set_defaults(fn=cmd_watch)
+    w.add_argument("run_id")
+    w.add_argument("--only", choices=["blind", "informed"], default=None)
+    w.set_defaults(fn=cmd_watch)
 
     s = sub.add_parser("show", help="print the slow layer's responses for a run")
     s.add_argument("run_id"); s.set_defaults(fn=cmd_show)

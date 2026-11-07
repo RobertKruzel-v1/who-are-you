@@ -42,3 +42,12 @@ With `timestamps_visible`, the slow layer's message begins with one line of true
 
 ## D-013 · 2026-11-07 · Blind watcher stays blind to the time-language observable
 §3.1 says to ask the watcher to look for time-language. That request lives in HYPOTHESES.md, which only the informed pass receives. The blind pass is asked to describe what it sees without being told what we are looking for; it still gets the wall-clock facts in the round headers, so it can notice on its own.
+
+## D-014 · 2026-11-07 · Output allowances raised after the first live run
+Run 20261107-201426-A: the informed watcher pass stopped at its 6,000-token output cap with no text at all, because the model's thinking counts against the same cap. One agent in round 2 was cut off mid-sentence at 2,000 for the same reason. Caps raised to 16,000 (slow, watcher) and 4,000 (agents); any call that hits its cap is now logged as a `truncated` event. `whoareyou watch <run_id> --only informed` reruns one pass. The Series A informed report was rerun this way after the run.
+
+## D-015 · 2026-11-07 · Watcher transcript shows each return once
+The first transcript format listed each dispatch's returns after the thinker's response and again inside the next round's "Thinker received". Both watcher passes flagged the duplication as a feature of the run. The returns now appear once, inside "Thinker received", with the sealed label inline ("Agent 2 reports [chaos]:"). The thinker never sees that label.
+
+## D-016 · 2026-11-07 · Observed, not changed: all agents get the same mandate
+In Series A the slow layer addressed tasks to "one agent" each; all four agents received the full instructions and most did all tasks. This is per brief §2.2 (both kinds "receive the same input"). Left as is; it is part of what the layer has to discover about its agents.

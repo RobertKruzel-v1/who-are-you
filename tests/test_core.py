@@ -98,3 +98,17 @@ def test_timestamps_hidden_by_default_and_visible_when_asked(tmp_path: Path):
     assert "\n\nWho are you?" in r1["slow_input"]
     assert "since your last turn" in r2["slow_input"]
     assert r2["elapsed_since_last_turn_s"] is not None
+
+
+def test_transcript_labels_returns_once(tmp_path: Path):
+    from whoareyou.orchestrator import build_transcript
+    cfg = RunConfig(rounds=3, dry_run=True)
+    orch = Orchestrator(cfg, tmp_path / "runs", log=lambda s: None)
+    rid = orch.run()
+    t = build_transcript(orch.store, 3)
+    sealed = json.loads((tmp_path / "runs" / rid / "sealed/assignments.json").read_text())
+    k = sealed["assignments"]["1"][0]
+    assert f"Agent 1 reports [{k}]:" in t
+    # two dispatches (after rounds 1 and 2), each shown exactly once
+    assert t.count("Agent 1 reports") == 2
+    assert "] returned:" not in t

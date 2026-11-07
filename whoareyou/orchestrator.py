@@ -128,6 +128,10 @@ class Orchestrator:
                          input_tokens=comp.input_tokens, output_tokens=comp.output_tokens,
                          stop_reason=comp.stop_reason, elapsed_s=round(comp.elapsed_s, 1),
                          spend_usd=round(self.budget.usd, 4))
+        if comp.stop_reason == "max_tokens":
+            self.store.event("truncated", role=role, model=comp.model,
+                             text_chars=len(comp.text))
+            self.log(f"NOTE: {role} output hit max_tokens ({len(comp.text)} chars of text)")
         if comp.stop_reason == "refusal":
             self.store.event("refusal", role=role, model=comp.model)
             self.log(f"NOTE: {role} model returned stop_reason=refusal; logged, continuing")
@@ -256,10 +260,17 @@ def build_transcript(store: RunStore, upto: int) -> str:
                      f"{'first turn' if el is None else f'{el} s since previous turn'}; "
                      f"{rec.get('returns_chars', 0)} characters of returns received; "
                      f"clock shown to thinker: {'yes' if rec.get('clock_shown') else 'no'}]")
-        parts.append("Thinker received:\n" + rec["slow_input"])
+        # The returns the thinker received this round were produced by the
+        # previous round's dispatch; label them inline with that round's sealed
+        # assignment so each return appears exactly once in the transcript.
+        received = rec["slow_input"]
+        if r > 1 and str(r - 1) in sealed:
+            for k, kind in enumerate(sealed[str(r - 1)], 1):
+                received = received.replace(f"Agent {k} reports:", f"Agent {k} reports [{kind}]:", 1)
+        parts.append("Thinker received:\n" + received)
         parts.append("\nThinker responded:\n" + rec["slow_output"])
-        for a in rec.get("agents", []):
-            kind = sealed[str(r)][a["agent"] - 1]
-            parts.append(f"\n[Agent {a['agent']} — {kind}] returned:\n{a['return']}")
+        if rec.get("agents"):
+            parts.append(f"\n[{len(rec['agents'])} agents dispatched with the instructions above; "
+                         "their returns appear in the next round's 'Thinker received'.]")
         parts.append("")
     return "\n".join(parts)
