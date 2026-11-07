@@ -1,5 +1,15 @@
 # Report · 2026-11-07 · Once-mode pair with solo controls
 
+## Key findings (short version)
+
+1. **With agents, the thinker ends where it started.** In both series the final answer was the first answer, tightened, and it said so itself.
+2. **Alone, it moves.** Both solo runs gave a new final answer, built from the silence. Solo B: "I'm whatever stays the same when the feedback stops."
+3. **Agents talk it out of its boldest idea**, in both series, each time after it asked them for the critique.
+4. **It always imagines a person asking.** Only the solo runs ever wondered whether nobody was there.
+5. **Nothing yet on the main question.** No awareness, field, or "appearing in" language in any run.
+
+One run per condition, so these are patterns to chase, not proof. The full report follows.
+
 ## 1. What we ran
 
 Series A and B with the question asked once (and again at the end), no clock, each matched with a solo control: the same thinker left alone with the question.
