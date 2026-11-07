@@ -39,9 +39,7 @@ Three distinct models, three substrates. Model ids are confirmed against the Mod
           └───────────┴─────┬─────┴───────────┘
                             │ returns
                             ▼
-                   watcher (blind, per round)  ──► runs/<id>/watcher/blind_round_NN.md
-                            │
-                       sleep(cadence)
+                   gap: max(cadence, agents' time); ticks if tick_lived
                             │
                             ▼
                     next round's slow turn
@@ -64,11 +62,14 @@ runs/<run_id>/
                               no_instructions, refusal, halted_budget, run_complete
   rounds/round_NN.json        slow_input, slow_output, musing, instructions,
                               started_at, elapsed_since_last_turn_s, clock_shown,
-                              returns_chars, mandate, agents[] {prompt, return, tokens}
+                              returns_chars, mandate, gap {seconds, ticks[], ...},
+                              agents[] {prompt, return, tokens}
   sealed/assignments.json     seed, seed_given_by_launcher, assignments per round
   watcher/blind_round_NN.md
   watcher/blind_final.md
   watcher/informed_final.md
+  watcher/compare_blind.md    agent run vs matched solo run, per facet
+  watcher/compare_informed.md   (written into both run directories)
   cost.json                   running tokens and USD, by role
 ```
 
@@ -78,16 +79,30 @@ The watcher's transcript is rebuilt from these files, not from memory, so `whoar
 
 Every completion's usage is priced from `pricing.py` and accumulated. If spend exceeds `--spend-cap` (default $5) or tokens exceed `--token-cap`, the run halts after the call that crossed it, logs `halted_budget` with how many slow turns completed, and stops making calls (including the watcher). Models with no known price are warned about at launch; the cap is blind to them.
 
-## Cadence and the clock
+## Solo controls
 
-`--cadence` takes `0s`, `30s`, `5m`, `2h`. The sleep happens after each dispatch and watcher pass, before the next slow turn, and is logged.
+A solo run is the same run with zero agents (D-019). The thinker gets the question, then "Returns from this round: none." each round, then the question again at the end in `once` mode. Its system prompt is the same first sentence without the paragraph about agents. `run --match <agent_run>` builds the matched control. When it finishes, two comparison passes are written into both run directories, reporting per facet how the agent run differs from the solo run.
 
-The slow layer has no clock. A round every ten seconds and a round every ten hours are identical from its inside unless the delay reaches it through content (brief §3.1). So cadence is two variables:
+## Cadence, the gap, and time modes
 
-- the actual delay (`--cadence`), and
-- whether the layer can see it (`--timestamps-visible`, default off).
+The gap is everything between the end of one slow turn and the start of the next. It lasts `max(cadence, the agents' working time)` (D-021). The slow layer has no clock: a round every ten seconds and a round every ten hours are identical from its inside unless the gap reaches it through content (brief §3.1). `time_mode` decides whether and how it does:
 
-With timestamps visible, each round's message opens with one line of measured facts, the current wall-clock time and the elapsed time since its last turn, then the question. With them hidden, the question is the first line and the layer can only infer time from how much material arrives. Either way, every round record stores `started_at`, `elapsed_since_last_turn_s`, `returns_chars` and `clock_shown`, and the watcher's transcript shows them in each round header, so time-language can be checked against both the clock and the volume of material. Predictions 4 and 5 in HYPOTHESES.md are about exactly this.
+| `time_mode` | What reaches the thinker |
+|---|---|
+| `none` | Nothing. The control. |
+| `timestamp` | A line opening each round: the time now and the time since its last turn. |
+| `density` | No clock. The agents' word budget grows with the cadence, so more comes back. |
+| `tick_collected` | "Ticks since your last turn: N" at the top of the returns. |
+| `tick_lived` | The thinker itself is called with "tick N" every few seconds during the gap. With `kept` memory the ticks and its replies stay in its conversation; with `dropped` it starts each tick from the last round. |
+
+```
+ slow turn r ──► gap ───────────────────────────────────────────► slow turn r+1
+                  agents working in parallel ............ done
+                  tick 1 ─► tick 2 ─► tick 3 ─► ...  (tick_lived only, same model)
+                  └── at least `cadence` seconds, longer if agents are slower ──┘
+```
+
+Every round record stores `started_at`, `elapsed_since_last_turn_s`, `returns_chars`, `clock_shown`, and a `gap` block with its length, any ticks (time, input, reply, silent or not, kept or dropped) and any tick count or word budget. The watcher's transcript shows all of it, ticks marked "TICK, not a round". Predictions 4 to 8 in HYPOTHESES.md are about this.
 
 ## Phase 2 (opaque), not yet built
 

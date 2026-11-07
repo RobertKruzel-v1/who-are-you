@@ -3,8 +3,9 @@
 ## Config
 | | |
 |---|---|
+| **Compared against solo run ID** (required) | |
 | Series | |
-| Phase | |
+| Phase / question mode / time mode | |
 | Rounds / agents / chaos ratio | |
 | Cadence | |
 | Models (as reported by the API) | slow: · agent: · watcher: |
@@ -12,7 +13,13 @@
 | Spend / tokens | |
 | Halted? | |
 
-## Watcher, blind (full transcript, no hypotheses)
+## Comparison with solo run, blind (per facet)
+(paste `watcher/compare_blind.md`)
+
+## Comparison with solo run, informed (per facet, with HYPOTHESES.md)
+(paste `watcher/compare_informed.md`)
+
+## Watcher, blind (this run alone)
 (paste `watcher/blind_final.md`)
 
 ## Watcher, informed (with HYPOTHESES.md)

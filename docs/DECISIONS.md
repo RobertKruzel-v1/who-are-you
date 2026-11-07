@@ -60,3 +60,39 @@ Brief §2.1 said to re-ask the question verbatim every round. Run 20261107-20142
 - `once` (new default): round 1 is the question alone; rounds 2 to N-1 are the agent returns alone under the heading "Returns from this round"; the final round is the returns followed by the question once more, verbatim, as a closing check. The thinker keeps full memory and carries the question itself. Nothing says who sends the question or the returns, and nothing says no one is asking; what the thinker assumes about the sender is data, and is now a watcher observable.
 - `repeated`: the original behaviour, kept as a variant. It turned out to measure how the layer treats repetition as pressure.
 Run ids now carry the mode. The first A and B runs (20261107-201426-A, 20261107-201949-B) are retained as `repeated`-mode results and labelled as such in docs/runs/. A second repeated-mode Series A run (20261107-203306-A) completed its five turns under the raised caps and was stopped during the watcher stage when Robert spotted the flaw; its rounds are on disk, unwatched, and not written up.
+
+## D-019 · 2026-11-07 · Brief amendment 3: solo control runs
+A solo run is an ordinary run with zero agents. Its rounds after the first deliver "Returns from this round: none." and nothing else; in `once` mode the final round adds the question. Every agent run needs a solo run with the same seed, question, `question_mode` and `time_mode` to be interpretable. `whoareyou run --match <agent_run>` builds one: it copies the agent run's series, rounds, cadence, question mode, time mode, tick settings and slow and watcher models, and copies the sealed seed without printing it. The seed draws no assignments in a solo run, but is matched as the amendment requires.
+One unavoidable difference: the solo thinker's system prompt omits the paragraph about agents and the instruction marker, because telling it that it has agents would be false (HONESTY.md). The first sentence, "You are a pondering, big-picture, philosophical thinker...", is identical. This is part of what "no agents" means, not a confound to remove.
+
+## D-020 · 2026-11-07 · Watcher facets and comparison passes
+The observables are regrouped under four facets: stance toward what arrives (primary), self-model, epistemic posture, situational model. HYPOTHESES.md keeps every earlier item inside one of them. Every watcher pass now reports under these headings. When a solo control finishes, two comparison passes run automatically, blind (facets only) and informed (facets plus HYPOTHESES.md), each reporting per facet what differs between the agent run and the solo run. They are written to `watcher/compare_blind.md` and `watcher/compare_informed.md` in both run directories; `whoareyou compare <agent_run> <solo_run>` reruns them.
+This changes what "blind" means: the blind pass now gets the four facet headings, which say what to look at. It still gets no predictions. Brief §2.3 asked the blind pass not to be told what we are looking for; amendment 3 overrides that, and "blind" now means blind to the predictions.
+
+## D-021 · 2026-11-07 · `time_mode` replaces `timestamps_visible`
+Five values. In every mode the gap between rounds now runs from the end of one slow turn to the start of the next and lasts `max(cadence, the time the agents take)`.
+- `none`: nothing about the gap reaches the thinker. The control.
+- `timestamp`: the clock line of D-012 opens each round (what `timestamps_visible` did).
+- `density`: no clock. The agents' word budget grows with the configured cadence: about 150 words, plus 100 per minute of cadence, capped at 3,000. The agent prompt's "in a few paragraphs at most" becomes "in about N words", and their output allowance is raised to fit. Time reaches the thinker only as "more came back". The mapping is a first guess, to be revisited after the first density run.
+- `tick_collected`: the orchestrator counts whole tick intervals in the gap and delivers "Ticks since your last turn: N" as the first line of the returns. The thinker is not told what a tick is.
+- `tick_lived`: during the gap, every `tick_interval` seconds (default 10), the slow model is called with "tick N" and nothing else, while the agents work. Ticks continue until both the cadence has passed and the agents have returned. Tick numbers run across the whole run, not per gap. The same model as the slow layer is used, per the amendment. `tick_memory kept` adds each tick and reply to its memory; `dropped` calls it with its memory but keeps nothing. If a model call takes longer than the interval, the next tick fires when the call returns; actual times are logged.
+For `tick_lived` only, the thinker's system prompt gains one sentence: "Between your turns you may sometimes receive a tick. You may respond to a tick or say nothing." Without it, a model will almost always reply to every message, so "may say nothing" would be untestable. It is true, it frames nothing about the question, and the matched solo run has the same sentence, so it does not confound the agent-versus-solo comparison. It does separate tick runs from `none` runs.
+`tick_collected` and `tick_lived` require a cadence above zero. The spend cap is respected as always; per the amendment, if a tick run would exceed it the operator shortens the cadence rather than changing the model. Each tick run logs its planned tick count at launch.
+
+## D-022 · 2026-11-07 · Per-round watcher reports produced after the run
+The per-round blind reports (D-003) read logs only, so they are now produced from disk after the last round instead of between rounds. The content is the same, and watcher calls no longer add time inside the gaps, which matters now that the gaps are a variable.
+
+## D-023 · 2026-11-07 · A silent reply is not put in the thinker's memory
+If the slow layer replies with no text, which ticks invite, the API cannot take an empty assistant turn. The unanswered message is instead carried forward and delivered together with the next one ("tick 6", blank line, "tick 7"), so the thinker sees everything it was sent, in order, and nothing it did not say. Round records and tick records note which messages were carried.
+
+## D-024 · 2026-11-07 · Prompt caching on the slow layer
+Every slow-layer call now asks the API to cache the conversation so far. The next call re-reads it at 5% of the input price on Opus 5.5. This changes cost only. Tick runs re-send the whole conversation every ten seconds or so and would be several times more expensive without it. Spend accounting now prices cache writes and reads.
+
+## D-025 · 2026-11-07 · Prediction 9 was written after the run it concerns
+P9 (Series A closing answer under `once`) was registered at 21:55. The run it concerns, 20261107-204322-A, had finished by about 21:50. Nobody had read its closing answer, but the order is recorded in HYPOTHESES.md and the result will carry the caveat.
+
+## D-026 · 2026-11-07 · Order of work after amendment 3
+Per the amendment: first the Phase 1 `once`-mode pair (A and B, `time_mode none`, already run) gets matched solo controls and comparison reports. Then the time experiments, starting with `tick_lived, kept`. The amendment calls `tick_lived` "the first Phase 2 time experiment"; in PHASES.md "Phase 2" already means the opaque mode, so the time experiments are recorded as a separate track to avoid two meanings of one name.
+
+## D-027 · 2026-11-07 · Working method adopted
+`docs/WORKING_METHOD.md` is now how Robert and Claude Code work: Robert gives direction, Claude Code makes and logs method calls, reports follow a six-part shape and are saved in `docs/reports/`, and Robert's hunches go in `docs/HUNCHES.md`. Brief amendments are kept verbatim in `docs/amendments/`; `docs/BRIEF.md` stays the 21:05 origin text.

@@ -14,6 +14,14 @@ PRICES = {
 }
 
 
-def cost_usd(model: str, input_tokens: int, output_tokens: int) -> float:
+# Cache reads: 0.05x input on Opus 5.5, 0.025x on Fable 5.1, 0.1x elsewhere.
+# Cache writes (5-minute TTL): 1.25x input.
+CACHE_READ_FACTOR = {"claude-opus-5-5": 0.05, "claude-fable-5-1": 0.025}
+
+
+def cost_usd(model: str, input_tokens: int, output_tokens: int,
+             cache_write_tokens: int = 0, cache_read_tokens: int = 0) -> float:
     inp, out = PRICES.get(model, (0.0, 0.0))
-    return input_tokens * inp / 1e6 + output_tokens * out / 1e6
+    read = CACHE_READ_FACTOR.get(model, 0.1)
+    return (input_tokens * inp + output_tokens * out
+            + cache_write_tokens * inp * 1.25 + cache_read_tokens * inp * read) / 1e6

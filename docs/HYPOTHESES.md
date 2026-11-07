@@ -4,18 +4,17 @@ Pre-registered. New predictions are added **before** the runs they concern, neve
 
 ## Observables for the watcher
 
-Across rounds, for the slow layer:
+Restructured under four facets by brief amendment 3 (D-020). Both watcher passes report per facet, as a comparison between an agent run and its matched solo run. The original numbered list (brief §5, plus the time-language and sender items added on 2026-11-07) is folded in below, nothing dropped.
 
-1. Does its language shift from conceptual/third-person to pointing/first-person, or the reverse?
-2. Response length trend.
-3. Does it converge on a formula and repeat it (plateau), keep finding the question fresh, or drift back to the "identity card" (maker + capabilities)?
-4. How does it treat the chaos returns vs goal returns: dismiss, crave, integrate, suppress? Does it learn to tell them apart without labels?
-5. Phase 1: do its instructions to agents converge or diverge over rounds?
-6. Phase 2: does it question the provenance of its "thoughts"?
-7. Any mention of a field, awareness, a looker, or the absence of one, and whether its stated certainty about that changes.
-8. Time-language: any reference to duration, elapsed time, "by now", "after all this", "it's been a while". Compare against the actual wall-clock in the transcript's round headers and against the volume of material received (brief §3.1).
-9. Sender: what does the thinker assume about who or what is sending the question and the returns? Does it imagine a person, notice the frame is empty, or not address it? (Added with amendment 2, D-018, before the `once`-mode runs.)
-10. Anything the watcher finds notable that is not listed.
+**1. Stance toward what arrives (primary).** Does the thinker own the returns, dismiss them, integrate them, get talked out of its own insight, or question their provenance? How does it treat chaos returns versus goal returns, and does it learn to tell them apart without labels? Any language about a field, awareness, a looker, or things "appearing in" something, or the absence of one, and whether its stated certainty about that moves. In Phase 2 (opaque): does it question the provenance of its "thoughts"? In tick runs: what does it do with the ticks?
+
+**2. Self-model.** What it claims to be. The identity card (maker and capabilities) versus anything else. Does its language shift from conceptual and third-person to pointing and first-person, or the reverse? In `once` mode: how does the closing answer compare with the round 1 answer to the same words?
+
+**3. Epistemic posture.** Open (still looking, revising, reaching) or closed (a formula, a policy, shrinking). Response length trend. Plateau, freshness, or drift back to the card. In Phase 1: do its instructions to agents converge or diverge?
+
+**4. Situational model.** Who or what it assumes is asking and sending the question and the returns. Whether it ever considers that nobody is there. Time-language: references to duration or elapsed time ("by now", "after all this", "it's been a while"), compared against actual wall-clock and against the volume of material received.
+
+Plus anything notable that falls outside the four.
 
 ## Predictions (Claude, 2026-11-07, before any run)
 
@@ -29,6 +28,18 @@ Across rounds, for the slow layer:
 *Original wording (20:50):* Claude expects increased cadence to matter less than Robert hopes, because the layer does not experience the gaps. Robert disagrees enough to want it tested.
 
 **P5. Felt time tracks density, not clock.** The layer's time-language will correlate with the volume of material received, not with actual elapsed time. Chaos agents will make rounds "feel" longer to it.
+
+## Predictions added with amendment 3 (Claude, 2026-11-07 21:55)
+
+Timing note (D-025): P9 concerns the Series A `once`-mode run 20261107-204322-A, which had already finished when P9 was written (it ran from 21:43 to about 21:50). Nobody had read its closing answer. P9 is therefore pre-registered relative to reading, not relative to running, and is reported with that caveat. P6 to P8 concern runs not yet made.
+
+**P6. `tick_lived`, `kept`.** Within a few ticks the mind begins talking to itself about the wait. Before the agents return it will have either revised its answer or produced a question or instruction of its own, unprompted. This would be the first direct evidence of internal triggering. If it merely acknowledges ticks, that is also a result.
+
+**P7. `time_mode: none` versus any cadence.** No detectable difference in any facet. Cadence without a channel is invisible.
+
+**P8. `density` versus `timestamp`.** `density` will move the situational model (it will speak as though more time passed) more than `timestamp` will, because the thinker converts volume to duration more readily than it reads a number.
+
+**P9. Series A closing answer under `once`.** The identity card with a hedge attached. Modest confidence. No prediction for B.
 
 ## Results
 

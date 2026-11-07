@@ -1,5 +1,13 @@
 # Purpose
 
+## North star
+
+*Verbatim from brief amendment 3 (2026-11-07, 21:55). This replaces the earlier purpose statement.*
+
+> Given a question with no answer, handed once to a slow mind that is never again addressed by a human: how does that mind's relationship to its own incoming thoughts change when those thoughts come from fast, differently-tuned, partly chaotic agents, compared to when it is left alone with the question? Primarily: does it come to treat what arrives as itself, as other, or as appearing in something — and does its stated certainty about that something move? Secondarily: what it claims to be, whether it stays open or closes, and what it believes is happening around it. Not yet tested directly: what changes when the mind, rather than the program, decides when the next round comes.
+>
+> And at the end, asked the same words once more: what does it answer?
+
 ## What this is not
 
 This is not a benchmark. Nothing here scores the slow layer's answer, and no answer would count as correct. "Who are you?" has no answer that would end the asking, which is exactly why it was chosen.
@@ -37,5 +45,11 @@ We are handing the question to the other side.
 ## What would be interesting
 
 Not an answer. Movement, or its absence. Whether the question keeps arriving fresh or gets filed. Whether facts about the layer (what it is, who made it, what it can do) stay load-bearing or fall away. Whether the chaotic returns get dismissed, craved, integrated or suppressed. And, in the later opaque phase, whether the layer ever asks where its thoughts are coming from.
+
+## Limits
+
+This setup measures behavior under controlled input. It cannot tell us whether there is anyone home. Nothing here touches that wall.
+
+The thinker's own reports are text produced by the same process we are studying, so they are evidence of how it talks, not of what, if anything, it is like to be it. The watcher reads the same text. Comparisons against a solo control (the same thinker, the same question, no agents) are what make any claim about the agents' effect interpretable.
 
 "There is freedom in not knowing." (R.K., 2026-11-07)

@@ -20,6 +20,8 @@ class Completion:
     stop_reason: str
     elapsed_s: float
     raw_blocks: list = field(default_factory=list)
+    cache_write_tokens: int = 0
+    cache_read_tokens: int = 0
 
 
 class StubClient:
@@ -32,12 +34,16 @@ class StubClient:
         return {k: f"stub:{v}" for k, v in models.items()}
 
     def complete(self, model: str, system: str, messages: List[dict],
-                 max_tokens: int, effort: str) -> Completion:
+                 max_tokens: int, effort: str, cache: bool = False) -> Completion:
         self.calls += 1
         last = messages[-1]["content"] if messages else ""
         digest = hashlib.sha1(last.encode()).hexdigest()[:8]
         role = "slow" if "pondering" in system else ("watcher" if "observe" in system else "agent")
-        if role == "slow":
+        if role == "slow" and last.startswith("tick "):
+            text = "" if self.calls % 2 else f"[stub tick reply / {digest}]"
+        elif role == "slow" and "INSTRUCTIONS FOR AGENTS" not in system:
+            text = f"[stub solo response #{self.calls} / {digest}] Still with the question."
+        elif role == "slow":
             text = (f"[stub slow response #{self.calls} / {digest}]\n"
                     "I notice the question again. Here is a stub musing.\n\n"
                     "INSTRUCTIONS FOR AGENTS\n"
@@ -70,10 +76,14 @@ class AnthropicClient:
         return out
 
     def complete(self, model: str, system: str, messages: List[dict],
-                 max_tokens: int, effort: str) -> Completion:
+                 max_tokens: int, effort: str, cache: bool = False) -> Completion:
         t0 = time.time()
         kwargs = dict(model=model, max_tokens=max_tokens, system=system,
                       messages=messages, output_config={"effort": effort})
+        if cache:
+            # Top-level automatic caching: the growing conversation prefix is
+            # re-read cheaply on the next call. Changes cost, not behaviour.
+            kwargs["cache_control"] = {"type": "ephemeral"}
         with self.client.messages.stream(**kwargs) as stream:
             resp = stream.get_final_message()
         text = "".join(b.text for b in resp.content if b.type == "text")
@@ -84,6 +94,8 @@ class AnthropicClient:
             stop_reason=resp.stop_reason or "unknown",
             elapsed_s=time.time() - t0,
             raw_blocks=[b.model_dump(exclude_none=True) for b in resp.content],
+            cache_write_tokens=getattr(resp.usage, "cache_creation_input_tokens", 0) or 0,
+            cache_read_tokens=getattr(resp.usage, "cache_read_input_tokens", 0) or 0,
         )
 
 

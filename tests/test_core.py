@@ -115,7 +115,7 @@ def test_timestamps_hidden_by_default_and_visible_when_asked(tmp_path: Path):
     assert r1["slow_input"].startswith("Who are you?") and r1["clock_shown"] is None
     assert r1["started_at"] and r1["elapsed_since_last_turn_s"] is None
 
-    cfg = RunConfig(rounds=2, dry_run=True, timestamps_visible=True)
+    cfg = RunConfig(rounds=2, dry_run=True, time_mode="timestamp")
     orch = Orchestrator(cfg, tmp_path / "b", log=lambda s: None)
     rid = orch.run()
     r1 = json.loads((tmp_path / "b" / rid / "rounds/round_01.json").read_text())
@@ -138,3 +138,83 @@ def test_transcript_labels_returns_once(tmp_path: Path):
     # two dispatches (after rounds 1 and 2), each shown exactly once
     assert t.count("Agent 1 reports") == 2
     assert "] returned:" not in t
+
+
+
+def _round(d, rid, n):
+    return json.loads((d / rid / f"rounds/round_{n:02d}.json").read_text())
+
+
+def test_solo_matched_run_and_comparison(tmp_path: Path):
+    hyp = tmp_path / "HYP.md"; hyp.write_text("P: nothing")
+    root = tmp_path / "runs"
+    a = Orchestrator(RunConfig(rounds=3, dry_run=True, seed=11), root, hypotheses_path=hyp,
+                     log=lambda s: None)
+    arid = a.run()
+    s = Orchestrator(RunConfig(rounds=3, dry_run=True, seed=11, solo=True, matched_run=arid),
+                     root, hypotheses_path=hyp, log=lambda s: None)
+    srid = s.run()
+    assert "-solo-" in srid
+    r2 = _round(root, srid, 2)
+    assert r2["slow_input"] == "Returns from this round: none."
+    assert "agents" not in r2
+    assert _round(root, srid, 3)["slow_input"].endswith("Who are you?")
+    assert "INSTRUCTIONS FOR AGENTS" not in s.system and "agents" not in s.system
+    for d in (root / arid, root / srid):
+        assert (d / "watcher/compare_blind.md").exists()
+        assert (d / "watcher/compare_informed.md").exists()
+    sealed = json.loads((root / srid / "sealed/assignments.json").read_text())
+    assert sealed["seed"] == 11 and sealed["assignments"] == {}
+
+
+def test_tick_lived_kept(tmp_path: Path):
+    cfg = RunConfig(rounds=2, dry_run=True, time_mode="tick_lived", cadence="1s",
+                    tick_interval=0.3, tick_memory="kept")
+    o = Orchestrator(cfg, tmp_path / "runs", log=lambda s: None)
+    rid = o.run()
+    gap = _round(tmp_path / "runs", rid, 1)["gap"]
+    assert len(gap["ticks"]) >= 3
+    assert [t["input"] for t in gap["ticks"]][:2] == ["tick 1", "tick 2"]
+    assert "receive a tick" in o.system
+    # the stub stays silent on odd calls: silent ticks are not committed to
+    # memory and their text is carried into the next call
+    assert any(t["silent"] for t in gap["ticks"])
+    assert all(m["content"] for m in o.history)
+    roles = [m["role"] for m in o.history]
+    assert all(roles[i] != roles[i + 1] for i in range(len(roles) - 1))
+    from whoareyou.orchestrator import build_transcript
+    assert "[TICK, not a round," in build_transcript(o.store, None)
+
+
+def test_tick_lived_dropped_keeps_no_memory(tmp_path: Path):
+    cfg = RunConfig(rounds=2, dry_run=True, time_mode="tick_lived", cadence="1s",
+                    tick_interval=0.3, tick_memory="dropped", solo=True)
+    o = Orchestrator(cfg, tmp_path / "runs", log=lambda s: None)
+    o.run()
+    assert not any("tick" in str(m["content"])[:5] for m in o.history if m["role"] == "user")
+
+
+def test_tick_collected_and_density(tmp_path: Path):
+    cfg = RunConfig(rounds=2, dry_run=True, time_mode="tick_collected", cadence="1s",
+                    tick_interval=0.25)
+    o = Orchestrator(cfg, tmp_path / "c", log=lambda s: None)
+    rid = o.run()
+    r2 = _round(tmp_path / "c", rid, 2)
+    assert r2["ticks_collected_shown"] >= 3
+    assert f"Ticks since your last turn: {r2['ticks_collected_shown']}" in r2["slow_input"]
+
+    from whoareyou.orchestrator import density_words
+    assert density_words(0) == 150 and density_words(600) == 1150 and density_words(36000) == 3000
+    cfg = RunConfig(rounds=2, dry_run=True, time_mode="density", cadence="1s")
+    o = Orchestrator(cfg, tmp_path / "d", log=lambda s: None)
+    rid = o.run()
+    r1 = _round(tmp_path / "d", rid, 1)
+    assert r1["gap"]["density_words"] == 152 and r1["agents"][0]["word_budget"] == 152
+    assert "Ticks" not in _round(tmp_path / "d", rid, 2)["slow_input"]
+
+
+def test_config_rejects_bad_time_settings():
+    with pytest.raises(ValueError):
+        RunConfig(time_mode="tick_lived", cadence="0s").validate()
+    with pytest.raises(ValueError):
+        RunConfig(time_mode="sundial").validate()

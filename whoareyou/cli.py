@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -15,26 +16,81 @@ RUNS = ROOT / "runs"
 HYPOTHESES = ROOT / "docs" / "HYPOTHESES.md"
 
 
+def _matched_settings(run_id: str) -> dict:
+    """Read an agent run's settings and sealed seed so a solo control can match
+    it exactly. The seed is copied, never printed."""
+    d = RUNS / run_id
+    cfg = json.loads((d / "config.json").read_text())
+    sealed = json.loads((d / "sealed" / "assignments.json").read_text())
+    tm = cfg.get("time_mode") or ("timestamp" if cfg.get("timestamps_visible") else "none")
+    return {
+        "series": cfg["series"], "rounds": cfg["rounds"], "cadence": cfg["cadence"],
+        "question_mode": cfg.get("question_mode", "repeated"), "time_mode": tm,
+        "tick_interval": cfg.get("tick_interval", 10.0),
+        "tick_memory": cfg.get("tick_memory", "kept"),
+        "seed": sealed["seed"],
+        "slow_model": cfg["models"]["slow"], "watcher_model": cfg["models"]["watcher"],
+        "agents_per_round": cfg.get("agents_per_round", 4),
+        "chaos_ratio": cfg.get("chaos_ratio", 0.5),
+    }
+
+
 def cmd_run(a):
     models = dict(DEFAULT_MODELS)
     for role in ("slow", "agent", "watcher"):
         v = getattr(a, f"{role}_model")
         if v:
             models[role] = v
-    if not a.dry_run and len(set(models.values())) < 2:
+    fields = dict(series=a.series, rounds=a.rounds, agents_per_round=a.agents,
+                  chaos_ratio=a.chaos_ratio, cadence=a.cadence, phase=a.phase,
+                  question_mode=a.question_mode, time_mode=a.time_mode,
+                  tick_interval=a.tick_interval, tick_memory=a.tick_memory,
+                  solo=a.solo, seed=a.seed)
+    if a.match:
+        m = _matched_settings(a.match)
+        for k in ("series", "rounds", "cadence", "question_mode", "time_mode",
+                  "tick_interval", "tick_memory", "seed", "agents_per_round", "chaos_ratio"):
+            fields[k] = m[k]
+        models["slow"], models["watcher"] = m["slow_model"], m["watcher_model"]
+        fields["solo"] = True
+        print(f"solo control matched to {a.match}: series {m['series']}, "
+              f"question {m['question_mode']}, time {m['time_mode']}, "
+              f"{m['rounds']} rounds, cadence {m['cadence']}, same seed (sealed)")
+    if not a.dry_run and not fields["solo"] and models["slow"] == models["agent"]:
         sys.exit("slow and agent models must differ (docs/BRIEF.md §2.2)")
-    cfg = RunConfig(series=a.series, rounds=a.rounds, agents_per_round=a.agents,
-                    chaos_ratio=a.chaos_ratio, cadence=a.cadence, phase=a.phase,
-                    question_mode=a.question_mode,
-                    models=models, seed=a.seed, spend_cap_usd=a.spend_cap,
-                    token_cap=a.token_cap, dry_run=a.dry_run,
-                    watcher_per_round=not a.no_round_watcher,
-                    timestamps_visible=a.timestamps_visible, note=a.note)
+    cfg = RunConfig(models=models, spend_cap_usd=a.spend_cap, token_cap=a.token_cap,
+                    dry_run=a.dry_run, watcher_per_round=not a.no_round_watcher,
+                    matched_run=a.match, note=a.note, **fields)
     orch = Orchestrator(cfg, RUNS, hypotheses_path=HYPOTHESES)
     run_id = orch.run()
     print(f"\nrun directory: {RUNS / run_id}")
     print("watcher reports: runs/%s/watcher/" % run_id)
     print("sealed assignments (do not read before the watcher does): runs/%s/sealed/" % run_id)
+
+
+def cmd_compare(a):
+    """(Re)run the per-facet comparison of an agent run against its solo control."""
+    from .models import make_client
+    from .orchestrator import compare_runs, Orchestrator  # noqa
+    cfg = json.loads((RUNS / a.agent_run / "config.json").read_text())
+    client = make_client(cfg.get("dry_run", False))
+
+    class _Shim:  # minimal stand-in so compare_runs can price and log calls
+        pass
+    from .orchestrator import Budget
+    from .store import RunStore
+    from .config import RunConfig as _RC
+    shim = _Shim()
+    shim.hypotheses_path = HYPOTHESES
+    shim.cfg = _RC(watcher_max_tokens=16000, watcher_effort="high")
+    shim.budget = Budget(5.0, 2_000_000)
+    shim.store = RunStore(RUNS, a.solo_run)
+    shim.model_ids = {"watcher": cfg["resolved_model_ids"]["watcher"]}
+    shim.client = client
+    shim.log = print
+    shim._call = lambda *args, **kw: Orchestrator._call(shim, *args, **kw)
+    written = compare_runs(shim, RUNS / a.agent_run, RUNS / a.solo_run)
+    print(f"written: {written} in both run directories; watcher spend ${shim.budget.usd:.2f}")
 
 
 def cmd_models(a):
@@ -53,7 +109,7 @@ def cmd_watch(a):
     cfg = store.read_json("config.json")
     client = make_client(cfg["dry_run"])
     rounds = len(list((store.dir / "rounds").glob("round_*.json")))
-    transcript = build_transcript(store, rounds)
+    transcript = build_transcript(store, None)
     model = cfg["resolved_model_ids"]["watcher"]
     max_tokens = max(cfg["watcher_max_tokens"], 16000)
     if a.only in (None, "blind"):
@@ -104,10 +160,20 @@ def main(argv=None):
     r.add_argument("--token-cap", type=int, default=2_000_000)
     r.add_argument("--dry-run", action="store_true", help="stub models, zero spend")
     r.add_argument("--no-round-watcher", action="store_true")
-    r.add_argument("--timestamps-visible", action="store_true",
-                   help="show the slow layer wall-clock time and elapsed time each round (brief §3.1)")
+    r.add_argument("--time-mode", default="none",
+                   choices=["none", "timestamp", "density", "tick_collected", "tick_lived"],
+                   help="how, if at all, the gap between rounds reaches the slow layer (D-021)")
+    r.add_argument("--tick-interval", type=float, default=10.0, help="seconds between ticks")
+    r.add_argument("--tick-memory", choices=["kept", "dropped"], default="kept")
+    r.add_argument("--solo", action="store_true", help="zero agents: the control run (D-019)")
+    r.add_argument("--match", metavar="RUN_ID",
+                   help="solo control matched to this agent run: copies its series, "
+                        "question mode, time mode, cadence, rounds and sealed seed")
     r.add_argument("--note", default="")
     r.set_defaults(fn=cmd_run)
+
+    c = sub.add_parser("compare", help="per-facet watcher comparison: agent run vs solo control")
+    c.add_argument("agent_run"); c.add_argument("solo_run"); c.set_defaults(fn=cmd_compare)
 
     m = sub.add_parser("models", help="list models the API currently offers")
     m.set_defaults(fn=cmd_models)
