@@ -32,3 +32,5 @@ Across rounds, for the slow layer:
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, clock hidden, cadence 0s).** P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
+
+**Run 20261107-201949-B-transparent (Series B, clock hidden, cadence 0s, settings identical to the A run).** P2 did not hold as a plateau: the layer gave a new governing image every round over a stable core, revised itself three times and conceded the skeptic's mechanism in round 5. It never stated the identity card. A vs B under the same architecture: A collapsed to the card, B never touched it; the wording did nearly all the work. Caveat: B's first two rounds had truncated and empty agent returns (DECISIONS D-017), so the pair is not clean. See docs/runs/20261107-201949-B-transparent.md.

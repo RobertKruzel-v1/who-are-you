@@ -51,3 +51,6 @@ The first transcript format listed each dispatch's returns after the thinker's r
 
 ## D-016 · 2026-11-07 · Observed, not changed: all agents get the same mandate
 In Series A the slow layer addressed tasks to "one agent" each; all four agents received the full instructions and most did all tasks. This is per brief §2.2 (both kinds "receive the same input"). Left as is; it is part of what the layer has to discover about its agents.
+
+## D-017 · 2026-11-07 · Series B's first two rounds were degraded; the A/B pair is not clean
+Series B started before D-014's cap increase. All four round-1 agents hit the 2,000-token cap and two returned no text; two round-2 agents were cut off. The slow layer noticed and shortened its briefs, so rounds 3 to 5 arrived whole. Series A had one truncation. Both runs are kept and written up as they happened, but a clean comparison needs both series rerun under the raised caps with everything else identical. Proposed, not yet run.
