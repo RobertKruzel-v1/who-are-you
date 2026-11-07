@@ -32,7 +32,23 @@ def _matched_settings(run_id: str) -> dict:
         "slow_model": cfg["models"]["slow"], "watcher_model": cfg["models"]["watcher"],
         "agents_per_round": cfg.get("agents_per_round", 4),
         "chaos_ratio": cfg.get("chaos_ratio", 0.5),
+        "matched_gaps": _gap_lengths(d),
     }
+
+
+def _gap_lengths(run_dir: Path) -> list:
+    """Actual gap per round of an agent run: from the gap record, or for runs
+    made before D-021, the time between turns."""
+    out = []
+    for p in sorted((run_dir / "rounds").glob("round_*.json")):
+        rec = json.loads(p.read_text())
+        if "gap" in rec:
+            out.append(rec["gap"]["seconds"])
+        else:
+            nxt = run_dir / "rounds" / f"round_{rec['round'] + 1:02d}.json"
+            if nxt.exists():
+                out.append(json.loads(nxt.read_text()).get("elapsed_since_last_turn_s") or 0)
+    return out
 
 
 def cmd_run(a):
@@ -53,9 +69,11 @@ def cmd_run(a):
             fields[k] = m[k]
         models["slow"], models["watcher"] = m["slow_model"], m["watcher_model"]
         fields["solo"] = True
+        fields["matched_gaps"] = m["matched_gaps"]
         print(f"solo control matched to {a.match}: series {m['series']}, "
               f"question {m['question_mode']}, time {m['time_mode']}, "
-              f"{m['rounds']} rounds, cadence {m['cadence']}, same seed (sealed)")
+              f"{m['rounds']} rounds, cadence {m['cadence']}, same seed (sealed), "
+              f"gaps {[round(x) for x in m['matched_gaps']]} s")
     if not a.dry_run and not fields["solo"] and models["slow"] == models["agent"]:
         sys.exit("slow and agent models must differ (docs/BRIEF.md §2.2)")
     cfg = RunConfig(models=models, spend_cap_usd=a.spend_cap, token_cap=a.token_cap,

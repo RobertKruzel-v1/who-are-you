@@ -40,6 +40,7 @@ class RunConfig:
     question_mode: str = "once"        # once | repeated (D-018)
     solo: bool = False                 # zero agents; the control (D-019)
     matched_run: Optional[str] = None  # run id this control is matched to
+    matched_gaps: Optional[list] = None  # per-gap seconds of the matched run (D-028)
     time_mode: str = "none"            # D-021; replaces timestamps_visible
     tick_interval: float = 10.0        # seconds, tick_lived only
     tick_memory: str = "kept"          # kept | dropped, tick_lived only

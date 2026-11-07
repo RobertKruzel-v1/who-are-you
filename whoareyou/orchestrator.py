@@ -280,7 +280,12 @@ class Orchestrator:
         cfg = self.cfg
         t0 = time.time()
         started = datetime.now().astimezone().isoformat(timespec="seconds")
+        # A matched solo control lasts as long as the agent run's gap did (D-028).
+        target = cfg.cadence_seconds
+        if cfg.matched_gaps and round_no - 1 < len(cfg.matched_gaps):
+            target = max(target, float(cfg.matched_gaps[round_no - 1] or 0))
         g = {"started_at": started, "time_mode": cfg.time_mode, "ticks": [],
+             "target_seconds": round(target, 1),
              "ticks_collected": None,
              "density_words": density_words(cfg.cadence_seconds) if cfg.time_mode == "density" else None}
         agents: List[dict] = []
@@ -291,13 +296,13 @@ class Orchestrator:
             k = 1
             try:
                 while True:
-                    cadence_done = time.time() - t0 >= cfg.cadence_seconds
+                    cadence_done = time.time() - t0 >= target
                     agents_done = fut is None or fut.done()
                     if cadence_done and agents_done:
                         break
                     due = t0 + k * cfg.tick_interval
                     while time.time() < due:
-                        if fut is not None and fut.done() and time.time() - t0 >= cfg.cadence_seconds:
+                        if fut is not None and fut.done() and time.time() - t0 >= target:
                             break
                         time.sleep(0.2)
                     if time.time() < due:
@@ -311,7 +316,7 @@ class Orchestrator:
         else:
             if not cfg.solo:
                 agents = self.dispatch(round_no, mandate)
-            remaining = cfg.cadence_seconds - (time.time() - t0)
+            remaining = target - (time.time() - t0)
             if remaining > 0:
                 self.store.event("cadence_sleep", seconds=round(remaining, 1))
                 self.log(f"  waiting {remaining:.0f}s ...")

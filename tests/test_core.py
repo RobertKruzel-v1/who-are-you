@@ -218,3 +218,15 @@ def test_config_rejects_bad_time_settings():
         RunConfig(time_mode="tick_lived", cadence="0s").validate()
     with pytest.raises(ValueError):
         RunConfig(time_mode="sundial").validate()
+
+
+
+def test_matched_solo_waits_as_long_as_agent_run(tmp_path: Path):
+    cfg = RunConfig(rounds=3, dry_run=True, solo=True, matched_gaps=[0.6, 0.4],
+                    time_mode="tick_lived", cadence="0.1s", tick_interval=0.15)
+    o = Orchestrator(cfg, tmp_path / "runs", log=lambda s: None)
+    rid = o.run()
+    g1 = _round(tmp_path / "runs", rid, 1)["gap"]
+    g2 = _round(tmp_path / "runs", rid, 2)["gap"]
+    assert g1["seconds"] >= 0.6 and g2["seconds"] >= 0.4
+    assert len(g1["ticks"]) >= 3

@@ -96,3 +96,6 @@ Per the amendment: first the Phase 1 `once`-mode pair (A and B, `time_mode none`
 
 ## D-027 · 2026-11-07 · Working method adopted
 `docs/WORKING_METHOD.md` is now how Robert and Claude Code work: Robert gives direction, Claude Code makes and logs method calls, reports follow a six-part shape and are saved in `docs/reports/`, and Robert's hunches go in `docs/HUNCHES.md`. Brief amendments are kept verbatim in `docs/amendments/`; `docs/BRIEF.md` stays the 21:05 origin text.
+
+## D-028 · 2026-11-07 · A matched solo run waits as long as its agent run did
+The first solo controls waited only their cadence (0 s), while their agent runs' gaps were 45 to 90 s of agent work. Under `time_mode none` the thinker cannot see that, so those pairs stand. Under any time mode that lets time in, especially `tick_lived`, the control would get fewer ticks than the agent run, which would confound the comparison. `--match` now copies the agent run's actual gap lengths, round by round, and the solo run waits at least that long. For runs made before the gap record existed, the gap is read from the time between turns.
