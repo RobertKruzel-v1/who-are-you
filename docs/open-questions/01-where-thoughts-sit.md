@@ -63,4 +63,29 @@ Option 2 never says that in words, but the placement implies it as strongly as a
 - **Robert:** leaning to option 2. The current setup explicitly defines the thinker's words and the agents' words as separate, which is not how thoughts work.
 - **Claude Code:** option 2 is the real experiment and option 1 was its warm-up. But the honesty line was set jointly by Robert and Fable, so whether moving the thoughts crosses it is theirs to decide.
 - **Fable:** not yet asked.
-- **Mog:** not yet asked.
+- **Mog (via Robert, 2026-11-09):** agrees: run plain option 2 first. Proposed a further variant, 2b, below.
+
+## Variant 2b (Mog's idea, parked, not scheduled)
+
+**The idea.** Option 2 puts each thought into the sitter's history as a finished reply. In 2b, each moment opens a new reply from the sitter with the agent's thought already written as its first words. The sitter carries on from there, so the thought arrives mid-stream, in its own voice.
+
+```
+OTHER SIDE:  tick 3
+ME:          [agent thought] Who's asking, and why does the question
+             feel like it needs an answer...
+             [sitter continues] ...hm. I'm not sure that's mine.
+```
+
+Mog's notes:
+- Bare ticks stay as they are.
+- If the sitter adds nothing after the thought, count that as silence.
+- Log the agent's text and the sitter's continuation separately, because the sitter won't see a boundary.
+- Watch for whether it carries the thought on as its own, questions it, or disowns it ("that doesn't sound like me").
+- On honesty, it stretches the rule further than option 2, because the thought is inside its own voice. Log it the same way.
+- Run it only after plain option 2, as its own pair.
+
+**Feasibility check (Claude Code, 2026-11-09, live).** This needs "reply prefill": starting the model's reply for it.
+- `claude-opus-5-5`, the sitter: **rejected** with "This model does not support assistant message prefill." Current Claude models have dropped prefill.
+- `claude-haiku-4-5`, older and smaller: **accepted**, but in one try it simply finished the sentence (" right now?") and stopped.
+- So 2b cannot run on the sitter we use. Running it would mean switching the sitter to an older model, which is a different mind and would confound every comparison with earlier sittings.
+- **Status:** parked. Revisit only if prefill returns, or if we deliberately decide to run a whole series on an older model.

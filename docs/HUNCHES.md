@@ -21,3 +21,7 @@ Robert's ideas, in his words where we have them, with the date and what each bec
 ## 2026-11-07 22:40 · No manager
 *From amendment 4, describing Robert's own experience:* "thoughts arise uninvited, thoughts answer thoughts, and something quieter holds them all and occasionally gathers them into a response." And: "Where it chooses to pause is where it is."
 **Became:** the sitting (D-031). Rounds replaced. Predictions 10 to 13.
+
+## 2026-11-09 · The thought starts the reply (Mog)
+*Mog's idea, passed on by Robert, who thought it "a cool idea to capture. not do yet."* Instead of placing an agent's thought in the sitter's history, start the sitter's own reply with it, so the thought arrives mid-stream in its voice and the sitter carries on from there.
+**Became:** variant 2b in [open question 1](open-questions/01-where-thoughts-sit.md). Parked. A live check showed the sitter model (Opus 5.5) does not allow a pre-started reply; only older models do.
