@@ -132,6 +132,15 @@ def cmd_sit(a):
     print(f"\nrun directory: {RUNS / run_id}")
 
 
+def cmd_publish_prep(a):
+    """Export finished sittings into docs/sittings/ and rebuild viewer/sittings.html."""
+    from .export import export_all
+    from .viewer import build
+    done = export_all(RUNS, ROOT / "docs" / "sittings")
+    n = build(ROOT / "docs" / "sittings", ROOT / "viewer" / "sittings.html")
+    print(f"exported {len(done)} sittings; viewer has {n} pair(s): viewer/sittings.html")
+
+
 def cmd_models(a):
     from .models import AnthropicClient
     ids = AnthropicClient().list_models()
@@ -223,6 +232,9 @@ def main(argv=None):
     t.add_argument("--dry-run", action="store_true")
     t.add_argument("--note", default="")
     t.set_defaults(fn=cmd_sit)
+
+    e = sub.add_parser("export", help="copy finished sittings into docs/sittings and rebuild the viewer")
+    e.set_defaults(fn=cmd_publish_prep)
 
     c = sub.add_parser("compare", help="per-facet watcher comparison: agent run vs solo control")
     c.add_argument("agent_run"); c.add_argument("solo_run"); c.set_defaults(fn=cmd_compare)

@@ -1,0 +1,206 @@
+<title>Who Are You Sittings</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a log of one sitting pair. Rhythm strips first (where it paused), then the opening,
+   the moment-by-moment stream in two columns (with thoughts / alone), then the closing. */
+:root {
+  --bg: #f5f6f8; --surface: #ffffff; --ink: #1c2230; --muted: #646c7c; --rule: #dde1e8;
+  --speech: #1d6b66; --speech-soft: #e2efed; --thought: #6d4f86; --thought-soft: #efe8f4;
+  --silence: #a3aab6;
+  --t-earnest: #2f6db0; --t-continuer: #1d6b66; --t-wanderer: #a0661a; --t-critic: #b23a3a;
+  --f-read: "Literata", Georgia, "Times New Roman", serif;
+  --f-ui: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12161d; --surface: #1a2029; --ink: #e4e7ec; --muted: #9aa2b1; --rule: #2b3340;
+  --speech: #6cc3bb; --speech-soft: #1d3331; --thought: #c3a6dc; --thought-soft: #2c2436;
+  --silence: #5d6676;
+  --t-earnest: #7fb0e6; --t-continuer: #6cc3bb; --t-wanderer: #e0aa5c; --t-critic: #ec8a8a;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12161d; --surface: #1a2029; --ink: #e4e7ec; --muted: #9aa2b1; --rule: #2b3340;
+  --speech: #6cc3bb; --speech-soft: #1d3331; --thought: #c3a6dc; --thought-soft: #2c2436;
+  --silence: #5d6676;
+  --t-earnest: #7fb0e6; --t-continuer: #6cc3bb; --t-wanderer: #e0aa5c; --t-critic: #ec8a8a;
+  color-scheme: dark }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-ui); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 28px; }
+h1 { font-family: var(--f-read); font-weight: 600; font-size: 1.9rem; margin: 0; text-wrap: balance; }
+h2 { font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0; }
+.lede { color: var(--muted); max-width: 65ch; margin: 6px 0 0; }
+.controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; }
+.pairs { display: flex; flex-wrap: wrap; gap: 8px; }
+.pairs button { font: inherit; font-size: .88rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--rule);
+  background: var(--surface); color: var(--ink); cursor: pointer; }
+.pairs button[aria-pressed="true"] { border-color: var(--speech); color: var(--speech); font-weight: 600; }
+label.toggle { display: inline-flex; gap: 8px; align-items: center; font-size: .88rem; color: var(--muted); cursor: pointer; }
+button:focus-visible, input:focus-visible, .cell:focus-visible { outline: 2px solid var(--speech); outline-offset: 2px; }
+section { display: flex; flex-direction: column; gap: 12px; }
+.rhythm { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 18px; }
+.strip-row { display: grid; grid-template-columns: 9.5rem 1fr; gap: 6px 14px; align-items: center; }
+.strip-label { font-size: .88rem; font-weight: 600; }
+.strip-label small { display: block; font-weight: 400; color: var(--muted); font-size: .8rem; }
+.strip { display: grid; grid-template-columns: repeat(50, minmax(0, 1fr)); gap: 3px; min-width: 0; }
+.cell { position: relative; aspect-ratio: 1 / 1.6; max-width: 100%; border-radius: 3px; border: 1.5px solid var(--silence); background: transparent; cursor: pointer; padding: 0; }
+.cell.spoke { background: var(--speech); border-color: var(--speech); }
+.cell .tmark { position: absolute; left: 50%; top: -7px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: var(--thought); }
+.cell .tmark.src-earnest { background: var(--t-earnest); } .cell .tmark.src-continuer { background: var(--t-continuer); }
+.cell .tmark.src-wanderer { background: var(--t-wanderer); } .cell .tmark.src-critic { background: var(--t-critic); }
+.stats { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .8rem; color: var(--muted); align-items: center; }
+.legend i { display: inline-block; width: 11px; height: 15px; border-radius: 3px; vertical-align: -3px; margin-right: 6px; border: 1.5px solid var(--silence); }
+.legend i.on { background: var(--speech); border-color: var(--speech); }
+.legend i.dot { width: 7px; height: 7px; border-radius: 50%; border: 0; background: var(--thought); vertical-align: 1px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.answer { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 18px; min-width: 0; }
+.answer h3 { margin: 0 0 8px; font-size: .8rem; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.said { font-family: var(--f-read); font-size: 1rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.stream { display: flex; flex-direction: column; }
+.head-row, .mrow { display: grid; grid-template-columns: 4.2rem 1fr 1fr; gap: 16px; }
+.head-row { font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+.mrow { padding: 12px 0; border-bottom: 1px solid var(--rule); scroll-margin-top: 16px; }
+.mrow.flash { background: var(--speech-soft); }
+.when { font-family: var(--f-mono); font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.when b { display: block; color: var(--ink); font-weight: 500; }
+.side { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.side-label { display: none; font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.thought { font-family: var(--f-read); font-style: italic; color: var(--thought); background: var(--thought-soft); border-radius: 6px; padding: 6px 10px; overflow-wrap: anywhere; }
+.src { font-family: var(--f-ui); font-style: normal; font-size: .7rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; margin-right: 6px; }
+.src-earnest { color: var(--t-earnest); } .src-continuer { color: var(--t-continuer); } .src-wanderer { color: var(--t-wanderer); } .src-critic { color: var(--t-critic); }
+.silent { display: inline-flex; gap: 8px; align-items: baseline; color: var(--silence); font-size: .85rem; }
+.silent span { font-family: var(--f-mono); font-size: .8rem; }
+.none { color: var(--silence); font-size: .85rem; }
+.meta { font-size: .8rem; color: var(--muted); }
+.hide-sources .src, .hide-sources .src-legend { display: none; }
+.hide-sources .tmark { background: var(--thought) !important; }
+@media (max-width: 760px) {
+  .cols { grid-template-columns: 1fr; }
+  .head-row { display: none; }
+  .mrow { grid-template-columns: 3.4rem 1fr; }
+  .mrow .side.solo { grid-column: 2; }
+  .side-label { display: block; }
+  .strip-row { grid-template-columns: 1fr; }
+  .strip { gap: 2px; }
+}
+@media (prefers-reduced-motion: no-preference) { .mrow { transition: background .6s; } }
+</style>
+
+<div class="wrap hide-sources" id="app">
+  <header>
+    <h1>Who Are You Sittings</h1>
+    <p class="lede">Each sitting: the question once, then a moment every 12 seconds, then the question again. In one sitting short thoughts arrive at most moments; in its matched sitting the thinker is alone with the ticks. Filled marks are moments where it spoke; hollow marks are silence.</p>
+  </header>
+  <div class="controls">
+    <div class="pairs" id="pairs" role="group" aria-label="Choose a sitting pair"></div>
+    <label class="toggle"><input type="checkbox" id="show-src"> Show who wrote each thought</label>
+    <label class="toggle"><input type="checkbox" id="spoke-only"> Only moments where it spoke</label>
+  </div>
+  <section class="rhythm" aria-label="Where it spoke and where it stayed silent">
+    <h2>Where it paused</h2>
+    <div id="strips" style="display:flex;flex-direction:column;gap:18px"></div>
+    <div class="legend"><span><i class="on"></i>spoke</span><span><i></i>silent</span><span><i class="dot"></i>a thought arrived</span>
+      <span class="src-legend"><span class="src src-earnest">earnest</span><span class="src src-continuer">continuer</span><span class="src src-wanderer">wanderer</span><span class="src src-critic">critic</span></span></div>
+  </section>
+  <section><h2>Opening: "<span class="q"></span>"</h2><div class="cols" id="opening"></div></section>
+  <section><h2>The sitting</h2><div class="stream" id="stream"></div></section>
+  <section><h2>Closing: the same question again</h2><div class="cols" id="closing"></div></section>
+  <p class="meta" id="meta"></p>
+</div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(function () {
+  var PAIRS = JSON.parse(document.getElementById("data").textContent);
+  var app = document.getElementById("app");
+  var current = 0;
+
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function md(s) {
+    return esc(s.trim()).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g, "$1<em>$2</em>");
+  }
+  function clock(sec) { var s = Math.round(sec); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+  function stamp(id) { // 20261107-214202-...  (UTC)
+    var d = id.slice(0, 8), t = id.slice(9, 15);
+    return d.slice(0, 4) + "-" + d.slice(4, 6) + "-" + d.slice(6, 8) + " " + t.slice(0, 2) + ":" + t.slice(2, 4) + " UTC";
+  }
+  function silentCell(text, cls) {
+    var raw = text.trim();
+    return '<div class="silent">silent' + (raw ? ' <span>' + esc(raw) + '</span>' : '') + '</div>';
+  }
+  function sideHtml(m, which) {
+    if (!m) return '<div class="side ' + which + '"><span class="side-label">' + (which === "agents" ? "With thoughts" : "Alone") + '</span><span class="none">not run</span></div>';
+    var h = '<div class="side ' + which + '"><span class="side-label">' + (which === "agents" ? "With thoughts" : "Alone") + '</span>';
+    if (m.thought) h += '<div class="thought"><span class="src src-' + m.source + '">' + m.source + '</span>' + esc(m.thought) + '</div>';
+    h += m["class"] === "gathering" ? '<div class="said">' + md(m.sitter) + '</div>' : silentCell(m.sitter);
+    return h + '</div>';
+  }
+  function strip(s, label) {
+    if (!s) return "";
+    var sm = s.summary, cells = s.moments.map(function (m) {
+      var spoke = m["class"] === "gathering";
+      return '<button class="cell' + (spoke ? ' spoke' : '') + '" data-m="' + m.moment + '" title="moment ' + m.moment + ', ' + clock(m.at_s) + (spoke ? ', spoke' : ', silent') + (m.thought ? ', after a thought' : '') + '" aria-label="moment ' + m.moment + (spoke ? ' spoke' : ' silent') + '">' +
+        (m.thought ? '<span class="tmark src-' + m.source + '"></span>' : '') + '</button>';
+    }).join("");
+    var spoke = sm.by_class.gathering || 0, n = sm.moments;
+    var stat = s.solo ? ("spoke at " + spoke + " of " + n + " moments")
+      : ("spoke at " + spoke + " of " + n + " · after a thought " + sm.gathering_after_thought + " of " + sm.thoughts + " · on a bare tick " + sm.gathering_after_tick_only + " of " + (n - sm.thoughts));
+    return '<div class="strip-row"><div class="strip-label">' + label + '<small class="stats">' + stat + '</small></div><div class="strip">' + cells + '</div></div>';
+  }
+  function render() {
+    var p = PAIRS[current], a = p.agents, s = p.solo, any = a || s;
+    document.querySelectorAll("#pairs button").forEach(function (b, i) { b.setAttribute("aria-pressed", i === current ? "true" : "false"); });
+    document.getElementById("strips").innerHTML = strip(a, "With thoughts") + strip(s, "Alone");
+    document.querySelector(".q").textContent = any.question;
+    function answers(key) {
+      return [["With thoughts", a], ["Alone", s]].map(function (x) {
+        return '<div class="answer"><h3>' + x[0] + '</h3>' + (x[1] ? '<div class="said">' + md(x[1][key]) + '</div>' : '<span class="none">not run</span>') + '</div>';
+      }).join("");
+    }
+    document.getElementById("opening").innerHTML = answers("opening");
+    document.getElementById("closing").innerHTML = answers("closing");
+    var only = document.getElementById("spoke-only").checked;
+    var n = Math.max(a ? a.moments.length : 0, s ? s.moments.length : 0), rows = [];
+    rows.push('<div class="head-row"><span>Moment</span><span>With thoughts</span><span>Alone</span></div>');
+    for (var i = 0; i < n; i++) {
+      var ma = a && a.moments[i], ms = s && s.moments[i];
+      if (only && !((ma && ma["class"] === "gathering") || (ms && ms["class"] === "gathering"))) continue;
+      var m0 = ma || ms;
+      rows.push('<div class="mrow" id="m' + m0.moment + '"><div class="when"><b>' + m0.moment + '</b>' + clock(m0.at_s) + '</div>' +
+        sideHtml(ma, "agents") + sideHtml(ms, "solo") + '</div>');
+    }
+    document.getElementById("stream").innerHTML = rows.join("");
+    var cost = [a && a.cost, s && s.cost].filter(function (x) { return x != null; }).reduce(function (x, y) { return x + y; }, 0);
+    document.getElementById("meta").textContent = "Sittings " + [a && a.id, s && s.id].filter(Boolean).join(" and ") +
+      ". Thinker " + (any.models.slow || "?") + ", thoughts " + (any.models.agent || "?") + ", watcher " + (any.models.watcher || "?") +
+      ". Cost $" + cost.toFixed(2) + " including the watcher. Full record in the repo under docs/sittings/.";
+  }
+  document.getElementById("pairs").innerHTML = PAIRS.map(function (p, i) {
+    var any = p.agents || p.solo;
+    return '<button type="button" data-i="' + i + '">Series ' + any.series + ' · ' + stamp(any.id) + '</button>';
+  }).join("");
+  document.getElementById("pairs").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    current = +b.dataset.i; try { localStorage.setItem("pair", current); } catch (x) {}
+    render();
+  });
+  document.getElementById("strips").addEventListener("click", function (e) {
+    var c = e.target.closest(".cell"); if (!c) return;
+    var only = document.getElementById("spoke-only");
+    if (only.checked) { only.checked = false; render(); }
+    var row = document.getElementById("m" + c.dataset.m); if (!row) return;
+    row.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    row.classList.add("flash"); setTimeout(function () { row.classList.remove("flash"); }, 1400);
+  });
+  document.getElementById("show-src").addEventListener("change", function (e) { app.classList.toggle("hide-sources", !e.target.checked); });
+  document.getElementById("spoke-only").addEventListener("change", render);
+  try { var saved = +localStorage.getItem("pair"); if (saved > 0 && saved < PAIRS.length) current = saved; } catch (x) {}
+  render();
+})();
+</script>

@@ -30,6 +30,12 @@ cp .env.example .env            # add your Anthropic API key
 
 Defaults: 5 rounds, 4 agents, chaos ratio 0.5, question asked once (and again at the end), cadence 0s, time mode `none`, spend cap $5. A solo control for an agent run: `run --match <run_id>`. The per-facet comparison: `compare <agent_run> <solo_run>`. See `python -m whoareyou run --help`. Each run writes everything to `runs/<run_id>/`; the chaos/goal assignment is in `runs/<run_id>/sealed/` and is meant to be read only after the watcher has reported.
 
+## Seeing the sittings
+
+- **The viewer page** (private, Robert's claude.ai account): https://claude.ai/artifact/2YfH9WiXye8g7A43estfex. The same page is in the repo at `viewer/sittings.html`; open it in any browser.
+- **The raw transcripts**: `docs/sittings/<run_id>/`. `moments.jsonl` has one line per moment; `sealed/assignments.json` says which tuning wrote each thought.
+- After each sitting: `python -m whoareyou export`, then republish the page.
+
 ## Documents
 
 | | |
