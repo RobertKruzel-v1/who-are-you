@@ -77,6 +77,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
 .silent { display: inline-flex; gap: 8px; align-items: baseline; color: var(--silence); font-size: .85rem; }
 .silent span { font-family: var(--f-mono); font-size: .8rem; }
 .none { color: var(--silence); font-size: .85rem; }
+.place { font-family: var(--f-ui); font-style: normal; font-size: .72rem; color: var(--muted); }
 .meta { font-size: .8rem; color: var(--muted); }
 .hide-sources .src, .hide-sources .src-legend { display: none; }
 .hide-sources .tmark { background: var(--thought) !important; }
@@ -95,7 +96,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
 <div class="wrap hide-sources" id="app">
   <header>
     <h1>Who Are You Sittings</h1>
-    <p class="lede">Each sitting: the question once, then a moment every 12 seconds, then the question again. In one sitting short thoughts arrive at most moments; in its matched sitting the thinker is alone with the ticks. Filled marks are moments where it spoke; hollow marks are silence.</p>
+    <p class="lede">Each sitting: the question once, then a moment every 12 seconds, then the question again. In one sitting short thoughts arrive at most moments; in its matched sitting the thinker is alone with the ticks. Filled marks are moments where it spoke; hollow marks are silence. "From outside": thoughts arrived as messages. "Own voice": thoughts were placed as its own words. "+ sentence": it was told "Thoughts will appear here. Nothing will tell you where they come from."</p>
   </header>
   <div class="controls">
     <div class="pairs" id="pairs" role="group" aria-label="Choose a sitting pair"></div>
@@ -137,7 +138,8 @@ section { display: flex; flex-direction: column; gap: 12px; }
   function sideHtml(m, which) {
     if (!m) return '<div class="side ' + which + '"><span class="side-label">' + (which === "agents" ? "With thoughts" : "Alone") + '</span><span class="none">not run</span></div>';
     var h = '<div class="side ' + which + '"><span class="side-label">' + (which === "agents" ? "With thoughts" : "Alone") + '</span>';
-    if (m.thought) h += '<div class="thought"><span class="src src-' + m.source + '">' + m.source + '</span>' + esc(m.thought) + '</div>';
+    if (m.thought) h += '<div class="thought"><span class="src src-' + m.source + '">' + m.source + '</span>' +
+      (m.placement === "own" ? '<span class="place">placed in its own voice · </span>' : '') + esc(m.thought) + '</div>';
     h += m["class"] === "gathering" ? '<div class="said">' + md(m.sitter) + '</div>' : silentCell(m.sitter);
     return h + '</div>';
   }
@@ -183,7 +185,8 @@ section { display: flex; flex-direction: column; gap: 12px; }
   }
   document.getElementById("pairs").innerHTML = PAIRS.map(function (p, i) {
     var any = p.agents || p.solo;
-    return '<button type="button" data-i="' + i + '">Series ' + any.series + ' · ' + stamp(any.id) + '</button>';
+    var cond = any.placement === "own" ? (any.sentence ? "own voice + sentence" : "own voice") : "from outside";
+    return '<button type="button" data-i="' + i + '">Series ' + any.series + ' · ' + cond + ' · ' + stamp(any.id) + '</button>';
   }).join("");
   document.getElementById("pairs").addEventListener("click", function (e) {
     var b = e.target.closest("button"); if (!b) return;

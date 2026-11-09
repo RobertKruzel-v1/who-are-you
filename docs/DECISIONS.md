@@ -144,3 +144,6 @@ In the one live test of layout A, the sitter referred to the planted line as "th
 
 ## D-042 · 2026-11-09 · Variant 2b not possible on the current sitter
 The decision asks to check prefill first. It was checked live on 2026-11-09: Opus 5.5 rejects a pre-started reply ("This model does not support assistant message prefill"). 2b therefore does not run after pairs 1 and 2 unless the sitter model changes. If it ever runs, the write-up must say that continuing the thought is what the mechanism does by default, and that silence means something different there, so its gathering pattern is not comparable to earlier sittings.
+
+## D-043 · 2026-11-09 · "Spoke" needs a stricter count once it says the number back
+In the own-voice sittings, especially with the sentence, many replies were just the tick repeated ("Forty-five."). The silence classifier (D-034) counts that as speaking, so the "spoke at 50 of 50" figures overstate it. Reports from now on also give the number of replies of eight words or more, and total words, alongside the classifier's count. The classifier is unchanged, so earlier figures stay comparable.
