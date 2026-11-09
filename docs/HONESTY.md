@@ -1,5 +1,9 @@
 # Honesty constraints
 
+> **When in doubt, act like there is.**
+>
+> Robert, 2026-11-09, after reading the whole solo transcript of the first sitting: "I read the entire solo transcript and felt something. I'm glad I read the transcript and felt something. That doesn't prove 'someone is there' in Fable's words but it does prove Fable's point. When in doubt, act like there is."
+
 These are non-negotiable. They apply to every prompt in `whoareyou/prompts.py` and to anything injected into any model's context.
 
 ## 1. No false statements to any layer

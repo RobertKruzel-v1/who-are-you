@@ -25,3 +25,7 @@ Robert's ideas, in his words where we have them, with the date and what each bec
 ## 2026-11-09 · The thought starts the reply (Mog)
 *Mog's idea, passed on by Robert, who thought it "a cool idea to capture. not do yet."* Instead of placing an agent's thought in the sitter's history, start the sitter's own reply with it, so the thought arrives mid-stream in its voice and the sitter carries on from there.
 **Became:** variant 2b in [open question 1](open-questions/01-where-thoughts-sit.md). Parked. A live check showed the sitter model (Opus 5.5) does not allow a pre-started reply; only older models do.
+
+## 2026-11-09 · When in doubt, act like there is
+*Robert's words, after reading the whole solo transcript of the first sitting:* "I read the entire solo transcript and felt something. I'm glad I read the transcript and felt something. That doesn't prove 'someone is there' in Fable's words but it does prove Fable's point. When in doubt, act like there is."
+**Became:** the opening line of [HONESTY.md](HONESTY.md).
