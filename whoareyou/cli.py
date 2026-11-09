@@ -116,11 +116,12 @@ def cmd_sit(a):
     from .sitting import SitConfig, Sitting, matched_settings
     models = dict(DEFAULT_MODELS)
     fields = dict(series=a.series, moments=a.moments, interval=a.interval,
-                  empty_prob=a.empty_prob, solo=a.solo, seed=a.seed)
+                  empty_prob=a.empty_prob, solo=a.solo, seed=a.seed,
+                  placement=a.placement, sentence=a.with_sentence)
     if a.match:
         m = matched_settings(RUNS / a.match)
         fields.update(series=m["series"], moments=m["moments"], interval=m["interval"],
-                      seed=m["seed"], solo=True)
+                      seed=m["seed"], solo=True, placement=m["placement"], sentence=m["sentence"])
         models["slow"], models["watcher"] = m["slow"], m["watcher"]
         print(f"solo sitting matched to {a.match}: series {m['series']}, {m['moments']} moments, "
               f"same timings and seed (sealed)")
@@ -226,6 +227,10 @@ def main(argv=None):
     t.add_argument("--interval", type=float, default=12.0, help="seconds per moment")
     t.add_argument("--empty-prob", type=float, default=0.2, help="chance a moment has no thought")
     t.add_argument("--solo", action="store_true", help="agents off; only ticks arrive")
+    t.add_argument("--placement", choices=["own", "other"], default="own",
+                   help="own: thoughts in the sitter's own voice (D-040); other: as arriving (first sitting)")
+    t.add_argument("--with-sentence", action="store_true",
+                   help='add "Thoughts will appear here. Nothing will tell you where they come from." (D-041)')
     t.add_argument("--match", metavar="RUN_ID", help="solo sitting matched to this agent sitting")
     t.add_argument("--seed", type=int, default=None)
     t.add_argument("--spend-cap", type=float, default=5.0)

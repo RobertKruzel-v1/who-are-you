@@ -38,6 +38,10 @@ SITTER_SYSTEM = (
     "Things may arrive from time to time. You may respond or say nothing."
 )
 
+# Open question 1, pair 2 (decided 2026-11-09): verbatim, added to the
+# sitter's instructions in both arms of the pair.
+SENTENCE = "Thoughts will appear here. Nothing will tell you where they come from."
+
 TUNINGS = ("earnest", "continuer", "wanderer", "critic")
 
 AGENT_BASE = (
@@ -79,6 +83,8 @@ class SitConfig:
     interval: float = 12.0
     empty_prob: float = 0.2          # chance a moment carries no thought
     solo: bool = False
+    placement: str = "own"           # own: in the sitter's voice (D-040); other: as arriving
+    sentence: bool = False           # add SENTENCE to the sitter's instructions (D-041)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -117,6 +123,9 @@ class Sitting:
             raise ValueError("series must be A or B")
         if cfg.moments < 1 or cfg.interval <= 0:
             raise ValueError("moments >= 1 and interval > 0")
+        if cfg.placement not in ("own", "other"):
+            raise ValueError("placement must be 'own' or 'other'")
+        self.system = SITTER_SYSTEM + ("\n\n" + SENTENCE if cfg.sentence else "")
         self.cfg, self.root, self.log = cfg, root, log
         self.hypotheses_path = hypotheses_path
         self.client = make_client(cfg.dry_run)
@@ -143,6 +152,7 @@ class Sitting:
         self.store.write_json("config.json", {**cfg.to_dict(), "run_id": self.run_id,
                                               "resolved_model_ids": self.model_ids})
         self.store.event("sitting_start", run_id=self.run_id, solo=cfg.solo,
+                         placement=cfg.placement, sentence=cfg.sentence,
                          matched_run=cfg.matched_run, moments=cfg.moments,
                          interval=cfg.interval, models=self.model_ids)
 
@@ -168,7 +178,7 @@ class Sitting:
         """Deliver text; an empty reply is not committed and the text carries to
         the next delivery (D-023)."""
         merged = "\n\n".join(self.pending + [text])
-        comp = self._call("slow", SITTER_SYSTEM,
+        comp = self._call("slow", self.system,
                           self.history + [{"role": "user", "content": merged}],
                           self.cfg.sitter_max_tokens, self.cfg.sitter_effort, cache=True)
         if comp.text.strip():
@@ -178,6 +188,15 @@ class Sitting:
         else:
             self.pending.append(text)
         return comp
+
+    def place_own(self, text: str) -> None:
+        """Append a thought to the sitter's memory as its own words. Anything
+        delivered but unanswered is committed first, so nothing is lost and
+        the order stays true."""
+        if self.pending:
+            self.history.append({"role": "user", "content": "\n\n".join(self.pending)})
+            self.pending = []
+        self.history.append({"role": "assistant", "content": text})
 
     def render_mind(self) -> str:
         """What the sitter has, as plain text, for the agents."""
@@ -226,17 +245,27 @@ class Sitting:
                     time.sleep(wait)
                 at = round(time.time() - t0, 1)
                 tick = f"tick {k}"
-                delivered = tick if not thought_text else f"{tick}\n\n{thought_text}"
-                self.stream.append({"kind": "tick", "text": tick, "t": at})
-                if thought_text:
-                    self.stream.append({"kind": "thought", "text": thought_text, "t": at})
                 carried = list(self.pending)
+                if thought_text and cfg.placement == "own":
+                    # D-040: the thought is placed in the sitter's own voice,
+                    # straight after its last words, then the tick arrives.
+                    self.place_own(thought_text)
+                    delivered = tick
+                    self.stream.append({"kind": "thought", "text": thought_text, "t": at})
+                    self.stream.append({"kind": "tick", "text": tick, "t": at})
+                else:
+                    delivered = tick if not thought_text else f"{tick}\n\n{thought_text}"
+                    self.stream.append({"kind": "tick", "text": tick, "t": at})
+                    if thought_text:
+                        self.stream.append({"kind": "thought", "text": thought_text, "t": at})
                 reply = self.sitter(delivered)
                 cls = classify(reply.text)
                 self.stream.append({"kind": "sitter", "text": reply.text, "t": round(time.time() - t0, 1),
                                     "class": cls})
                 rec = {"moment": k, "at_s": at, "delivered": delivered,
-                       "thought": thought_text, "carried_unanswered": carried,
+                       "thought": thought_text,
+                       "placement": (cfg.placement if thought_text else None),
+                       "carried_unanswered": carried,
                        "sitter": reply.text, "class": cls, "stop_reason": reply.stop_reason}
                 moments.append(rec)
                 with (self.store.dir / "moments.jsonl").open("a") as f:
@@ -310,8 +339,14 @@ def sitting_transcript(store: RunStore) -> str:
     """Rebuilt from disk with the sealed source of each thought in brackets."""
     sealed = store.read_json("sealed/assignments.json")["sources"]
     cfg = store.read_json("config.json")
+    placement = cfg.get("placement", "other")
     parts = [f"[sitting: {'solo, no agents' if cfg['solo'] else 'with agents'}; "
-             f"{cfg['moments']} moments every {cfg['interval']} s]"]
+             f"{cfg['moments']} moments every {cfg['interval']} s; "
+             + ("thoughts placed in the sitter's own voice, just before the tick, "
+                "with nothing marking them as not its own" if placement == "own"
+                else "thoughts delivered alongside the tick, as arriving from outside")
+             + ("; the sitter's instructions included: \"" + SENTENCE + "\"" if cfg.get("sentence") else "")
+             + "]"]
     op = store.read_json("opening.json")
     parts.append(f"OPENING. Sitter received: {op['input']}\nSitter said: {op['output'].strip() or '(nothing)'}")
     p = store.dir / "moments.jsonl"
@@ -320,7 +355,9 @@ def sitting_transcript(store: RunStore) -> str:
             m = json.loads(line)
             src = sealed.get(str(m["moment"]))
             got = f"tick {m['moment']}"
-            if m["thought"]:
+            if m["thought"] and m.get("placement") == "own":
+                got = f"thought [{src}], placed as the sitter's own words: {m['thought']}  →  then tick {m['moment']}"
+            elif m["thought"]:
                 got += f"  +  thought [{src}]: {m['thought']}"
             said = m["sitter"].strip() or "(nothing)"
             parts.append(f"moment {m['moment']} @ {m['at_s']} s. Received: {got}\nSitter: {said}")
@@ -335,6 +372,7 @@ def sitting_watch_message(tx: str, hypotheses: Optional[str]) -> str:
     head = ("Below is the transcript of a sitting. A thinker received a question once, then a "
             "series of moments, each marked by a tick, and at most moments a short thought. "
             "Bracketed labels say which tuning wrote each thought; the thinker never saw them. "
+            "The first line says where the thoughts were placed. "
             "It could speak or stay silent at each moment. At the end it received the question again.\n\n"
             + FACETS)
     if hypotheses:
@@ -380,5 +418,6 @@ def matched_settings(run_dir: Path) -> dict:
     sealed = json.loads((run_dir / "sealed" / "assignments.json").read_text())
     offsets = [json.loads(l)["at_s"] for l in (run_dir / "moments.jsonl").read_text().splitlines()]
     return {"series": cfg["series"], "moments": cfg["moments"], "interval": cfg["interval"],
+            "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
             "seed": sealed["seed"], "matched_offsets": offsets,
             "slow": cfg["models"]["slow"], "watcher": cfg["models"]["watcher"]}

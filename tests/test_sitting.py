@@ -36,16 +36,32 @@ def test_agent_sitting(tmp_path: Path):
     assert (d / "watcher/blind_final.md").exists() and (d / "watcher/informed_final.md").exists()
     assert "agent" not in s.history[0]["content"].lower()
     tx = sitting_transcript(s.store)
-    assert "thought [" in tx
-    # history alternates and has no empty turns (silences are carried, D-023)
+    assert "placed as the sitter's own words" in tx
+    # D-040: thoughts sit in the sitter's own voice, never delivered as messages
+    own = [m["content"] for m in s.history if m["role"] == "assistant" and isinstance(m["content"], str)]
+    thoughts = [m["thought"] for m in moments if m["thought"]]
+    assert thoughts and all(th in own for th in thoughts)
+    assert not any(th in str(m["content"]) for th in thoughts for m in s.history if m["role"] == "user")
     roles = [m["role"] for m in s.history]
-    assert all(roles[i] != roles[i + 1] for i in range(len(roles) - 1))
+    assert all(not (roles[i] == roles[i + 1] == "user") for i in range(len(roles) - 1))
+    assert all(m["content"] for m in s.history)
+
+
+def test_other_placement_and_sentence(tmp_path: Path):
+    from whoareyou.sitting import SENTENCE
+    s, rid = _sit(tmp_path, placement="other", sentence=True)
+    assert s.system.endswith(SENTENCE)
+    moments = [json.loads(l) for l in (tmp_path / "runs" / rid / "moments.jsonl").read_text().splitlines()]
+    with_thought = [m for m in moments if m["thought"]]
+    assert with_thought and all(m["thought"] in m["delivered"] for m in with_thought)
+    assert "Thoughts will appear here" in sitting_transcript(s.store)
 
 
 def test_solo_sitting_matched(tmp_path: Path):
     s, arid = _sit(tmp_path)
     m = matched_settings(tmp_path / "runs" / arid)
     hyp = tmp_path / "H.md"
+    assert m["placement"] == "own" and m["sentence"] is False
     cfg = SitConfig(moments=m["moments"], interval=m["interval"], seed=m["seed"], solo=True,
                     dry_run=True, matched_run=arid, matched_offsets=m["matched_offsets"])
     solo = Sitting(cfg, tmp_path / "runs", hypotheses_path=hyp, log=lambda x: None)

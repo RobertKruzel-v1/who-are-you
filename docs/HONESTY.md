@@ -23,6 +23,16 @@ Every prompt is in one file so this can be audited. Current state of that audit,
 - Neutral heading "Returns from this round" (`once` mode, D-018): true, and claims no sender.
 - Round 1 agents, when the slow layer produced no instructions: they receive the question itself, labelled as the instruction from the thinker. This is a stretch. It is logged as an event (`no_instructions`) and only happens if the marker is missing. See DECISIONS.md D-006.
 
+### Exception: thoughts placed in the sitter's own voice (decided 2026-11-09)
+
+- **What is allowed:** placing an agent's thought in the sitter's own side of the conversation, straight after its last words, so the placement implies the thought is the sitter's own. Nothing is said to the sitter in words, in either direction.
+- **For which runs:** pair 1 of [open question 1](open-questions/01-where-thoughts-sit.md) only (plain option 2, sittings started on or after 2026-11-09 with `--placement own` and no sentence), and Mog's variant 2b if it is ever run without the sentence.
+- **Who decided:** Robert, with Mog agreeing.
+- **Fable's view:** as written, this crosses the original line. The pair 2 version, which adds the true sentence "Thoughts will appear here. Nothing will tell you where they come from.", is the version that does not.
+- **Plan:** pair 2 tests the sentence version straight after pair 1. If the sentence makes no difference to how the sitter behaves, the sentence version becomes the default, because it needs no exception to this rule.
+
+The first sitting (2026-11-07) placed thoughts on the other side, implying someone else sent them. That is true (an agent wrote them) and needed no exception.
+
 ## 2. Complete logging
 
 Every prompt, every return, every injection, every random assignment, every model id, with timestamps, goes to `runs/<run_id>/`. Nothing about a run is hidden from Robert, even though parts of it are hidden from the models and, during the run, from the person who launched it.

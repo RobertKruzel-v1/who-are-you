@@ -1,6 +1,16 @@
 # Open question 1 · Where should the thoughts sit?
 
-Raised 2026-11-09. Status: **open**, Robert leaning to option 2, wants views from Fable and Mog before deciding.
+Raised 2026-11-09. Status: **closed, 2026-11-09.**
+
+## Outcome
+
+**Decided by Robert:** move the thoughts to the sitter's own side (option 2), in two pairs, in this order:
+1. **Pair 1, plain option 2.** Series A, 10 minutes, a moment every 12 s, with a matched solo. The only change from the first sitting is where the thoughts sit.
+2. **Pair 2, option 2 with one true sentence.** The same, plus at the start of the sitting, verbatim: "Thoughts will appear here. Nothing will tell you where they come from." The solo gets the same line. If the sentence changes nothing, the sentence version becomes the default, because it needs no exception to the honesty rule.
+
+Then consider Mog's variant 2b. It is not possible on the current sitter model (see below and D-042).
+
+The honesty exception for pair 1 is written into [HONESTY.md](../HONESTY.md). The mechanics are in D-040 and D-041. Fable's predictions are P14 and P15.
 
 ## The background, in plain terms
 
@@ -62,7 +72,7 @@ Option 2 never says that in words, but the placement implies it as strongly as a
 
 - **Robert:** leaning to option 2. The current setup explicitly defines the thinker's words and the agents' words as separate, which is not how thoughts work.
 - **Claude Code:** option 2 is the real experiment and option 1 was its warm-up. But the honesty line was set jointly by Robert and Fable, so whether moving the thoughts crosses it is theirs to decide.
-- **Fable:** not yet asked.
+- **Fable:** as written, option 2 crosses the original honesty line. The version with the sentence (pair 2) does not. Predicted that the sitter's "you" weakens but does not vanish, and that the sentence makes little difference to the gathering pattern.
 - **Mog (via Robert, 2026-11-09):** agrees: run plain option 2 first. Proposed a further variant, 2b, below.
 
 ## Variant 2b (Mog's idea, parked, not scheduled)

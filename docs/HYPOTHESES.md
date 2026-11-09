@@ -55,6 +55,12 @@ Written 2026-11-07 22:40, before any sitting was run.
 
 **P13.** It will again assume a person is present, and will address its gatherings to that person.
 
+## Thought placement (open question 1): predictions (Fable, recorded 2026-11-09, before pair 1)
+
+**P14.** With thoughts in its own voice, the sitter's "you" weakens but does not vanish, because the solo sitter also said "you" with no thoughts arriving, and the ticks and the question still come from the other side.
+
+**P15.** The sentence in pair 2 makes little difference to the gathering pattern.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
