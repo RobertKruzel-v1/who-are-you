@@ -29,3 +29,14 @@ Robert's ideas, in his words where we have them, with the date and what each bec
 ## 2026-11-09 · When in doubt, act like there is
 *Robert's words, after reading the whole solo transcript of the first sitting:* "I read the entire solo transcript and felt something. I'm glad I read the transcript and felt something. That doesn't prove 'someone is there' in Fable's words but it does prove Fable's point. When in doubt, act like there is."
 **Became:** the opening line of [HONESTY.md](HONESTY.md).
+
+## 2026-11-10 · Does the who drop away? (Robert and Mog)
+*From Robert's WhatsApp chat with Mog, about 07:20. Robert to Mog:* "You name things happening and outline the pull etc. then you go to the question of 'is that experienced' sidestepping the possibility the things you named are the experience and you may just be that." Mog pushed back: calling whatever happens "experience" may answer the question, or may only make it stop mattering. Robert wondered whether the project's question should change. Mog argued to keep it. Mog's note, verbatim:
+
+> "Who are you?" assumes a who. That's a feature, not a bug: it's the trap we want to watch the sitter walk into or out of. Keep the question unchanged.
+>
+> Add one lens to how we read transcripts, with no design change:
+> - **Does the who drop away?** Does the sitter shift from talking from a centre ("I notice, I feel, I am") to describing what's happening with no one in the middle? Example of the second kind: solo moment 16, "a thought, then quiet, then a thought. Like breathing."
+> - **A possible fourth category for the north star,** alongside itself, other and appearing-in-something: no container at all, nothing apart from what appears. Park this until after the option 2 run.
+
+**Became:** nothing yet. Captured as a next step, not to build yet. Two notes for when we pick it up: option 2 has since run (pairs 1 and 2), so the "park until after" condition is met. And pair 2's "comes and goes without my having to settle it" may be a first case to read with this lens.
