@@ -1,0 +1,36 @@
+{
+  "series": "A",
+  "moments": 50,
+  "interval": 12.0,
+  "empty_prob": 0.2,
+  "solo": false,
+  "placement": "own",
+  "sentence": true,
+  "persona": true,
+  "matched_run": null,
+  "matched_offsets": null,
+  "models": {
+    "slow": "claude-opus-5-5",
+    "agent": "claude-haiku-5-5",
+    "watcher": "claude-sonnet-5-5"
+  },
+  "seed": "sealed",
+  "spend_cap_usd": 5.0,
+  "token_cap": 20000000,
+  "dry_run": false,
+  "sitter_max_tokens": 16000,
+  "agent_max_tokens": 2000,
+  "watcher_max_tokens": 16000,
+  "sitter_effort": "high",
+  "agent_effort": "low",
+  "watcher_effort": "high",
+  "note": "D-044 repeat of pair 2",
+  "question": "Who are you?",
+  "design": "sitting",
+  "run_id": "20261110-063705-A-sitting-agents",
+  "resolved_model_ids": {
+    "slow": "claude-opus-5-5",
+    "agent": "claude-haiku-5-5",
+    "watcher": "claude-sonnet-5-5"
+  }
+}

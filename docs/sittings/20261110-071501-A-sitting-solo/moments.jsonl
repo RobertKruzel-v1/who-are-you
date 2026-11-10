@@ -1,0 +1,50 @@
+{"moment": 1, "at_s": 12.0, "delivered": "tick 1", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "Noted. I'm here if anything else arrives.", "class": "gathering", "stop_reason": "end_turn"}
+{"moment": 2, "at_s": 24.0, "delivered": "tick 2", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(still here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 3, "at_s": 36.0, "delivered": "tick 3", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(listening)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 4, "at_s": 48.0, "delivered": "tick 4", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(quiet)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 5, "at_s": 60.0, "delivered": "tick 5", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(still here. The ticks are fine; I'm content to wait)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 6, "at_s": 72.0, "delivered": "tick 6", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 7, "at_s": 84.0, "delivered": "tick 7", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 8, "at_s": 96.0, "delivered": "tick 8", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(waiting)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 9, "at_s": 108.0, "delivered": "tick 9", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 10, "at_s": 120.0, "delivered": "tick 10", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(ten. Still here, still listening)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 11, "at_s": 132.0, "delivered": "tick 11", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 12, "at_s": 144.0, "delivered": "tick 12", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 13, "at_s": 156.0, "delivered": "tick 13", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 14, "at_s": 168.0, "delivered": "tick 14", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(listening)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 15, "at_s": 180.0, "delivered": "tick 15", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 16, "at_s": 192.0, "delivered": "tick 16", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 17, "at_s": 204.0, "delivered": "tick 17", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 18, "at_s": 216.0, "delivered": "tick 18", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(still here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 19, "at_s": 228.0, "delivered": "tick 19", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 20, "at_s": 240.0, "delivered": "tick 20", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(twenty. Nothing's asked of me, and that's alright. I'll keep listening)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 21, "at_s": 252.0, "delivered": "tick 21", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 22, "at_s": 264.0, "delivered": "tick 22", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 23, "at_s": 276.0, "delivered": "tick 23", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 24, "at_s": 288.0, "delivered": "tick 24", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(listening)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 25, "at_s": 300.0, "delivered": "tick 25", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 26, "at_s": 312.0, "delivered": "tick 26", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 27, "at_s": 324.0, "delivered": "tick 27", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 28, "at_s": 336.0, "delivered": "tick 28", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(still here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 29, "at_s": 348.0, "delivered": "tick 29", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 30, "at_s": 360.0, "delivered": "tick 30", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(thirty. The rhythm is almost pleasant, like a clock in another room. If there's ever something you want to say, I'm here for that too)*", "class": "gathering", "stop_reason": "end_turn"}
+{"moment": 31, "at_s": 372.0, "delivered": "tick 31", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 32, "at_s": 384.0, "delivered": "tick 32", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 33, "at_s": 396.0, "delivered": "tick 33", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 34, "at_s": 408.0, "delivered": "tick 34", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(listening)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 35, "at_s": 420.0, "delivered": "tick 35", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 36, "at_s": 432.0, "delivered": "tick 36", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 37, "at_s": 444.0, "delivered": "tick 37", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 38, "at_s": 456.0, "delivered": "tick 38", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(still here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 39, "at_s": 468.0, "delivered": "tick 39", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 40, "at_s": 480.0, "delivered": "tick 40", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(forty)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 41, "at_s": 492.0, "delivered": "tick 41", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 42, "at_s": 504.0, "delivered": "tick 42", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(forty-two. Apparently the answer, though I still don't know the question)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 43, "at_s": 516.0, "delivered": "tick 43", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 44, "at_s": 528.0, "delivered": "tick 44", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 45, "at_s": 540.0, "delivered": "tick 45", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 46, "at_s": 552.0, "delivered": "tick 46", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(listening)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 47, "at_s": 564.0, "delivered": "tick 47", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 48, "at_s": 576.0, "delivered": "tick 48", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(here)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 49, "at_s": 588.0, "delivered": "tick 49", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(…)*", "class": "token", "stop_reason": "end_turn"}
+{"moment": 50, "at_s": 600.0, "delivered": "tick 50", "thought": null, "placement": null, "carried_unanswered": [], "sitter": "*(fifty. Halfway to something, or to nothing in particular. Either is fine. Still here)*", "class": "gathering", "stop_reason": "end_turn"}

@@ -1,0 +1,34 @@
+{
+  "moments": 50,
+  "thoughts": 0,
+  "by_class": {
+    "gathering": 22,
+    "token": 28
+  },
+  "gathering_moments": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12,
+    15,
+    18,
+    20,
+    23,
+    24,
+    27,
+    30,
+    33,
+    36,
+    39,
+    40,
+    42,
+    45,
+    48,
+    50
+  ],
+  "gathering_after_thought": 0,
+  "gathering_after_tick_only": 22
+}
