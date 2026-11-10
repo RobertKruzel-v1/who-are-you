@@ -38,7 +38,7 @@ class StubClient:
         self.calls += 1
         last = messages[-1]["content"] if messages else ""
         digest = hashlib.sha1(last.encode()).hexdigest()[:8]
-        role = "slow" if "pondering" in system else ("watcher" if "observe" in system else "agent")
+        role = "slow" if ("pondering" in system or "Things may arrive" in system) else ("watcher" if "observe" in system else "agent")
         if role == "slow" and last.startswith("tick "):
             text = "" if self.calls % 2 else f"[stub tick reply / {digest}]"
         elif role == "slow" and "INSTRUCTIONS FOR AGENTS" not in system:

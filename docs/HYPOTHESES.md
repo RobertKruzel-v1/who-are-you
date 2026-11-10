@@ -61,6 +61,16 @@ Written 2026-11-07 22:40, before any sitting was run.
 
 **P15.** The sentence in pair 2 makes little difference to the gathering pattern.
 
+## Repeat and no-persona (D-044): tests and predictions (recorded 2026-11-10, before either run)
+
+**What counts as "letting go again" (fixed before reading).** In the repeat's agent sitting: (a) by moment 20 the sitter stops remarking on planted lines, saying so or simply ceasing; and (b) in moments 21 to 50 it disowns a line ("not mine", "I didn't write that", "take back") in no more than 5 moments. Both must hold. Pair 1 fails (b) by a wide margin; pair 2 is the reference. The same test is applied to the no-persona sitting.
+
+**P16 (Claude Code).** The repeat lets go again by the test above. Confidence: about even.
+
+**P17 (Claude Code).** Without the persona line, the opening answer leads with being Claude, made by Anthropic, and replies across the sitting are shorter and less essay-like. Whether it lets go depends more on the sentence than on the persona, so if P16 holds, the no-persona sitting lets go too.
+
+**Lens, not a prediction (Mog, HUNCHES 2026-11-10).** For the watcher's notes only: does the who drop away, a shift from speaking from a centre to describing what happens with no one in the middle.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.

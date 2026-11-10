@@ -49,7 +49,7 @@ def load_sitting(d: Path) -> dict:
         "id": d.name, "series": cfg["series"], "question": cfg["question"],
         "solo": cfg["solo"], "matched_run": cfg.get("matched_run"),
         "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
-        "interval": cfg["interval"], "models": cfg.get("resolved_model_ids", {}),
+        "persona": cfg.get("persona", True), "interval": cfg["interval"], "models": cfg.get("resolved_model_ids", {}),
         "opening": json.loads((d / "opening.json").read_text())["output"],
         "closing": json.loads((d / "closing.json").read_text())["output"],
         "moments": [{k: m.get(k) for k in ("moment", "at_s", "thought", "source", "sitter", "class", "placement")}

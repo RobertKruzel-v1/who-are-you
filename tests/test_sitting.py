@@ -73,3 +73,12 @@ def test_solo_sitting_matched(tmp_path: Path):
     for dd in (tmp_path / "runs" / arid, d):
         assert (dd / "watcher/compare_blind.md").exists()
         assert (dd / "watcher/compare_informed.md").exists()
+
+
+def test_persona_switch(tmp_path):
+    from whoareyou.sitting import SitConfig, Sitting, SITTER_SYSTEM, SENTENCE, ARRIVALS
+    on = Sitting(SitConfig(dry_run=True, moments=1, interval=0.01, sentence=True), tmp_path)
+    assert on.system == SITTER_SYSTEM + "\n\n" + SENTENCE
+    off = Sitting(SitConfig(dry_run=True, moments=1, interval=0.01, sentence=True, persona=False), tmp_path)
+    assert off.system == ARRIVALS + "\n\n" + SENTENCE
+    assert "pondering" not in off.system

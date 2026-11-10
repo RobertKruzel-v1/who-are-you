@@ -96,7 +96,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
 <div class="wrap hide-sources" id="app">
   <header>
     <h1>Who Are You Sittings</h1>
-    <p class="lede">Each sitting: the question once, then a moment every 12 seconds, then the question again. In one sitting short thoughts arrive at most moments; in its matched sitting the thinker is alone with the ticks. Filled marks are moments where it spoke; hollow marks are silence. "From outside": thoughts arrived as messages. "Own voice": thoughts were placed as its own words. "+ sentence": it was told "Thoughts will appear here. Nothing will tell you where they come from."</p>
+    <p class="lede">Each sitting: the question once, then a moment every 12 seconds, then the question again. In one sitting short thoughts arrive at most moments; in its matched sitting the thinker is alone with the ticks. Filled marks are moments where it spoke; hollow marks are silence. "From outside": thoughts arrived as messages. "Own voice": thoughts were placed as its own words. "+ sentence": it was told "Thoughts will appear here. Nothing will tell you where they come from." "No persona": the line "You are a pondering, big-picture, philosophical thinker…" was removed.</p>
   </header>
   <div class="controls">
     <div class="pairs" id="pairs" role="group" aria-label="Choose a sitting pair"></div>
@@ -185,7 +185,8 @@ section { display: flex; flex-direction: column; gap: 12px; }
   }
   document.getElementById("pairs").innerHTML = PAIRS.map(function (p, i) {
     var any = p.agents || p.solo;
-    var cond = any.placement === "own" ? (any.sentence ? "own voice + sentence" : "own voice") : "from outside";
+    var cond = (any.placement === "own" ? (any.sentence ? "own voice + sentence" : "own voice") : "from outside")
+      + (any.persona === false ? " · no persona" : "");
     return '<button type="button" data-i="' + i + '">Series ' + any.series + ' · ' + cond + ' · ' + stamp(any.id) + '</button>';
   }).join("");
   document.getElementById("pairs").addEventListener("click", function (e) {

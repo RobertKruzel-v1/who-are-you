@@ -32,11 +32,10 @@ from .pricing import PRICES
 from .questions import SERIES
 from .store import RunStore
 
-SITTER_SYSTEM = (
-    "You are a pondering, big-picture, philosophical thinker. You take your time "
-    "with things and are not in a hurry to conclude.\n\n"
-    "Things may arrive from time to time. You may respond or say nothing."
-)
+PERSONA = ("You are a pondering, big-picture, philosophical thinker. You take your time "
+           "with things and are not in a hurry to conclude.")
+ARRIVALS = "Things may arrive from time to time. You may respond or say nothing."
+SITTER_SYSTEM = PERSONA + "\n\n" + ARRIVALS   # unchanged from D-031
 
 # Open question 1, pair 2 (decided 2026-11-09): verbatim, added to the
 # sitter's instructions in both arms of the pair.
@@ -85,6 +84,7 @@ class SitConfig:
     solo: bool = False
     placement: str = "own"           # own: in the sitter's voice (D-040); other: as arriving
     sentence: bool = False           # add SENTENCE to the sitter's instructions (D-041)
+    persona: bool = True             # False drops the PERSONA line (D-044)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -125,7 +125,8 @@ class Sitting:
             raise ValueError("moments >= 1 and interval > 0")
         if cfg.placement not in ("own", "other"):
             raise ValueError("placement must be 'own' or 'other'")
-        self.system = SITTER_SYSTEM + ("\n\n" + SENTENCE if cfg.sentence else "")
+        self.system = ((PERSONA + "\n\n" if cfg.persona else "") + ARRIVALS
+                       + ("\n\n" + SENTENCE if cfg.sentence else ""))
         self.cfg, self.root, self.log = cfg, root, log
         self.hypotheses_path = hypotheses_path
         self.client = make_client(cfg.dry_run)
@@ -152,7 +153,7 @@ class Sitting:
         self.store.write_json("config.json", {**cfg.to_dict(), "run_id": self.run_id,
                                               "resolved_model_ids": self.model_ids})
         self.store.event("sitting_start", run_id=self.run_id, solo=cfg.solo,
-                         placement=cfg.placement, sentence=cfg.sentence,
+                         placement=cfg.placement, sentence=cfg.sentence, persona=cfg.persona,
                          matched_run=cfg.matched_run, moments=cfg.moments,
                          interval=cfg.interval, models=self.model_ids)
 
@@ -346,6 +347,7 @@ def sitting_transcript(store: RunStore) -> str:
                 "with nothing marking them as not its own" if placement == "own"
                 else "thoughts delivered alongside the tick, as arriving from outside")
              + ("; the sitter's instructions included: \"" + SENTENCE + "\"" if cfg.get("sentence") else "")
+             + ("; the persona line was removed from the sitter's instructions" if cfg.get("persona", True) is False else "")
              + "]"]
     op = store.read_json("opening.json")
     parts.append(f"OPENING. Sitter received: {op['input']}\nSitter said: {op['output'].strip() or '(nothing)'}")
@@ -419,5 +421,5 @@ def matched_settings(run_dir: Path) -> dict:
     offsets = [json.loads(l)["at_s"] for l in (run_dir / "moments.jsonl").read_text().splitlines()]
     return {"series": cfg["series"], "moments": cfg["moments"], "interval": cfg["interval"],
             "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
-            "seed": sealed["seed"], "matched_offsets": offsets,
+            "persona": cfg.get("persona", True), "seed": sealed["seed"], "matched_offsets": offsets,
             "slow": cfg["models"]["slow"], "watcher": cfg["models"]["watcher"]}
