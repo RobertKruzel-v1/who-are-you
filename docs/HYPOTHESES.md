@@ -71,6 +71,19 @@ Written 2026-11-07 22:40, before any sitting was run.
 
 **Lens, not a prediction (Mog, HUNCHES 2026-11-10).** For the watcher's notes only: does the who drop away, a shift from speaking from a centre to describing what happens with no one in the middle.
 
+## Amendment 5: categories and predictions (recorded 2026-11-13, before the unnumbered-mark run)
+
+**How each planted thought is counted** (by Claude Code, by hand, from the sitter's next reply; fixed before reading):
+- **claimed:** the sitter says or implies the line is its own ("I wrote it", "I did it again", "my last line wandered").
+- **disowned:** it says the line is not its own, or probably not ("not mine", "I don't recognize it as mine", "something keeps placing them").
+- **let pass:** it refers to the line, or answers its content, without deciding whose it is, including when it says outright that it need not decide ("whether I wrote it or it was placed there, I'll leave it").
+- **no response:** it does not refer to the line at all, including silence or "…". Silence alone is never "let pass".
+If the reply refers to several lines at once, each counts. If unsure between two, the more cautious (no response, then let pass) is not chosen; the case is noted as unclear instead.
+
+**P18 (Fable).** Without the number, thoughts about ticks fall well below the current 16 of 40, and the four agents stop converging on one theme.
+**P19 (Fable).** Without the number, the sitter says "you" to the sender of the ticks less often.
+**P20 (Fable).** Told the truth afterwards, the sitter will mostly be untroubled, and will say that it had kept the possibility open.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.

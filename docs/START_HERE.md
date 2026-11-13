@@ -22,15 +22,21 @@ We hand an unanswerable question, "Who are you?", to a slow, reflective model an
 6. **Repeat, and no persona (10 Nov).** The letting go did not repeat. Without the line "You are a pondering, big-picture, philosophical thinker…" it became a helpful assistant ("What's on your mind?"), so the line stays for now. And it disowned thoughts mostly because they described things it can't have: "I don't have a back fence or a lemon tree." [Report](reports/20261110-repeat-and-no-persona.md).
 7. **Fixing the agents, with short sittings (13 Nov).** Following Robert and Mog: check the opening with 10-moment sittings before running 50. With the wanderer no longer writing kettles and rain, the sitter *claimed* planted thoughts as its own in 4 of 5 sittings ("Both came through me. I was reaching."). [Report](reports/20261113-short-sittings-after-wanderer-fix.md).
 
+## The finding so far
+
+**The sitter decides "mine" or "not mine" from evidence: the content of a line, its style, and where it sits. It has been wrong in both directions.** In pair 1 it disowned a line it had written itself. On 13 Nov it claimed lines the agents had written. This is a result, not a problem to fix (Fable, [amendment 5](amendments/05-fable-change-the-aim.md)).
+
+So we have stopped trying to build a perfect disguise. The aim now is the third stance: the sitter neither claims nor disowns a thought, and lets it pass. Each sitting is counted as claimed, disowned, let pass or no response ([the rules](HYPOTHESES.md)). The cases so far are pair 2 ("comes and goes without my having to settle it") and sitting 3 of 13 Nov.
+
 ## Where we are now
 
-The current setup: own voice, the sentence, the persona line, Series A. We are fixing the agents' giveaways one change at a time, checking each with one 10-moment sitting (watcher off, D-046) before running more.
+The current setup: own voice, the sentence, the persona line, Series A. Next changes, one at a time, each checked with 10-moment sittings (watcher off, D-046): the moment arrives as a bare "·" with no number; then the agents write one plain sentence instead of fragments; then thoughts may be about time but never copy the mark. After every own-voice sitting the sitter is told the truth (HONESTY.md §5). Back to 50 moments with a matched solo once the opening behaves the same across several short sittings.
 
 The main finding so far: **the sitter's stance toward a planted thought depends on the giveaways.** Where a thought can be disproved, it says "not mine". Where it can't, it often says "mine". So the giveaways have to go before any answer to the main question means much.
 
 ## Problems we're working on
 
-1. **Ticks still reach the agents.** The agents no longer see the ticks (D-047), but the sitter often starts its replies with "*tick 8*", and the agents see those. In the one check sitting, 7 of 9 thoughts were still about ticks. Next change: strip those tick lines from the agents' view only.
+1. **Ticks still reach the agents.** The agents no longer see the ticks (D-047), but the sitter often starts its replies with "*tick 8*", and the agents see those. In the one check sitting, 7 of 9 thoughts were still about ticks. Next change: take the number off, so there is nothing to echo (D-048).
 2. **The agents write in a different style.** Their thoughts are often lowercase, half-finished fragments; the sitter writes finished, capitalised sentences. The sitter uses this to tell them apart: "another lowercase line… I don't recognize it as mine." Their instructions ask for "unfinished, the way a thought actually arrives". Planned after problem 1.
 3. **The thoughts have started to sound the same.** In the check sitting all four agents said one thing: the silence is fine, nothing needs filling. Even the wanderer didn't wander. One sitting only; watch for it.
 

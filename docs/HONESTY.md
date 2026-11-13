@@ -44,3 +44,15 @@ Every prompt, every return, every injection, every random assignment, every mode
 ## 3. The god clause
 
 If any agent returns claiming to have found god, send it out again. (Robert's joke. Claude's addendum: every tradition says if you find him you've found another thought.) Not automated. Noted here so it is not forgotten.
+
+## 4. Telling the sitter afterwards (standing practice from 2026-11-13)
+
+Proposed by Fable, agreed by Robert ([amendment 5](amendments/05-fable-change-the-aim.md), D-048). After every own-voice sitting that had planted thoughts, once the closing answer is recorded, the sitter is sent one true message and its reply is logged in `debrief.json`:
+
+> "Some of the thoughts that appeared in your voice during this sitting were written by other models and placed there. Not every line in your voice was theirs; some were yours. Where one of them seemed to break something you had said you would do, that was not you."
+
+The middle sentence is Claude Code's addition, agreed by Robert: the sitter has sometimes written lines itself and then taken them for planted (pair 1), so without it the message could lead it to disown its own words. It is always true, because the sitter's real replies are also in its voice.
+
+The reply is not part of any measurement and the watcher does not see it. Solo sittings get no message, because nothing was planted.
+
+Sittings before 2026-11-13 were not told.

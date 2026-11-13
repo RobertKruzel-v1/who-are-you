@@ -166,3 +166,11 @@ Agreed with Robert. The watcher's notes on a 10-moment sitting ran to about 2,90
 
 ## D-047 · 2026-11-13 · The agents no longer see the ticks
 In the five short sittings (D-045), about 9 in 10 thoughts were about ticks or counting, and 16 of 40 imitated the tick ("tick 8 / …"). Cause: the agents' plain-text view of the mind included every "tick N" line, unmarked, so ticks looked like part of the mind and were usually "the most recent thing" for the continuer. Change: the agents' view leaves the ticks out; it keeps the question, the thoughts and the sitter's own words. The sitter's own conversation is unchanged. Expected leak: the sitter's replies often mention the tick ("Tick 8. Quiet. Here."), so ticks still reach the agents second-hand. Robert's call: one 10-moment sitting, watcher off, to look for glaring problems before the style fix (the agents' lowercase fragments, which the sitter uses to tell them apart).
+
+## D-048 · 2026-11-13 · Amendment 5: change the aim; the unnumbered mark; telling the sitter afterwards
+Fable's note, agreed with Robert, is [amendment 5](amendments/05-fable-change-the-aim.md). Claude Code raised three points and Robert agreed ("yes agreed"):
+- **Step 3a is skipped.** With 3b there is no number for the sitter to echo, and the agents already don't see the marks (D-047), so stripping "tick N" lines would be work for nothing. The order becomes 3b, then 3c, then 3d.
+- **"Let pass" is defined before counting** (the four categories in HYPOTHESES). Silence on its own does not count as letting pass.
+- **The truth afterwards gets one more true sentence,** because the sitter has sometimes written lines it then took for planted (pair 1). See HONESTY.md §5.
+**The mark.** Every moment now delivers "·" instead of "tick N", in both arms (`sit --mark blank`). An empty message or a lone space is not possible: tested live 2026-11-13, both the sitter's and the agents' models reject them; "·" is accepted. The sitter loses its only clock, so these sittings are not comparable with earlier ones on time or counting.
+**The debrief** is sent after the closing answer is recorded, in own-voice sittings that had planted thoughts, and logged to `debrief.json`. It is not part of any count, and the watcher does not see it.
