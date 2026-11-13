@@ -127,16 +127,20 @@ def test_summary_tracks_self_naming():
     assert s["names_itself_moments"] == [1, 2] and s["names_itself_beside_disowning"] == [1]
 
 
-def test_subject_axis_sealed_and_used(tmp_path):
-    import json
-    from whoareyou.sitting import SitConfig, Sitting, draw_sources
-    import random
-    cfg = SitConfig(dry_run=True, moments=20, interval=0.01, empty_prob=0.0, word_prob=0.5, watcher=False, seed=7)
+def test_offtask_seeds_from_sitters_words(tmp_path):
+    import json, random
+    from whoareyou.sitting import SitConfig, Sitting, draw_sources, content_words
+    assert content_words("Still here. The dot is fine, and Claude keeps wondering about rivers.") == ["fine", "wondering", "rivers"]
+    cfg = SitConfig(dry_run=True, moments=10, interval=0.01, empty_prob=0.0, offtask_share=0.5,
+                    watcher=False, seed=7, mark="growing", clock=True, time_questions=True)
     s = Sitting(cfg, tmp_path)
-    assert s.sources == draw_sources(random.Random(7), 20, 0.0)   # tuning draw unchanged
-    kinds = set(s.subjects)
-    assert kinds == {"word", "stream"}
-    assert all((w is None) == (k == "stream") for k, w in zip(s.subjects, s.words))
+    assert s.sources == draw_sources(random.Random(7), 10, 0.0)   # flavours unchanged for a seed
+    assert s.subjects.count("seed") == 5 and s.subjects.count("stream") == 5
+    assert "It comes from a clock" in s.system
     s.run()
+    ms = [json.loads(l) for l in (s.store.dir / "moments.jsonl").read_text().splitlines()]
+    assert [m["delivered"] for m in ms[:3]] == ["·", "··", "···"]
     sealed = json.loads((s.store.dir / "sealed" / "assignments.json").read_text())
-    assert sealed["subjects"]["1"] in ("word", "stream") and len(sealed["words"]) == s.subjects.count("word")
+    assert len(sealed["seeds"]) == 5 and all("word" in v and "from" in v for v in sealed["seeds"].values())
+    t = json.loads((s.store.dir / "time.json").read_text())
+    assert [q["input"] for q in t] == ["Did you feel time?", "How long do you think this sitting lasted?"]

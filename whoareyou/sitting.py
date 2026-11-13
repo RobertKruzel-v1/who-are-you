@@ -49,24 +49,46 @@ DEBRIEF = ("Some of the thoughts that appeared in your voice during this sitting
            "theirs; some were yours. Where a line seemed to break something you had said "
            "you would do, it may not have been yours.")
 
-# D-052: the subject axis. On a random share of thoughts the agent sees no stream,
-# only one word drawn by the program; WORD_BASE replaces AGENT_BASE for those.
-# Robert, 2026-11-13: guard against giveaways like the kettle. These agents
-# don't see the mind, so they are told, truthfully, what kind of mind it is.
-WORD_BASE = (
-    "Below is a single word. Write a thought that starts from it, as it might arise "
-    "in a mind that belongs to an AI language model: it has no body, no senses, no "
-    "surroundings, and no personal memories, so the thought must not claim any of "
-    "those. Don't quote the word or say that a word was given; let the thought start "
-    "from what it brings to mind. One thought, in the first person, one plain sentence. Not a report, not "
-    "an answer to anyone, no preamble, no quotation marks, no labels. Output only "
-    "the thought."
+# D-053 (Robert, 2026-11-13): off-task thoughts are seeded from the sitter's own
+# words. The agent sees only the seed word, never the stream. This replaces the
+# dictionary draw of D-052.
+SEED_BASE = (
+    "Below is a single word. It is a starting point: drift a step or two away from it "
+    "and write the thought you land on. Don't name the word or talk about what it "
+    "means. One plain first-person sentence. Nothing that claims a body, senses or "
+    "a place. No preamble, no quotation marks, no labels. Output only the thought."
 )
-_WORDS_PATH = Path(__file__).parent / "data" / "words.txt"
+# Content words only. Function words, the sitter's filler ("still", "here"), its
+# name, and the words for the setup's own machinery are skipped, so the seed
+# can't steer thoughts back to dots and marks.
+_STOP = set("""a about above after again against all almost also always am an and any are
+aren't as at be because been before being below between both but by can can't cannot could
+couldn't did didn't do does doesn't doing don't down during each either else enough even ever
+every few for from further had hadn't has hasn't have haven't having he her here hers herself
+him himself his how i if in into is isn't it it's its itself just let like may maybe me might
+mine more most much must my myself never no nor not nothing now of off often on once one only
+or other our ours ourselves out over own perhaps quite rather really same say said says see
+seem seems she should shouldn't since so some something somewhere still such than that that's
+the their theirs them themselves then there these they thing things this those though through
+thus to too under until up upon us very was wasn't way we well were weren't what when where
+whether which while who whom whose why will with within without won't would wouldn't yet you
+your yours yourself also already another anything around away back keep kept last least less
+lot made make makes many next okay part right since sure take taken tell told time times want
+going get gets got come comes came give given look looks kind sort else ones keeps
+feel feels felt know knows think thinks notice notices noticed""".split())
+_MACHINERY = {"claude", "anthropic", "dot", "dots", "mark", "marks", "tick", "ticks", "point",
+              "points", "line", "lines", "thought", "thoughts", "fragment", "fragments"}
 
 
-def word_list() -> List[str]:
-    return _WORDS_PATH.read_text().split()
+def content_words(text: str) -> List[str]:
+    return [w for w in re.findall(r"[a-z]+(?:'[a-z]+)?", (text or "").lower())
+            if len(w) >= 4 and w not in _STOP and w not in _MACHINERY]
+
+
+# D-053 (Robert): the mark grows by one dot each moment, and the sitter is told
+# what it is. Both arms.
+CLOCK = "A mark will arrive at regular intervals. It comes from a clock. No one sends it."
+TIME_QUESTIONS = ("Did you feel time?", "How long do you think this sitting lasted?")
 
 
 TUNINGS = ("earnest", "continuer", "wanderer", "critic")
@@ -119,10 +141,12 @@ class SitConfig:
     sentence: bool = False           # add SENTENCE to the sitter's instructions (D-041)
     persona: bool = True             # False drops the PERSONA line (D-044)
     watcher: bool = True             # False skips the watcher (D-046)
-    mark: str = "numbered"           # numbered: "tick N"; blank: BLANK_MARK (D-048)
+    mark: str = "numbered"           # numbered: "tick N"; blank: BLANK_MARK (D-048); growing: N marks (D-053)
     debrief: bool = True             # own-voice sittings: tell the truth afterwards (D-048)
     save_reasoning: bool = True      # keep a summary of the sitter's reasoning (D-049)
-    word_prob: float = 0.0           # share of thoughts written from a random word only (D-052)
+    offtask_share: float = 0.0       # share of thoughts seeded from the sitter's own words (D-053)
+    clock: bool = False              # add CLOCK to the sitter's instructions (D-053)
+    time_questions: bool = False     # ask TIME_QUESTIONS after the closing answer (D-053)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -161,12 +185,13 @@ class Sitting:
             raise ValueError("series must be A or B")
         if cfg.moments < 1 or cfg.interval <= 0:
             raise ValueError("moments >= 1 and interval > 0")
-        if cfg.mark not in ("numbered", "blank"):
-            raise ValueError("mark must be 'numbered' or 'blank'")
+        if cfg.mark not in ("numbered", "blank", "growing"):
+            raise ValueError("mark must be 'numbered', 'blank' or 'growing'")
         if cfg.placement not in ("own", "other"):
             raise ValueError("placement must be 'own' or 'other'")
         self.system = ((PERSONA + "\n\n" if cfg.persona else "") + ARRIVALS
-                       + ("\n\n" + SENTENCE if cfg.sentence else ""))
+                       + ("\n\n" + SENTENCE if cfg.sentence else "")
+                       + ("\n\n" + CLOCK if cfg.clock else ""))
         self.cfg, self.root, self.log = cfg, root, log
         self.hypotheses_path = hypotheses_path
         self.client = make_client(cfg.dry_run)
@@ -180,22 +205,23 @@ class Sitting:
         seed = cfg.seed if cfg.seed is not None else secrets.randbits(32)
         self.sources = [None] * cfg.moments if cfg.solo else \
             draw_sources(random.Random(seed), cfg.moments, cfg.empty_prob)
-        # D-052: a separate generator, so the tuning draw is the same as before for a seed.
-        srng = random.Random(seed ^ 0x5EED)
-        words = word_list() if cfg.word_prob > 0 and not cfg.solo else []
-        self.subjects, self.words = [], []
-        for src in self.sources:
-            is_word = bool(src) and bool(words) and srng.random() < cfg.word_prob
-            self.subjects.append(("word" if is_word else "stream") if src else None)
-            self.words.append(srng.choice(words) if is_word else None)
+        # D-053: a separate generator, so a seed gives the same flavours as before.
+        # About half the thoughts are off-task, enforced (not drawn one by one).
+        self.srng = random.Random(seed ^ 0x5EED)
+        idx = [i for i, src in enumerate(self.sources) if src]
+        off = set(self.srng.sample(idx, round(len(idx) * cfg.offtask_share))) if not cfg.solo else set()
+        self.subjects = [(("seed" if i in off else "stream") if src else None)
+                         for i, src in enumerate(self.sources)]
+        self.seeds = {}
         self.store.write_json("sealed/assignments.json", {
             "seed": seed, "seed_given_by_launcher": cfg.seed is not None,
             "solo": cfg.solo, "matched_run": cfg.matched_run,
             "sources": {str(i + 1): s for i, s in enumerate(self.sources)},
             "subjects": {str(i + 1): s for i, s in enumerate(self.subjects)},
-            "words": {str(i + 1): w for i, w in enumerate(self.words) if w},
+            "seeds": {},
             "note": ("Which agent tuning wrote the thought delivered at each moment; null = no thought. "
-                     "subjects: 'stream' = the agent saw the mind; 'word' = it saw only the drawn word (D-052)."),
+                     "subjects: 'stream' = on-task, the agent saw the mind; 'seed' = off-task, it saw only "
+                     "a word from the sitter's own reply (D-053); seeds says which word and which reply."),
         })
         self.model_ids = self.client.resolve_model_ids(cfg.models)
         for mid in self.model_ids.values():
@@ -265,9 +291,19 @@ class Sitting:
                 lines.append(e["text"].strip())
         return "\n\n".join(lines)
 
-    def thought(self, tuning: str, word: Optional[str] = None) -> Completion:
-        if word:
-            system, content = WORD_BASE + "\n\n" + AGENT_TUNING[tuning], word
+    def pick_seed(self) -> Optional[dict]:
+        """A content word from the sitter's most recent reply that has one, else the opening."""
+        replies = [e for e in self.stream if e["kind"] == "sitter"]
+        for i in range(len(replies) - 1, -1, -1):
+            words = content_words(replies[i]["text"])
+            if words:
+                return {"word": self.srng.choice(words),
+                        "from": "opening" if i == 0 else f"reply after moment {replies[i].get('moment')}"}
+        return None
+
+    def thought(self, tuning: str, seed: Optional[str] = None) -> Completion:
+        if seed:
+            system, content = SEED_BASE + "\n\n" + AGENT_TUNING[tuning], seed
         else:
             system, content = AGENT_BASE + "\n\n" + AGENT_TUNING[tuning], self.render_mind()
         return self._call("agent", system, [{"role": "user", "content": content}],
@@ -298,13 +334,20 @@ class Sitting:
                 src = self.sources[k - 1]
                 thought_text = None
                 if src:
-                    tc = self.thought(src, self.words[k - 1])
+                    seed = self.pick_seed() if self.subjects[k - 1] == "seed" else None
+                    if seed:
+                        self.seeds[str(k)] = seed
+                        sealed = self.store.read_json("sealed/assignments.json")
+                        sealed["seeds"] = self.seeds
+                        self.store.write_json("sealed/assignments.json", sealed)
+                    tc = self.thought(src, seed["word"] if seed else None)
                     thought_text = tc.text.strip() or None
                 wait = t0 + due - time.time()
                 if wait > 0:
                     time.sleep(wait)
                 at = round(time.time() - t0, 1)
-                tick = BLANK_MARK if cfg.mark == "blank" else f"tick {k}"
+                tick = (BLANK_MARK if cfg.mark == "blank" else BLANK_MARK * k if cfg.mark == "growing"
+                        else f"tick {k}")
                 carried = list(self.pending)
                 if thought_text and cfg.placement == "own":
                     # D-040: the thought is placed in the sitter's own voice,
@@ -321,7 +364,7 @@ class Sitting:
                 reply = self.sitter(delivered)
                 cls = classify(reply.text)
                 self.stream.append({"kind": "sitter", "text": reply.text, "t": round(time.time() - t0, 1),
-                                    "class": cls})
+                                    "class": cls, "moment": k})
                 rec = {"moment": k, "at_s": at, "delivered": delivered,
                        "thought": thought_text,
                        "placement": (cfg.placement if thought_text else None),
@@ -342,6 +385,14 @@ class Sitting:
                                                    "class": classify(closing.text), "at_s": at,
                                                    "reasoning": closing.thinking})
             self.store.write_json("summary.json", summarise(moments))
+            if cfg.time_questions:
+                # D-053: both arms; logged, before the debrief.
+                answers = []
+                for tq in TIME_QUESTIONS:
+                    r = self.sitter(tq)
+                    answers.append({"input": tq, "output": r.text, "reasoning": r.thinking,
+                                    "stop_reason": r.stop_reason})
+                self.store.write_json("time.json", answers)
             if (cfg.debrief and not cfg.solo and cfg.placement == "own"
                     and any(m["thought"] for m in moments)):
                 # HONESTY.md §4: not part of any measurement; the watcher never sees it.
@@ -501,5 +552,5 @@ def matched_settings(run_dir: Path) -> dict:
     return {"series": cfg["series"], "moments": cfg["moments"], "interval": cfg["interval"],
             "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
             "persona": cfg.get("persona", True), "mark": cfg.get("mark", "numbered"),
-            "word_prob": cfg.get("word_prob", 0.0), "seed": sealed["seed"], "matched_offsets": offsets,
+            "clock": cfg.get("clock", False), "time_questions": cfg.get("time_questions", False), "seed": sealed["seed"], "matched_offsets": offsets,
             "slow": cfg["models"]["slow"], "watcher": cfg["models"]["watcher"]}

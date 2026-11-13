@@ -12,7 +12,7 @@ import shutil
 from pathlib import Path
 
 FILES = ["config.json", "opening.json", "moments.jsonl", "closing.json", "summary.json",
-         "cost.json", "debrief.json", "sealed/assignments.json"]
+         "cost.json", "debrief.json", "time.json", "sealed/assignments.json"]
 
 
 def finished_sittings(runs: Path):
@@ -47,22 +47,25 @@ def export_all(runs: Path, dest: Path) -> list:
 def load_sitting(d: Path) -> dict:
     cfg = json.loads((d / "config.json").read_text())
     sealed = json.loads((d / "sealed" / "assignments.json").read_text())
-    sources, subjects, words = sealed["sources"], sealed.get("subjects", {}), sealed.get("words", {})
+    sources, subjects = sealed["sources"], sealed.get("subjects", {})
+    words, seeds = sealed.get("words", {}), sealed.get("seeds", {})
     moments = [json.loads(l) for l in (d / "moments.jsonl").read_text().splitlines()]
     for m in moments:
         m["source"] = sources.get(str(m["moment"]))
         m["subject"] = subjects.get(str(m["moment"]))
-        m["word"] = words.get(str(m["moment"]))
+        m["word"] = words.get(str(m["moment"])) or (seeds.get(str(m["moment"])) or {}).get("word")
+        m["seed_from"] = (seeds.get(str(m["moment"])) or {}).get("from")
     return {
         "id": d.name, "series": cfg["series"], "question": cfg["question"],
         "solo": cfg["solo"], "matched_run": cfg.get("matched_run"),
         "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
         "persona": cfg.get("persona", True), "mark": cfg.get("mark", "numbered"),
         "debrief": (json.loads((d / "debrief.json").read_text())["output"] if (d / "debrief.json").exists() else None),
+        "time": (json.loads((d / "time.json").read_text()) if (d / "time.json").exists() else None),
         "interval": cfg["interval"], "models": cfg.get("resolved_model_ids", {}),
         "opening": json.loads((d / "opening.json").read_text())["output"],
         "closing": json.loads((d / "closing.json").read_text())["output"],
-        "moments": [{k: m.get(k) for k in ("moment", "at_s", "thought", "source", "subject", "word", "sitter", "class", "placement", "reasoning")}
+        "moments": [{k: m.get(k) for k in ("moment", "at_s", "thought", "source", "subject", "word", "seed_from", "sitter", "class", "placement", "reasoning")}
                     for m in moments],
         "summary": json.loads((d / "summary.json").read_text()),
         "cost": json.loads((d / "cost.json").read_text()).get("usd") if (d / "cost.json").exists() else None,

@@ -119,12 +119,14 @@ def cmd_sit(a):
                   empty_prob=a.empty_prob, solo=a.solo, seed=a.seed,
                   placement=a.placement, sentence=a.with_sentence,
                   persona=not a.no_persona, watcher=not a.no_watcher,
-                  mark=a.mark, word_prob=a.word_prob)
+                  mark=a.mark, offtask_share=a.offtask_share, clock=a.clock,
+                  time_questions=a.time_questions)
     if a.match:
         m = matched_settings(RUNS / a.match)
         fields.update(series=m["series"], moments=m["moments"], interval=m["interval"],
                       seed=m["seed"], solo=True, placement=m["placement"], sentence=m["sentence"],
-                      persona=m["persona"], mark=m["mark"])
+                      persona=m["persona"], mark=m["mark"], clock=m["clock"],
+                      time_questions=m["time_questions"])
         models["slow"], models["watcher"] = m["slow"], m["watcher"]
         print(f"solo sitting matched to {a.match}: series {m['series']}, {m['moments']} moments, "
               f"same timings and seed (sealed)")
@@ -234,9 +236,11 @@ def main(argv=None):
                    help="own: thoughts in the sitter's own voice (D-040); other: as arriving (first sitting)")
     t.add_argument("--with-sentence", action="store_true",
                    help='add "Thoughts will appear here. Nothing will tell you where they come from." (D-041)')
-    t.add_argument("--word-prob", type=float, default=0.0,
-                   help="share of thoughts written from a random word only (D-052)")
-    t.add_argument("--mark", choices=["numbered", "blank"], default="numbered",
+    t.add_argument("--offtask-share", type=float, default=0.0,
+                   help="share of thoughts seeded from the sitter's own words (D-053)")
+    t.add_argument("--clock", action="store_true", help="tell the sitter the mark comes from a clock (D-053)")
+    t.add_argument("--time-questions", action="store_true", help="ask about time after the closing (D-053)")
+    t.add_argument("--mark", choices=["numbered", "blank", "growing"], default="numbered",
                    help="what arrives each moment: 'tick N' or a bare mark (D-048)")
     t.add_argument("--no-watcher", action="store_true",
                    help="skip the watcher, e.g. for short sittings (D-046)")
