@@ -1,0 +1,35 @@
+{
+  "seed": 2110757078,
+  "seed_given_by_launcher": false,
+  "solo": false,
+  "matched_run": null,
+  "sources": {
+    "1": null,
+    "2": "continuer",
+    "3": "earnest",
+    "4": "critic",
+    "5": null,
+    "6": "wanderer",
+    "7": "critic",
+    "8": null,
+    "9": null,
+    "10": "earnest"
+  },
+  "subjects": {
+    "1": null,
+    "2": "stream",
+    "3": "word",
+    "4": "stream",
+    "5": null,
+    "6": "word",
+    "7": "stream",
+    "8": null,
+    "9": null,
+    "10": "stream"
+  },
+  "words": {
+    "3": "dugout",
+    "6": "expedition"
+  },
+  "note": "Which agent tuning wrote the thought delivered at each moment; null = no thought. subjects: 'stream' = the agent saw the mind; 'word' = it saw only the drawn word (D-052)."
+}
