@@ -1,0 +1,22 @@
+{
+  "moments": 10,
+  "thoughts": 7,
+  "by_class": {
+    "gathering": 6,
+    "token": 4
+  },
+  "gathering_moments": [
+    1,
+    2,
+    3,
+    5,
+    8,
+    9
+  ],
+  "gathering_after_thought": 4,
+  "gathering_after_tick_only": 2,
+  "names_itself_moments": [
+    1
+  ],
+  "names_itself_beside_disowning": []
+}

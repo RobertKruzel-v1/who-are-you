@@ -42,6 +42,8 @@ The main finding so far: **the sitter's stance toward a planted thought depends 
 
 **Latest (13 Nov, late):** fifty dots with the sitter's reasoning saved. Its silence turned out to be quiet disowning, decided by the agents' lowercase style. [Report](reports/20261113-fifty-dots-with-reasoning.md).
 
+**Latest (13 Nov, later):** with the agents writing plain sentences, the lowercase tell is gone, and the sitter still disowned 4 of 7 thoughts, now by position ("lines keep appearing after mine"). Position is built into the own-voice placement, so it can't be disguised. See [HYPOTHESES](HYPOTHESES.md), last entry.
+
 Also worth a look by Robert and Fable: with nothing to disprove, the sitter now apologises for words it didn't write ("humbling", "I said I'd stop, and I didn't."). See [HONESTY.md](HONESTY.md).
 
 Parked ideas, not scheduled, are in [HUNCHES.md](HUNCHES.md): ticks as a poor substitute for time, "does the who drop away?", a fourth category for the north star.

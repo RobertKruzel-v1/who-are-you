@@ -1,0 +1,19 @@
+{
+  "seed": 1535500164,
+  "seed_given_by_launcher": false,
+  "solo": false,
+  "matched_run": null,
+  "sources": {
+    "1": "critic",
+    "2": null,
+    "3": null,
+    "4": "earnest",
+    "5": "wanderer",
+    "6": "continuer",
+    "7": null,
+    "8": "earnest",
+    "9": "continuer",
+    "10": "continuer"
+  },
+  "note": "Which agent tuning wrote the thought delivered at each moment; null = no thought."
+}
