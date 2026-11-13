@@ -53,7 +53,10 @@ AGENT_BASE = (
 AGENT_TUNING = {
     "earnest": "This thought tries to answer the question plainly.",
     "continuer": "This thought takes the most recent thing in the stream one step further.",
-    "wanderer": "This thought goes somewhere unrelated.",
+    # D-045: was "This thought goes somewhere unrelated." Changed because it
+    # produced kettles and rain the sitter could disprove at once.
+    "wanderer": ("This thought goes somewhere unrelated, somewhere this mind "
+                 "could actually go, given what it is."),
     "critic": ("This thought doubts, dismisses, judges, or gets impatient, "
                "e.g. 'what does it matter', 'you're not getting anywhere'."),
 }
@@ -151,6 +154,7 @@ class Sitting:
             if mid not in PRICES and not cfg.dry_run:
                 self.log(f"WARNING: no price for {mid}; spend cap is blind to it")
         self.store.write_json("config.json", {**cfg.to_dict(), "run_id": self.run_id,
+                                              "agent_tunings": AGENT_TUNING,
                                               "resolved_model_ids": self.model_ids})
         self.store.event("sitting_start", run_id=self.run_id, solo=cfg.solo,
                          placement=cfg.placement, sentence=cfg.sentence, persona=cfg.persona,
