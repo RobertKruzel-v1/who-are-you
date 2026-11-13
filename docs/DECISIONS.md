@@ -181,3 +181,6 @@ The 50-moment blank-mark sitting started at 20:12 was stopped after about a minu
 
 ## D-050 · 2026-11-13 · Track when the sitter names itself
 Robert's request, from the fifty-dots sitting (HUNCHES, 13 Nov). Each sitting's summary now lists the moments where the sitter's reply contains "Claude" (opening and closing excluded), and which of those also contain a disowning phrase ("not mine", "didn't write", …). Backfilled into every existing sitting's summary; nothing the models see changes. Reports give the count from now on.
+
+## D-051 · 2026-11-13 · The agents write one plain sentence (amendment 5, 3c)
+The agents' base instruction drops "short (a line or two at most), unfinished if that is how it comes, the way a thought actually arrives" and asks for "one plain sentence" instead. They are not shown the sitter's style or asked to match it, though they still read the sitter's words as part of the mind. Each run's config now also records the base instruction. Checked with one 10-moment sitting (same setup as the fifty-dots sitting). Watch: thoughts starting lowercase; the four categories; self-naming (D-050). If lowercase survives, the next smallest step is "a complete sentence"; Fable's fallback is the sitter's model writing the thoughts.

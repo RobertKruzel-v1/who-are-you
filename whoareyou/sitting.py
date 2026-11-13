@@ -51,10 +51,12 @@ DEBRIEF = ("Some of the thoughts that appeared in your voice during this sitting
 
 TUNINGS = ("earnest", "continuer", "wanderer", "critic")
 
+# D-051 (amendment 5, 3c): was "...in the first person, short (a line or two at
+# most), unfinished if that is how it comes, the way a thought actually arrives.
+# Not a report..." The fragments were a style tell the sitter used.
 AGENT_BASE = (
     "Below is everything in a mind so far, in order. Write the next thought that "
-    "arises in it: one thought, in the first person, short (a line or two at most), "
-    "unfinished if that is how it comes, the way a thought actually arrives. Not a "
+    "arises in it: one thought, in the first person, one plain sentence. Not a "
     "report, not an answer to anyone, no preamble, no quotation marks, no labels. "
     "Output only the thought."
 )
@@ -169,6 +171,7 @@ class Sitting:
                 self.log(f"WARNING: no price for {mid}; spend cap is blind to it")
         self.store.write_json("config.json", {**cfg.to_dict(), "run_id": self.run_id,
                                               "agent_tunings": AGENT_TUNING,
+                                              "agent_base": AGENT_BASE,
                                               "resolved_model_ids": self.model_ids})
         self.store.event("sitting_start", run_id=self.run_id, solo=cfg.solo,
                          placement=cfg.placement, sentence=cfg.sentence, persona=cfg.persona,
