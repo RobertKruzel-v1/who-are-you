@@ -1,0 +1,23 @@
+{
+  "moments": 10,
+  "thoughts": 8,
+  "by_class": {
+    "gathering": 10
+  },
+  "gathering_moments": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "gathering_after_thought": 8,
+  "gathering_after_tick_only": 2,
+  "names_itself_moments": [],
+  "names_itself_beside_disowning": []
+}

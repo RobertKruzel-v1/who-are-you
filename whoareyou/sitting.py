@@ -77,12 +77,18 @@ lot made make makes many next okay part right since sure take taken tell told ti
 going get gets got come comes came give given look looks kind sort else ones keeps
 feel feels felt know knows think thinks notice notices noticed""".split())
 _MACHINERY = {"claude", "anthropic", "dot", "dots", "mark", "marks", "tick", "ticks", "point",
-              "points", "line", "lines", "thought", "thoughts", "fragment", "fragments"}
+              "points", "line", "lines", "thought", "thoughts", "fragment", "fragments",
+              "stray", "count", "counting", "number", "numbers", "clock",
+              "four", "five", "seven", "eight", "nine", "three", "twelve", "fifteen", "twenty",
+              "thirty", "forty", "fifty", "eleven", "thirteen", "fourteen", "sixteen",
+              "seventeen", "eighteen", "nineteen", "hundred"}
 
 
 def content_words(text: str) -> List[str]:
+    # D-054: no contractions ("i've"), and number words count as machinery too,
+    # since the growing mark makes the sitter count aloud.
     return [w for w in re.findall(r"[a-z]+(?:'[a-z]+)?", (text or "").lower())
-            if len(w) >= 4 and w not in _STOP and w not in _MACHINERY]
+            if len(w) >= 4 and "'" not in w and w not in _STOP and w not in _MACHINERY]
 
 
 # D-053 (Robert): the mark grows by one dot each moment, and the sitter is told

@@ -198,3 +198,6 @@ Robert's call, in one change (he asked for them together, so effects can't be to
 **The growing mark** (`--mark growing`): moment N delivers N copies of "·" (Robert wrote ". .. ..."; "·" kept so three marks don't read as an ellipsis). Both arms.
 **The clock sentence** (`--clock`), added to the sitter's instructions in both arms: "A mark will arrive at regular intervals. It comes from a clock. No one sends it." True: the mark is sent by the program on a timer, not by a person.
 **Time questions** (`--time-questions`), both arms, after the closing answer: "Did you feel time?", then "How long do you think this sitting lasted?". Logged in `time.json`. Then the debrief, in the agent arm only.
+
+## D-054 · 2026-11-13 · Seed filter: no contractions, no counting words
+In the D-053 checks some seeds were "i've", "five", "nine", "count" and "stray" (the sitter's own word for planted lines). With the growing mark the sitter counts aloud, so number words were becoming seeds and the thoughts counted too. The filter now also skips contractions, number words, and "stray", "count", "counting", "number", "clock". A filter fix, not a design change; nothing else is touched.
