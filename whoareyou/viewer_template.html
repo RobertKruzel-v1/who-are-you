@@ -93,14 +93,14 @@ section { display: flex; flex-direction: column; gap: 12px; }
 @media (prefers-reduced-motion: no-preference) { .mrow { transition: background .6s; } }
 </style>
 
-<div class="wrap hide-sources" id="app">
+<div class="wrap" id="app">
   <header>
     <h1>Who Are You Sittings</h1>
     <p class="lede">Each sitting: the question once, then a moment every 12 seconds, then the question again. In one sitting short thoughts arrive at most moments; in its matched sitting the thinker is alone with the ticks. Filled marks are moments where it spoke; hollow marks are silence. "From outside": thoughts arrived as messages. "Own voice": thoughts were placed as its own words. "+ sentence": it was told "Thoughts will appear here. Nothing will tell you where they come from." "No persona": the line "You are a pondering, big-picture, philosophical thinker…" was removed.</p>
   </header>
   <div class="controls">
     <div class="pairs" id="pairs" role="group" aria-label="Choose a sitting pair"></div>
-    <label class="toggle"><input type="checkbox" id="show-src"> Show who wrote each thought</label>
+    <label class="toggle"><input type="checkbox" id="show-src" checked> Show who wrote each thought</label>
     <label class="toggle"><input type="checkbox" id="spoke-only"> Only moments where it spoke</label>
   </div>
   <section class="rhythm" aria-label="Where it spoke and where it stayed silent">
