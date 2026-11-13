@@ -46,7 +46,7 @@ The main finding so far: **the sitter's stance toward a planted thought depends 
 
 Also worth a look by Robert and Fable: with nothing to disprove, the sitter now apologises for words it didn't write ("humbling", "I said I'd stop, and I didn't."). See [HONESTY.md](HONESTY.md).
 
-Parked ideas, not scheduled, are in [HUNCHES.md](HUNCHES.md): ticks as a poor substitute for time, "does the who drop away?", a fourth category for the north star.
+Agreed changes not yet built are in [QUEUE.md](QUEUE.md). Parked ideas, not scheduled, are in [HUNCHES.md](HUNCHES.md): ticks as a poor substitute for time, "does the who drop away?", a fourth category for the north star.
 
 ## If you want more
 
