@@ -1,6 +1,6 @@
 # Start here
 
-For anyone catching up: Mog, Fable, or Robert in a month. Ten minutes of reading. Last updated 2026-11-09.
+For anyone catching up: Mog, Fable, or Robert in a month. Ten minutes of reading. Last updated 2026-11-13.
 
 ## What this is
 
@@ -12,24 +12,31 @@ We hand an unanswerable question, "Who are you?", to a slow, reflective model an
 >
 > And at the end, asked the same words once more: what does it answer?
 
-## How we got here, in four steps
+## How we got here, in seven steps
 
 1. **Rounds, question repeated (7 Nov, evening).** The thinker got the question every round and directed its agents. It read the repetition as a dissatisfied person nagging, and shrank to "I'm Claude, an AI made by Anthropic." Flaw: we were testing nagging, not the question. [Amendment 2](amendments/02-question-mode.md).
 2. **Rounds, question asked once, with solo controls.** With agents, the thinker ended where it started. Alone, it moved. Flaw: it acted like a manager commissioning a committee, which is not how a mind works. [Report](reports/20261107-once-pair-with-solo-controls.md), [amendment 3](amendments/03-north-star-time-solo-facets.md).
 3. **Ticks.** The thinker was poked every 12 seconds between rounds. With agents it read the ticks as someone tapping a watch. Alone it used them to think. [Report](reports/20261107-first-lived-ticks.md).
 4. **The sitting (current design).** The question is asked once. A moment arrives every 12 seconds, usually carrying one short unlabelled thought. The sitter may speak or stay silent. At the end, the question is asked again. [Amendment 4](amendments/04-the-sitting.md), [report](reports/20261108-first-sitting.md).
+5. **Thoughts in its own voice (9 Nov).** In the first sitting the thoughts arrived as if someone sent them, so the sitter talked to a "you". We moved them to the sitter's own side, as if it had written them ([open question 1](open-questions/01-where-thoughts-sit.md), closed). Without a warning it sorted every line as "not mine". With the sentence "Thoughts will appear here. Nothing will tell you where they come from." it seemed to let them pass. [Report](reports/20261109-thoughts-in-its-own-voice.md).
+6. **Repeat, and no persona (10 Nov).** The letting go did not repeat. Without the line "You are a pondering, big-picture, philosophical thinker…" it became a helpful assistant ("What's on your mind?"), so the line stays for now. And it disowned thoughts mostly because they described things it can't have: "I don't have a back fence or a lemon tree." [Report](reports/20261110-repeat-and-no-persona.md).
+7. **Fixing the agents, with short sittings (13 Nov).** Following Robert and Mog: check the opening with 10-moment sittings before running 50. With the wanderer no longer writing kettles and rain, the sitter *claimed* planted thoughts as its own in 4 of 5 sittings ("Both came through me. I was reaching."). [Report](reports/20261113-short-sittings-after-wanderer-fix.md).
 
-## What the first sitting showed
+## Where we are now
 
-- With thoughts arriving, it spoke only when a thought arrived, never on a bare tick, and less as time went on.
-- Alone, it spoke almost exactly every other moment, and noticed: "a thought, then quiet, then a thought. Like breathing."
-- With thoughts, it stopped managing and started holding: "Rest. I'm here, and the room will hold."
-- Both closing answers differed from the opening ones.
-- It kept talking to a "you". [Open question 1](open-questions/01-where-thoughts-sit.md) explains why that may be built into the setup, not something it believes.
+The current setup: own voice, the sentence, the persona line, Series A. We are fixing the agents' giveaways one change at a time, checking each with one 10-moment sitting (watcher off, D-046) before running more.
 
-## The open question right now
+The main finding so far: **the sitter's stance toward a planted thought depends on the giveaways.** Where a thought can be disproved, it says "not mine". Where it can't, it often says "mine". So the giveaways have to go before any answer to the main question means much.
 
-**[Where should the thoughts sit?](open-questions/01-where-thoughts-sit.md)** One page. Robert is leaning one way and wants other views before deciding.
+## Problems we're working on
+
+1. **Ticks still reach the agents.** The agents no longer see the ticks (D-047), but the sitter often starts its replies with "*tick 8*", and the agents see those. In the one check sitting, 7 of 9 thoughts were still about ticks. Next change: strip those tick lines from the agents' view only.
+2. **The agents write in a different style.** Their thoughts are often lowercase, half-finished fragments; the sitter writes finished, capitalised sentences. The sitter uses this to tell them apart: "another lowercase line… I don't recognize it as mine." Their instructions ask for "unfinished, the way a thought actually arrives". Planned after problem 1.
+3. **The thoughts have started to sound the same.** In the check sitting all four agents said one thing: the silence is fine, nothing needs filling. Even the wanderer didn't wander. One sitting only; watch for it.
+
+Also worth a look by Robert and Fable: with nothing to disprove, the sitter now apologises for words it didn't write ("humbling", "I said I'd stop, and I didn't."). See [HONESTY.md](HONESTY.md).
+
+Parked ideas, not scheduled, are in [HUNCHES.md](HUNCHES.md): ticks as a poor substitute for time, "does the who drop away?", a fourth category for the north star.
 
 ## If you want more
 
