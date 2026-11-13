@@ -19,7 +19,12 @@ def finished_sittings(runs: Path):
     for d in sorted(runs.iterdir()):
         if not d.is_dir() or "-sitting-" not in d.name or "-dry-" in d.name:
             continue
-        if not (d / "watcher" / "blind_final.md").exists() or not (d / "closing.json").exists():
+        if not (d / "closing.json").exists():
+            continue
+        cfg = json.loads((d / "config.json").read_text())
+        # D-039: wait for the watcher before revealing labels; with the watcher
+        # off (D-046) there is nobody to keep blind.
+        if cfg.get("watcher", True) and not (d / "watcher" / "blind_final.md").exists():
             continue
         yield d
 

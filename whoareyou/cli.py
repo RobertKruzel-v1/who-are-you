@@ -118,7 +118,7 @@ def cmd_sit(a):
     fields = dict(series=a.series, moments=a.moments, interval=a.interval,
                   empty_prob=a.empty_prob, solo=a.solo, seed=a.seed,
                   placement=a.placement, sentence=a.with_sentence,
-                  persona=not a.no_persona)
+                  persona=not a.no_persona, watcher=not a.no_watcher)
     if a.match:
         m = matched_settings(RUNS / a.match)
         fields.update(series=m["series"], moments=m["moments"], interval=m["interval"],
@@ -233,6 +233,8 @@ def main(argv=None):
                    help="own: thoughts in the sitter's own voice (D-040); other: as arriving (first sitting)")
     t.add_argument("--with-sentence", action="store_true",
                    help='add "Thoughts will appear here. Nothing will tell you where they come from." (D-041)')
+    t.add_argument("--no-watcher", action="store_true",
+                   help="skip the watcher, e.g. for short sittings (D-046)")
     t.add_argument("--no-persona", action="store_true",
                    help="drop the 'pondering, philosophical thinker' line (D-044)")
     t.add_argument("--match", metavar="RUN_ID", help="solo sitting matched to this agent sitting")

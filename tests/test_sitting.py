@@ -82,3 +82,14 @@ def test_persona_switch(tmp_path):
     off = Sitting(SitConfig(dry_run=True, moments=1, interval=0.01, sentence=True, persona=False), tmp_path)
     assert off.system == ARRIVALS + "\n\n" + SENTENCE
     assert "pondering" not in off.system
+
+
+def test_export_takes_watcherless_sittings(tmp_path):
+    import json
+    from whoareyou.export import finished_sittings
+    for name, watcher in (("20990101-000000-A-sitting-agents", False), ("20990101-000001-A-sitting-agents", True)):
+        d = tmp_path / name; d.mkdir()
+        (d / "closing.json").write_text("{}")
+        (d / "config.json").write_text(json.dumps({"watcher": watcher}))
+    got = [d.name for d in finished_sittings(tmp_path)]
+    assert got == ["20990101-000000-A-sitting-agents"]   # the watched one waits for its watcher

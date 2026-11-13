@@ -88,6 +88,7 @@ class SitConfig:
     placement: str = "own"           # own: in the sitter's voice (D-040); other: as arriving
     sentence: bool = False           # add SENTENCE to the sitter's instructions (D-041)
     persona: bool = True             # False drops the PERSONA line (D-044)
+    watcher: bool = True             # False skips the watcher (D-046)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -285,8 +286,9 @@ class Sitting:
                                                    "output": closing.text,
                                                    "class": classify(closing.text), "at_s": at})
             self.store.write_json("summary.json", summarise(moments))
-            self.log("  watcher...")
-            self.watch()
+            if self.cfg.watcher:
+                self.log("  watcher...")
+                self.watch()
             self.store.event("sitting_complete", spend_usd=round(self.budget.usd, 4),
                              duration_s=round(time.time() - t0, 1))
             self.log(f"done. {round(time.time() - t0)}s, spend ${self.budget.usd:.2f}")
