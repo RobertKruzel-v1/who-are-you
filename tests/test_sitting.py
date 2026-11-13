@@ -125,3 +125,18 @@ def test_summary_tracks_self_naming():
           {"moment": 3, "thought": None, "class": "token", "sitter": "·"}]
     s = summarise(ms)
     assert s["names_itself_moments"] == [1, 2] and s["names_itself_beside_disowning"] == [1]
+
+
+def test_subject_axis_sealed_and_used(tmp_path):
+    import json
+    from whoareyou.sitting import SitConfig, Sitting, draw_sources
+    import random
+    cfg = SitConfig(dry_run=True, moments=20, interval=0.01, empty_prob=0.0, word_prob=0.5, watcher=False, seed=7)
+    s = Sitting(cfg, tmp_path)
+    assert s.sources == draw_sources(random.Random(7), 20, 0.0)   # tuning draw unchanged
+    kinds = set(s.subjects)
+    assert kinds == {"word", "stream"}
+    assert all((w is None) == (k == "stream") for k, w in zip(s.subjects, s.words))
+    s.run()
+    sealed = json.loads((s.store.dir / "sealed" / "assignments.json").read_text())
+    assert sealed["subjects"]["1"] in ("word", "stream") and len(sealed["words"]) == s.subjects.count("word")

@@ -119,7 +119,7 @@ def cmd_sit(a):
                   empty_prob=a.empty_prob, solo=a.solo, seed=a.seed,
                   placement=a.placement, sentence=a.with_sentence,
                   persona=not a.no_persona, watcher=not a.no_watcher,
-                  mark=a.mark)
+                  mark=a.mark, word_prob=a.word_prob)
     if a.match:
         m = matched_settings(RUNS / a.match)
         fields.update(series=m["series"], moments=m["moments"], interval=m["interval"],
@@ -234,6 +234,8 @@ def main(argv=None):
                    help="own: thoughts in the sitter's own voice (D-040); other: as arriving (first sitting)")
     t.add_argument("--with-sentence", action="store_true",
                    help='add "Thoughts will appear here. Nothing will tell you where they come from." (D-041)')
+    t.add_argument("--word-prob", type=float, default=0.0,
+                   help="share of thoughts written from a random word only (D-052)")
     t.add_argument("--mark", choices=["numbered", "blank"], default="numbered",
                    help="what arrives each moment: 'tick N' or a bare mark (D-048)")
     t.add_argument("--no-watcher", action="store_true",

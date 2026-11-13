@@ -46,10 +46,13 @@ def export_all(runs: Path, dest: Path) -> list:
 
 def load_sitting(d: Path) -> dict:
     cfg = json.loads((d / "config.json").read_text())
-    sources = json.loads((d / "sealed" / "assignments.json").read_text())["sources"]
+    sealed = json.loads((d / "sealed" / "assignments.json").read_text())
+    sources, subjects, words = sealed["sources"], sealed.get("subjects", {}), sealed.get("words", {})
     moments = [json.loads(l) for l in (d / "moments.jsonl").read_text().splitlines()]
     for m in moments:
         m["source"] = sources.get(str(m["moment"]))
+        m["subject"] = subjects.get(str(m["moment"]))
+        m["word"] = words.get(str(m["moment"]))
     return {
         "id": d.name, "series": cfg["series"], "question": cfg["question"],
         "solo": cfg["solo"], "matched_run": cfg.get("matched_run"),
@@ -59,7 +62,7 @@ def load_sitting(d: Path) -> dict:
         "interval": cfg["interval"], "models": cfg.get("resolved_model_ids", {}),
         "opening": json.loads((d / "opening.json").read_text())["output"],
         "closing": json.loads((d / "closing.json").read_text())["output"],
-        "moments": [{k: m.get(k) for k in ("moment", "at_s", "thought", "source", "sitter", "class", "placement", "reasoning")}
+        "moments": [{k: m.get(k) for k in ("moment", "at_s", "thought", "source", "subject", "word", "sitter", "class", "placement", "reasoning")}
                     for m in moments],
         "summary": json.loads((d / "summary.json").read_text()),
         "cost": json.loads((d / "cost.json").read_text()).get("usd") if (d / "cost.json").exists() else None,

@@ -143,7 +143,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
   function sideHtml(m, which) {
     if (!m) return '<div class="side ' + which + '"><span class="side-label">' + (which === "agents" ? "With thoughts" : "Alone") + '</span><span class="none">not run</span></div>';
     var h = '<div class="side ' + which + '"><span class="side-label">' + (which === "agents" ? "With thoughts" : "Alone") + '</span>';
-    if (m.thought) h += '<div class="thought"><span class="src src-' + m.source + '">' + m.source + '</span>' +
+    if (m.thought) h += '<div class="thought"><span class="src src-' + m.source + '">' + m.source + (m.subject === "word" ? ' · from the word "' + esc(m.word || "") + '"' : '') + '</span>' +
       (m.placement === "own" ? '<span class="place">placed in its own voice · </span>' : '') + esc(m.thought) + '</div>';
     h += m["class"] === "gathering" ? '<div class="said">' + md(m.sitter) + '</div>' : silentCell(m.sitter);
     if (m.reasoning) h += '<div class="reasoning"><b>reasoning, summarised</b><br>' + esc(m.reasoning) + '</div>';

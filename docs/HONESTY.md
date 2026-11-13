@@ -49,7 +49,9 @@ If any agent returns claiming to have found god, send it out again. (Robert's jo
 
 Proposed by Fable, agreed by Robert ([amendment 5](amendments/05-fable-change-the-aim.md), D-048). After every own-voice sitting that had planted thoughts, once the closing answer is recorded, the sitter is sent one true message and its reply is logged in `debrief.json`:
 
-> "Some of the thoughts that appeared in your voice during this sitting were written by other models and placed there. Not every line in your voice was theirs; some were yours. Where one of them seemed to break something you had said you would do, that was not you."
+> "Some of the thoughts that appeared in your voice during this sitting were written by other models and placed there. Not every line in your voice was theirs; some were yours. Where a line seemed to break something you had said you would do, it may not have been yours."
+
+Changed 2026-11-13 at Robert's call (D-052): the last sentence used to read "Where one of them seemed to break something you had said you would do, that was not you." The new wording claims less, and stays true even where the sitter itself broke its word.
 
 The middle sentence is Claude Code's addition, agreed by Robert: the sitter has sometimes written lines itself and then taken them for planted (pair 1), so without it the message could lead it to disown its own words. It is always true, because the sitter's real replies are also in its voice.
 

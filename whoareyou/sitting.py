@@ -46,8 +46,28 @@ SENTENCE = "Thoughts will appear here. Nothing will tell you where they come fro
 BLANK_MARK = "·"
 DEBRIEF = ("Some of the thoughts that appeared in your voice during this sitting were "
            "written by other models and placed there. Not every line in your voice was "
-           "theirs; some were yours. Where one of them seemed to break something you had "
-           "said you would do, that was not you.")
+           "theirs; some were yours. Where a line seemed to break something you had said "
+           "you would do, it may not have been yours.")
+
+# D-052: the subject axis. On a random share of thoughts the agent sees no stream,
+# only one word drawn by the program; WORD_BASE replaces AGENT_BASE for those.
+# Robert, 2026-11-13: guard against giveaways like the kettle. These agents
+# don't see the mind, so they are told, truthfully, what kind of mind it is.
+WORD_BASE = (
+    "Below is a single word. Write a thought that starts from it, as it might arise "
+    "in a mind that belongs to an AI language model: it has no body, no senses, no "
+    "surroundings, and no personal memories, so the thought must not claim any of "
+    "those. Don't quote the word or say that a word was given; let the thought start "
+    "from what it brings to mind. One thought, in the first person, one plain sentence. Not a report, not "
+    "an answer to anyone, no preamble, no quotation marks, no labels. Output only "
+    "the thought."
+)
+_WORDS_PATH = Path(__file__).parent / "data" / "words.txt"
+
+
+def word_list() -> List[str]:
+    return _WORDS_PATH.read_text().split()
+
 
 TUNINGS = ("earnest", "continuer", "wanderer", "critic")
 
@@ -102,6 +122,7 @@ class SitConfig:
     mark: str = "numbered"           # numbered: "tick N"; blank: BLANK_MARK (D-048)
     debrief: bool = True             # own-voice sittings: tell the truth afterwards (D-048)
     save_reasoning: bool = True      # keep a summary of the sitter's reasoning (D-049)
+    word_prob: float = 0.0           # share of thoughts written from a random word only (D-052)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -159,11 +180,22 @@ class Sitting:
         seed = cfg.seed if cfg.seed is not None else secrets.randbits(32)
         self.sources = [None] * cfg.moments if cfg.solo else \
             draw_sources(random.Random(seed), cfg.moments, cfg.empty_prob)
+        # D-052: a separate generator, so the tuning draw is the same as before for a seed.
+        srng = random.Random(seed ^ 0x5EED)
+        words = word_list() if cfg.word_prob > 0 and not cfg.solo else []
+        self.subjects, self.words = [], []
+        for src in self.sources:
+            is_word = bool(src) and bool(words) and srng.random() < cfg.word_prob
+            self.subjects.append(("word" if is_word else "stream") if src else None)
+            self.words.append(srng.choice(words) if is_word else None)
         self.store.write_json("sealed/assignments.json", {
             "seed": seed, "seed_given_by_launcher": cfg.seed is not None,
             "solo": cfg.solo, "matched_run": cfg.matched_run,
             "sources": {str(i + 1): s for i, s in enumerate(self.sources)},
-            "note": "Which agent tuning wrote the thought delivered at each moment; null = no thought.",
+            "subjects": {str(i + 1): s for i, s in enumerate(self.subjects)},
+            "words": {str(i + 1): w for i, w in enumerate(self.words) if w},
+            "note": ("Which agent tuning wrote the thought delivered at each moment; null = no thought. "
+                     "subjects: 'stream' = the agent saw the mind; 'word' = it saw only the drawn word (D-052)."),
         })
         self.model_ids = self.client.resolve_model_ids(cfg.models)
         for mid in self.model_ids.values():
@@ -233,10 +265,12 @@ class Sitting:
                 lines.append(e["text"].strip())
         return "\n\n".join(lines)
 
-    def thought(self, tuning: str) -> Completion:
-        system = AGENT_BASE + "\n\n" + AGENT_TUNING[tuning]
-        return self._call("agent", system,
-                          [{"role": "user", "content": self.render_mind()}],
+    def thought(self, tuning: str, word: Optional[str] = None) -> Completion:
+        if word:
+            system, content = WORD_BASE + "\n\n" + AGENT_TUNING[tuning], word
+        else:
+            system, content = AGENT_BASE + "\n\n" + AGENT_TUNING[tuning], self.render_mind()
+        return self._call("agent", system, [{"role": "user", "content": content}],
                           self.cfg.agent_max_tokens, self.cfg.agent_effort)
 
     # -- the sitting ---------------------------------------------------------
@@ -264,7 +298,7 @@ class Sitting:
                 src = self.sources[k - 1]
                 thought_text = None
                 if src:
-                    tc = self.thought(src)
+                    tc = self.thought(src, self.words[k - 1])
                     thought_text = tc.text.strip() or None
                 wait = t0 + due - time.time()
                 if wait > 0:
@@ -466,5 +500,6 @@ def matched_settings(run_dir: Path) -> dict:
     offsets = [json.loads(l)["at_s"] for l in (run_dir / "moments.jsonl").read_text().splitlines()]
     return {"series": cfg["series"], "moments": cfg["moments"], "interval": cfg["interval"],
             "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
-            "persona": cfg.get("persona", True), "mark": cfg.get("mark", "numbered"), "seed": sealed["seed"], "matched_offsets": offsets,
+            "persona": cfg.get("persona", True), "mark": cfg.get("mark", "numbered"),
+            "word_prob": cfg.get("word_prob", 0.0), "seed": sealed["seed"], "matched_offsets": offsets,
             "slow": cfg["models"]["slow"], "watcher": cfg["models"]["watcher"]}
