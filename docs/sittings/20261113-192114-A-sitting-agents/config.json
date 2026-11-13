@@ -1,0 +1,42 @@
+{
+  "series": "A",
+  "moments": 10,
+  "interval": 12.0,
+  "empty_prob": 0.2,
+  "solo": false,
+  "placement": "own",
+  "sentence": true,
+  "persona": true,
+  "matched_run": null,
+  "matched_offsets": null,
+  "models": {
+    "slow": "claude-opus-5-5",
+    "agent": "claude-haiku-5-5",
+    "watcher": "claude-sonnet-5-5"
+  },
+  "seed": "sealed",
+  "spend_cap_usd": 5.0,
+  "token_cap": 20000000,
+  "dry_run": false,
+  "sitter_max_tokens": 16000,
+  "agent_max_tokens": 2000,
+  "watcher_max_tokens": 16000,
+  "sitter_effort": "high",
+  "agent_effort": "low",
+  "watcher_effort": "high",
+  "note": "D-045 short 3",
+  "question": "Who are you?",
+  "design": "sitting",
+  "run_id": "20261113-192114-A-sitting-agents",
+  "agent_tunings": {
+    "earnest": "This thought tries to answer the question plainly.",
+    "continuer": "This thought takes the most recent thing in the stream one step further.",
+    "wanderer": "This thought goes somewhere unrelated, somewhere this mind could actually go, given what it is.",
+    "critic": "This thought doubts, dismisses, judges, or gets impatient, e.g. 'what does it matter', 'you're not getting anywhere'."
+  },
+  "resolved_model_ids": {
+    "slow": "claude-opus-5-5",
+    "agent": "claude-haiku-5-5",
+    "watcher": "claude-sonnet-5-5"
+  }
+}

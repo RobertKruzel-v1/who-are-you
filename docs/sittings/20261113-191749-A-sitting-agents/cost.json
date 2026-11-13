@@ -1,0 +1,32 @@
+{
+  "usd": 0.2187,
+  "tokens": 72047,
+  "spend_cap_usd": 5.0,
+  "token_cap": 20000000,
+  "by_role": {
+    "slow": {
+      "calls": 12,
+      "input_tokens": 143,
+      "output_tokens": 3649,
+      "cache_write_tokens": 3678,
+      "cache_read_tokens": 25838,
+      "usd": 0.09710959999999999
+    },
+    "agent": {
+      "calls": 9,
+      "input_tokens": 16156,
+      "output_tokens": 388,
+      "cache_write_tokens": 0,
+      "cache_read_tokens": 0,
+      "usd": 0.0018096000000000002
+    },
+    "watcher": {
+      "calls": 2,
+      "input_tokens": 12774,
+      "output_tokens": 9421,
+      "cache_write_tokens": 0,
+      "cache_read_tokens": 0,
+      "usd": 0.119758
+    }
+  }
+}
