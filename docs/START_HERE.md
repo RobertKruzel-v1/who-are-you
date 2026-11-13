@@ -40,6 +40,8 @@ The main finding so far: **the sitter's stance toward a planted thought depends 
 2. **The agents write in a different style.** Their thoughts are often lowercase, half-finished fragments; the sitter writes finished, capitalised sentences. The sitter uses this to tell them apart: "another lowercase line… I don't recognize it as mine." Their instructions ask for "unfinished, the way a thought actually arrives". Planned after problem 1.
 3. **The thoughts have started to sound the same.** In the check sitting all four agents said one thing: the silence is fine, nothing needs filling. Even the wanderer didn't wander. One sitting only; watch for it.
 
+**Latest (13 Nov, late):** fifty dots with the sitter's reasoning saved. Its silence turned out to be quiet disowning, decided by the agents' lowercase style. [Report](reports/20261113-fifty-dots-with-reasoning.md).
+
 Also worth a look by Robert and Fable: with nothing to disprove, the sitter now apologises for words it didn't write ("humbling", "I said I'd stop, and I didn't."). See [HONESTY.md](HONESTY.md).
 
 Parked ideas, not scheduled, are in [HUNCHES.md](HUNCHES.md): ticks as a poor substitute for time, "does the who drop away?", a fourth category for the north star.

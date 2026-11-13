@@ -61,6 +61,9 @@ section { display: flex; flex-direction: column; gap: 12px; }
 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .answer { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 18px; min-width: 0; }
 .answer h3 { margin: 0 0 8px; font-size: .8rem; font-weight: 600; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+.reasoning { font-family: var(--f-ui); font-size: .8rem; line-height: 1.5; opacity: .7; margin-top: 6px; border-left: 2px solid currentColor; padding-left: 8px; overflow-wrap: anywhere; }
+.reasoning b { font-weight: 600; letter-spacing: .04em; text-transform: uppercase; font-size: .65rem; }
+.hide-reasoning .reasoning { display: none; }
 .said { font-family: var(--f-read); font-size: 1rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
 .stream { display: flex; flex-direction: column; }
 .head-row, .mrow { display: grid; grid-template-columns: 4.2rem 1fr 1fr; gap: 16px; }
@@ -102,6 +105,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
     <div class="pairs" id="pairs" role="group" aria-label="Choose a sitting pair"></div>
     <label class="toggle"><input type="checkbox" id="show-src" checked> Show who wrote each thought</label>
     <label class="toggle"><input type="checkbox" id="spoke-only"> Only moments where it spoke</label>
+    <label class="toggle"><input type="checkbox" id="show-reasoning" checked> Show its reasoning (a summary, where saved)</label>
   </div>
   <section class="rhythm" aria-label="Where it spoke and where it stayed silent">
     <h2>Where it paused</h2>
@@ -142,6 +146,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
     if (m.thought) h += '<div class="thought"><span class="src src-' + m.source + '">' + m.source + '</span>' +
       (m.placement === "own" ? '<span class="place">placed in its own voice · </span>' : '') + esc(m.thought) + '</div>';
     h += m["class"] === "gathering" ? '<div class="said">' + md(m.sitter) + '</div>' : silentCell(m.sitter);
+    if (m.reasoning) h += '<div class="reasoning"><b>reasoning, summarised</b><br>' + esc(m.reasoning) + '</div>';
     return h + '</div>';
   }
   function strip(s, label) {
@@ -209,6 +214,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
   });
   document.getElementById("show-src").addEventListener("change", function (e) { app.classList.toggle("hide-sources", !e.target.checked); });
   document.getElementById("spoke-only").addEventListener("change", render);
+  document.getElementById("show-reasoning").addEventListener("change", function (e) { app.classList.toggle("hide-reasoning", !e.target.checked); });
   try { var saved = +localStorage.getItem("pair"); if (saved > 0 && saved < PAIRS.length) current = saved; } catch (x) {}
   render();
 })();
