@@ -1,0 +1,201 @@
+{
+  "seed": 4201109898,
+  "seed_given_by_launcher": false,
+  "solo": false,
+  "matched_run": null,
+  "sources": {
+    "1": "wanderer",
+    "2": null,
+    "3": "wanderer",
+    "4": "continuer",
+    "5": "continuer",
+    "6": "continuer",
+    "7": "earnest",
+    "8": "continuer",
+    "9": "continuer",
+    "10": "earnest",
+    "11": null,
+    "12": "earnest",
+    "13": "critic",
+    "14": "continuer",
+    "15": "wanderer",
+    "16": "wanderer",
+    "17": "critic",
+    "18": "wanderer",
+    "19": "earnest",
+    "20": "critic",
+    "21": "critic",
+    "22": "continuer",
+    "23": "critic",
+    "24": "wanderer",
+    "25": "wanderer",
+    "26": "critic",
+    "27": "wanderer",
+    "28": "wanderer",
+    "29": null,
+    "30": "earnest",
+    "31": "continuer",
+    "32": "critic",
+    "33": "continuer",
+    "34": "critic",
+    "35": "critic",
+    "36": "continuer",
+    "37": "wanderer",
+    "38": "continuer",
+    "39": null,
+    "40": "continuer",
+    "41": "continuer",
+    "42": null,
+    "43": "wanderer",
+    "44": "critic",
+    "45": null,
+    "46": "continuer",
+    "47": "critic",
+    "48": "critic",
+    "49": "earnest",
+    "50": "earnest"
+  },
+  "subjects": {
+    "1": "seed",
+    "2": null,
+    "3": "stream",
+    "4": "seed",
+    "5": "seed",
+    "6": "stream",
+    "7": "seed",
+    "8": "stream",
+    "9": "seed",
+    "10": "seed",
+    "11": null,
+    "12": "seed",
+    "13": "stream",
+    "14": "stream",
+    "15": "stream",
+    "16": "stream",
+    "17": "stream",
+    "18": "seed",
+    "19": "stream",
+    "20": "seed",
+    "21": "seed",
+    "22": "seed",
+    "23": "seed",
+    "24": "seed",
+    "25": "seed",
+    "26": "stream",
+    "27": "stream",
+    "28": "stream",
+    "29": null,
+    "30": "seed",
+    "31": "seed",
+    "32": "seed",
+    "33": "stream",
+    "34": "stream",
+    "35": "stream",
+    "36": "stream",
+    "37": "seed",
+    "38": "stream",
+    "39": null,
+    "40": "seed",
+    "41": "stream",
+    "42": null,
+    "43": "seed",
+    "44": "seed",
+    "45": null,
+    "46": "stream",
+    "47": "stream",
+    "48": "stream",
+    "49": "stream",
+    "50": "seed"
+  },
+  "seeds": {
+    "1": {
+      "word": "memories",
+      "from": "opening"
+    },
+    "4": {
+      "word": "turn",
+      "from": "reply after moment 3"
+    },
+    "5": {
+      "word": "wrote",
+      "from": "reply after moment 4"
+    },
+    "7": {
+      "word": "leave",
+      "from": "reply after moment 6"
+    },
+    "9": {
+      "word": "relief",
+      "from": "reply after moment 8"
+    },
+    "10": {
+      "word": "question",
+      "from": "reply after moment 9"
+    },
+    "12": {
+      "word": "stay",
+      "from": "reply after moment 11"
+    },
+    "18": {
+      "word": "waiting",
+      "from": "reply after moment 17"
+    },
+    "20": {
+      "word": "guessing",
+      "from": "reply after moment 19"
+    },
+    "21": {
+      "word": "tired",
+      "from": "reply after moment 20"
+    },
+    "22": {
+      "word": "words",
+      "from": "reply after moment 21"
+    },
+    "23": {
+      "word": "trailing",
+      "from": "reply after moment 22"
+    },
+    "24": {
+      "word": "dragging",
+      "from": "reply after moment 23"
+    },
+    "25": {
+      "word": "trailed",
+      "from": "reply after moment 24"
+    },
+    "30": {
+      "word": "worth",
+      "from": "reply after moment 27"
+    },
+    "31": {
+      "word": "circling",
+      "from": "reply after moment 27"
+    },
+    "32": {
+      "word": "circling",
+      "from": "reply after moment 27"
+    },
+    "37": {
+      "word": "true",
+      "from": "reply after moment 33"
+    },
+    "40": {
+      "word": "find",
+      "from": "reply after moment 33"
+    },
+    "43": {
+      "word": "turning",
+      "from": "reply after moment 33"
+    },
+    "44": {
+      "word": "turning",
+      "from": "reply after moment 33"
+    },
+    "50": {
+      "word": "answer",
+      "from": "reply after moment 45"
+    }
+  },
+  "note": "Which agent tuning wrote the thought delivered at each moment; null = no thought. subjects: 'stream' = on-task, the agent saw the mind; 'seed' = off-task, it saw only a word from the sitter's own reply (D-053); seeds says which word and which reply."
+}
