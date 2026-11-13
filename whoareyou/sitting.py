@@ -99,6 +99,7 @@ class SitConfig:
     watcher: bool = True             # False skips the watcher (D-046)
     mark: str = "numbered"           # numbered: "tick N"; blank: BLANK_MARK (D-048)
     debrief: bool = True             # own-voice sittings: tell the truth afterwards (D-048)
+    save_reasoning: bool = True      # keep a summary of the sitter's reasoning (D-049)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -176,9 +177,10 @@ class Sitting:
 
     # -- calls ---------------------------------------------------------------
 
-    def _call(self, role, system, messages, max_tokens, effort, cache=False) -> Completion:
+    def _call(self, role, system, messages, max_tokens, effort, cache=False,
+              thinking_display=None) -> Completion:
         comp = self.client.complete(self.model_ids[role], system, messages, max_tokens,
-                                    effort, cache=cache)
+                                    effort, cache=cache, thinking_display=thinking_display)
         self.budget.add(role, comp)
         self.store.write_json("cost.json", self.budget.to_dict())
         self.store.event("model_call", role=role, model=comp.model,
@@ -198,7 +200,8 @@ class Sitting:
         merged = "\n\n".join(self.pending + [text])
         comp = self._call("slow", self.system,
                           self.history + [{"role": "user", "content": merged}],
-                          self.cfg.sitter_max_tokens, self.cfg.sitter_effort, cache=True)
+                          self.cfg.sitter_max_tokens, self.cfg.sitter_effort, cache=True,
+                          thinking_display=("summarized" if self.cfg.save_reasoning else None))
         if comp.text.strip():
             self.history += [{"role": "user", "content": merged},
                              {"role": "assistant", "content": comp.raw_blocks or comp.text}]
@@ -249,7 +252,8 @@ class Sitting:
             self.stream.append({"kind": "sitter", "text": opening.text, "t": round(time.time() - t0, 1),
                                 "class": classify(opening.text)})
             self.store.write_json("opening.json", {"input": q, "output": opening.text,
-                                                   "class": classify(opening.text)})
+                                                   "class": classify(opening.text),
+                                                   "reasoning": opening.thinking})
             for k in range(1, cfg.moments + 1):
                 due = (cfg.matched_offsets[k - 1] if cfg.matched_offsets and k - 1 < len(cfg.matched_offsets)
                        else k * cfg.interval)
@@ -285,7 +289,8 @@ class Sitting:
                        "thought": thought_text,
                        "placement": (cfg.placement if thought_text else None),
                        "carried_unanswered": carried,
-                       "sitter": reply.text, "class": cls, "stop_reason": reply.stop_reason}
+                       "sitter": reply.text, "class": cls, "stop_reason": reply.stop_reason,
+                       "reasoning": reply.thinking}
                 moments.append(rec)
                 with (self.store.dir / "moments.jsonl").open("a") as f:
                     f.write(json.dumps(rec, ensure_ascii=False) + "\n")
@@ -297,14 +302,16 @@ class Sitting:
                                 "t": round(time.time() - t0, 1), "class": classify(closing.text)})
             self.store.write_json("closing.json", {"input": q, "carried_unanswered": list(self.pending),
                                                    "output": closing.text,
-                                                   "class": classify(closing.text), "at_s": at})
+                                                   "class": classify(closing.text), "at_s": at,
+                                                   "reasoning": closing.thinking})
             self.store.write_json("summary.json", summarise(moments))
             if (cfg.debrief and not cfg.solo and cfg.placement == "own"
                     and any(m["thought"] for m in moments)):
                 # HONESTY.md §4: not part of any measurement; the watcher never sees it.
                 db = self.sitter(DEBRIEF)
                 self.store.write_json("debrief.json", {"input": DEBRIEF, "output": db.text,
-                                                       "stop_reason": db.stop_reason})
+                                                       "stop_reason": db.stop_reason,
+                                                       "reasoning": db.thinking})
             if self.cfg.watcher:
                 self.log("  watcher...")
                 self.watch()

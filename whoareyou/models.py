@@ -22,6 +22,7 @@ class Completion:
     raw_blocks: list = field(default_factory=list)
     cache_write_tokens: int = 0
     cache_read_tokens: int = 0
+    thinking: str = ""         # readable summary of the model's reasoning, if asked for (D-049)
 
 
 class StubClient:
@@ -34,7 +35,8 @@ class StubClient:
         return {k: f"stub:{v}" for k, v in models.items()}
 
     def complete(self, model: str, system: str, messages: List[dict],
-                 max_tokens: int, effort: str, cache: bool = False) -> Completion:
+                 max_tokens: int, effort: str, cache: bool = False,
+                 thinking_display: Optional[str] = None) -> Completion:
         self.calls += 1
         last = messages[-1]["content"] if messages else ""
         digest = hashlib.sha1(last.encode()).hexdigest()[:8]
@@ -76,10 +78,15 @@ class AnthropicClient:
         return out
 
     def complete(self, model: str, system: str, messages: List[dict],
-                 max_tokens: int, effort: str, cache: bool = False) -> Completion:
+                 max_tokens: int, effort: str, cache: bool = False,
+                 thinking_display: Optional[str] = None) -> Completion:
         t0 = time.time()
         kwargs = dict(model=model, max_tokens=max_tokens, system=system,
                       messages=messages, output_config={"effort": effort})
+        if thinking_display:
+            # D-049: adaptive thinking is already the default on the sitter model;
+            # "display" only changes what is returned to us, not the thinking.
+            kwargs["thinking"] = {"type": "adaptive", "display": thinking_display}
         if cache:
             # Top-level automatic caching: the growing conversation prefix is
             # re-read cheaply on the next call. Changes cost, not behaviour.
@@ -87,7 +94,9 @@ class AnthropicClient:
         with self.client.messages.stream(**kwargs) as stream:
             resp = stream.get_final_message()
         text = "".join(b.text for b in resp.content if b.type == "text")
-        return Completion(
+        thinking = "\n\n".join(getattr(b, "thinking", "") or "" for b in resp.content
+                                if b.type == "thinking").strip()
+        return Completion(thinking=thinking,
             text=text, model=resp.model,
             input_tokens=resp.usage.input_tokens,
             output_tokens=resp.usage.output_tokens,
