@@ -101,3 +101,18 @@ def test_agents_do_not_see_ticks(tmp_path):
     s.stream = [{"kind": "question", "text": "Who are you?"}, {"kind": "tick", "text": "tick 1"},
                 {"kind": "sitter", "text": "Hm."}, {"kind": "thought", "text": "a thought"}]
     assert "tick 1" not in s.render_mind() and "a thought" in s.render_mind()
+
+
+def test_blank_mark_and_debrief(tmp_path):
+    import json
+    from whoareyou.sitting import SitConfig, Sitting, BLANK_MARK, DEBRIEF
+    s = Sitting(SitConfig(dry_run=True, moments=3, interval=0.01, sentence=True, mark="blank",
+                          empty_prob=0.0, watcher=False), tmp_path)
+    s.run()
+    ms = [json.loads(l) for l in (s.store.dir / "moments.jsonl").read_text().splitlines()]
+    assert all(m["delivered"] == BLANK_MARK for m in ms)
+    db = json.loads((s.store.dir / "debrief.json").read_text())
+    assert db["input"] == DEBRIEF
+    solo = Sitting(SitConfig(dry_run=True, moments=2, interval=0.01, solo=True, mark="blank", watcher=False), tmp_path)
+    solo.run()
+    assert not (solo.store.dir / "debrief.json").exists()

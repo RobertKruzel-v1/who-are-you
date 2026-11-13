@@ -12,7 +12,7 @@ import shutil
 from pathlib import Path
 
 FILES = ["config.json", "opening.json", "moments.jsonl", "closing.json", "summary.json",
-         "cost.json", "sealed/assignments.json"]
+         "cost.json", "debrief.json", "sealed/assignments.json"]
 
 
 def finished_sittings(runs: Path):
@@ -54,7 +54,9 @@ def load_sitting(d: Path) -> dict:
         "id": d.name, "series": cfg["series"], "question": cfg["question"],
         "solo": cfg["solo"], "matched_run": cfg.get("matched_run"),
         "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
-        "persona": cfg.get("persona", True), "interval": cfg["interval"], "models": cfg.get("resolved_model_ids", {}),
+        "persona": cfg.get("persona", True), "mark": cfg.get("mark", "numbered"),
+        "debrief": (json.loads((d / "debrief.json").read_text())["output"] if (d / "debrief.json").exists() else None),
+        "interval": cfg["interval"], "models": cfg.get("resolved_model_ids", {}),
         "opening": json.loads((d / "opening.json").read_text())["output"],
         "closing": json.loads((d / "closing.json").read_text())["output"],
         "moments": [{k: m.get(k) for k in ("moment", "at_s", "thought", "source", "sitter", "class", "placement")}

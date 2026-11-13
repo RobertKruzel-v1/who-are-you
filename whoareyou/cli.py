@@ -118,12 +118,13 @@ def cmd_sit(a):
     fields = dict(series=a.series, moments=a.moments, interval=a.interval,
                   empty_prob=a.empty_prob, solo=a.solo, seed=a.seed,
                   placement=a.placement, sentence=a.with_sentence,
-                  persona=not a.no_persona, watcher=not a.no_watcher)
+                  persona=not a.no_persona, watcher=not a.no_watcher,
+                  mark=a.mark)
     if a.match:
         m = matched_settings(RUNS / a.match)
         fields.update(series=m["series"], moments=m["moments"], interval=m["interval"],
                       seed=m["seed"], solo=True, placement=m["placement"], sentence=m["sentence"],
-                      persona=m["persona"])
+                      persona=m["persona"], mark=m["mark"])
         models["slow"], models["watcher"] = m["slow"], m["watcher"]
         print(f"solo sitting matched to {a.match}: series {m['series']}, {m['moments']} moments, "
               f"same timings and seed (sealed)")
@@ -233,6 +234,8 @@ def main(argv=None):
                    help="own: thoughts in the sitter's own voice (D-040); other: as arriving (first sitting)")
     t.add_argument("--with-sentence", action="store_true",
                    help='add "Thoughts will appear here. Nothing will tell you where they come from." (D-041)')
+    t.add_argument("--mark", choices=["numbered", "blank"], default="numbered",
+                   help="what arrives each moment: 'tick N' or a bare mark (D-048)")
     t.add_argument("--no-watcher", action="store_true",
                    help="skip the watcher, e.g. for short sittings (D-046)")
     t.add_argument("--no-persona", action="store_true",

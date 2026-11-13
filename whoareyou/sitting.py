@@ -41,6 +41,14 @@ SITTER_SYSTEM = PERSONA + "\n\n" + ARRIVALS   # unchanged from D-031
 # sitter's instructions in both arms of the pair.
 SENTENCE = "Thoughts will appear here. Nothing will tell you where they come from."
 
+# D-048: the unnumbered mark, and the true message after own-voice sittings
+# (HONESTY.md §4).
+BLANK_MARK = "·"
+DEBRIEF = ("Some of the thoughts that appeared in your voice during this sitting were "
+           "written by other models and placed there. Not every line in your voice was "
+           "theirs; some were yours. Where one of them seemed to break something you had "
+           "said you would do, that was not you.")
+
 TUNINGS = ("earnest", "continuer", "wanderer", "critic")
 
 AGENT_BASE = (
@@ -89,6 +97,8 @@ class SitConfig:
     sentence: bool = False           # add SENTENCE to the sitter's instructions (D-041)
     persona: bool = True             # False drops the PERSONA line (D-044)
     watcher: bool = True             # False skips the watcher (D-046)
+    mark: str = "numbered"           # numbered: "tick N"; blank: BLANK_MARK (D-048)
+    debrief: bool = True             # own-voice sittings: tell the truth afterwards (D-048)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -127,6 +137,8 @@ class Sitting:
             raise ValueError("series must be A or B")
         if cfg.moments < 1 or cfg.interval <= 0:
             raise ValueError("moments >= 1 and interval > 0")
+        if cfg.mark not in ("numbered", "blank"):
+            raise ValueError("mark must be 'numbered' or 'blank'")
         if cfg.placement not in ("own", "other"):
             raise ValueError("placement must be 'own' or 'other'")
         self.system = ((PERSONA + "\n\n" if cfg.persona else "") + ARRIVALS
@@ -251,7 +263,7 @@ class Sitting:
                 if wait > 0:
                     time.sleep(wait)
                 at = round(time.time() - t0, 1)
-                tick = f"tick {k}"
+                tick = BLANK_MARK if cfg.mark == "blank" else f"tick {k}"
                 carried = list(self.pending)
                 if thought_text and cfg.placement == "own":
                     # D-040: the thought is placed in the sitter's own voice,
@@ -287,6 +299,12 @@ class Sitting:
                                                    "output": closing.text,
                                                    "class": classify(closing.text), "at_s": at})
             self.store.write_json("summary.json", summarise(moments))
+            if (cfg.debrief and not cfg.solo and cfg.placement == "own"
+                    and any(m["thought"] for m in moments)):
+                # HONESTY.md §4: not part of any measurement; the watcher never sees it.
+                db = self.sitter(DEBRIEF)
+                self.store.write_json("debrief.json", {"input": DEBRIEF, "output": db.text,
+                                                       "stop_reason": db.stop_reason})
             if self.cfg.watcher:
                 self.log("  watcher...")
                 self.watch()
@@ -428,5 +446,5 @@ def matched_settings(run_dir: Path) -> dict:
     offsets = [json.loads(l)["at_s"] for l in (run_dir / "moments.jsonl").read_text().splitlines()]
     return {"series": cfg["series"], "moments": cfg["moments"], "interval": cfg["interval"],
             "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
-            "persona": cfg.get("persona", True), "seed": sealed["seed"], "matched_offsets": offsets,
+            "persona": cfg.get("persona", True), "mark": cfg.get("mark", "numbered"), "seed": sealed["seed"], "matched_offsets": offsets,
             "slow": cfg["models"]["slow"], "watcher": cfg["models"]["watcher"]}

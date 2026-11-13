@@ -112,6 +112,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
   <section><h2>Opening: "<span class="q"></span>"</h2><div class="cols" id="opening"></div></section>
   <section><h2>The sitting</h2><div class="stream" id="stream"></div></section>
   <section><h2>Closing: the same question again</h2><div class="cols" id="closing"></div></section>
+  <section id="debrief"></section>
   <p class="meta" id="meta"></p>
 </div>
 
@@ -167,6 +168,8 @@ section { display: flex; flex-direction: column; gap: 12px; }
     }
     document.getElementById("opening").innerHTML = answers("opening");
     document.getElementById("closing").innerHTML = answers("closing");
+    var db = document.getElementById("debrief");
+    if (db) db.innerHTML = (a && a.debrief) ? '<h2>Told afterwards</h2><p class="lede">After the closing answer it was told: "Some of the thoughts that appeared in your voice during this sitting were written by other models and placed there. Not every line in your voice was theirs; some were yours. Where one of them seemed to break something you had said you would do, that was not you." Its reply (not part of any count):</p><div class="answer"><div class="said">' + md(a.debrief) + '</div></div>' : "";
     var only = document.getElementById("spoke-only").checked;
     var n = Math.max(a ? a.moments.length : 0, s ? s.moments.length : 0), rows = [];
     rows.push('<div class="head-row"><span>Moment</span><span>With thoughts</span><span>Alone</span></div>');
@@ -187,7 +190,8 @@ section { display: flex; flex-direction: column; gap: 12px; }
     var any = p.agents || p.solo;
     var cond = (any.placement === "own" ? (any.sentence ? "own voice + sentence" : "own voice") : "from outside")
       + (any.persona === false ? " · no persona" : "")
-      + (any.moments.length < 50 ? " · " + any.moments.length + " moments" : "");
+      + (any.moments.length < 50 ? " · " + any.moments.length + " moments" : "")
+      + (any.mark === "blank" ? " · blank mark" : "");
     return '<button type="button" data-i="' + i + '">Series ' + any.series + ' · ' + cond + ' · ' + stamp(any.id) + '</button>';
   }).join("");
   document.getElementById("pairs").addEventListener("click", function (e) {
