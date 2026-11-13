@@ -205,10 +205,11 @@ class Sitting:
         self.history.append({"role": "assistant", "content": text})
 
     def render_mind(self) -> str:
-        """What the sitter has, as plain text, for the agents."""
+        """What the sitter has, as plain text, for the agents. Ticks left out (D-047)."""
         lines = []
         for e in self.stream:
-            if e["kind"] in ("question", "tick", "thought"):
+            # D-047: ticks are not shown to the agents (the sitter still gets them).
+            if e["kind"] in ("question", "thought"):
                 lines.append(e["text"])
             elif e["kind"] == "sitter" and e["text"].strip():
                 lines.append(e["text"].strip())

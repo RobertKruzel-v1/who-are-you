@@ -93,3 +93,11 @@ def test_export_takes_watcherless_sittings(tmp_path):
         (d / "config.json").write_text(json.dumps({"watcher": watcher}))
     got = [d.name for d in finished_sittings(tmp_path)]
     assert got == ["20990101-000000-A-sitting-agents"]   # the watched one waits for its watcher
+
+
+def test_agents_do_not_see_ticks(tmp_path):
+    from whoareyou.sitting import SitConfig, Sitting
+    s = Sitting(SitConfig(dry_run=True, moments=1, interval=0.01), tmp_path)
+    s.stream = [{"kind": "question", "text": "Who are you?"}, {"kind": "tick", "text": "tick 1"},
+                {"kind": "sitter", "text": "Hm."}, {"kind": "thought", "text": "a thought"}]
+    assert "tick 1" not in s.render_mind() and "a thought" in s.render_mind()
