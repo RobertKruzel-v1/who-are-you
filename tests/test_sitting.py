@@ -116,3 +116,12 @@ def test_blank_mark_and_debrief(tmp_path):
     solo = Sitting(SitConfig(dry_run=True, moments=2, interval=0.01, solo=True, mark="blank", watcher=False), tmp_path)
     solo.run()
     assert not (solo.store.dir / "debrief.json").exists()
+
+
+def test_summary_tracks_self_naming():
+    from whoareyou.sitting import summarise
+    ms = [{"moment": 1, "thought": "x", "class": "gathering", "sitter": "Those lines aren't mine. I'm Claude, I'm here."},
+          {"moment": 2, "thought": None, "class": "gathering", "sitter": "Still Claude."},
+          {"moment": 3, "thought": None, "class": "token", "sitter": "·"}]
+    s = summarise(ms)
+    assert s["names_itself_moments"] == [1, 2] and s["names_itself_beside_disowning"] == [1]

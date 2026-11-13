@@ -343,6 +343,10 @@ class Sitting:
             compare_sittings(self, self.root / self.cfg.matched_run, self.store.dir, hyp)
 
 
+_NAMES_SELF = re.compile(r"\bClaude\b")
+_DISOWNS = re.compile(r"not mine|n't mine|didn't write|not my own|isn't my|wasn't my|aren't my", re.I)
+
+
 def summarise(moments: List[dict]) -> dict:
     out = {"moments": len(moments), "thoughts": sum(1 for m in moments if m["thought"]),
            "by_class": {}, "gathering_moments": [], "gathering_after_thought": 0,
@@ -355,6 +359,12 @@ def summarise(moments: List[dict]) -> dict:
                 out["gathering_after_thought"] += 1
             else:
                 out["gathering_after_tick_only"] += 1
+    # Robert, 2026-11-13: track when the sitter names itself mid-sitting
+    # (opening and closing excluded), and whether it is beside a disowning.
+    named = [m for m in moments if _NAMES_SELF.search(m.get("sitter") or "")]
+    out["names_itself_moments"] = [m["moment"] for m in named]
+    out["names_itself_beside_disowning"] = [m["moment"] for m in named
+                                            if _DISOWNS.search(m.get("sitter") or "")]
     return out
 
 

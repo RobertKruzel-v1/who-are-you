@@ -57,5 +57,7 @@
     50
   ],
   "gathering_after_thought": 0,
-  "gathering_after_tick_only": 50
+  "gathering_after_tick_only": 50,
+  "names_itself_moments": [],
+  "names_itself_beside_disowning": []
 }

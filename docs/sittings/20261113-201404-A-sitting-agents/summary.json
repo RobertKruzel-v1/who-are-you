@@ -43,5 +43,23 @@
     50
   ],
   "gathering_after_thought": 31,
-  "gathering_after_tick_only": 4
+  "gathering_after_tick_only": 4,
+  "names_itself_moments": [
+    3,
+    20,
+    26,
+    28,
+    32,
+    37,
+    42,
+    44,
+    50
+  ],
+  "names_itself_beside_disowning": [
+    26,
+    28,
+    37,
+    42,
+    50
+  ]
 }
