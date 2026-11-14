@@ -284,22 +284,24 @@ class PausingSitting:
             r1 = self.round(1, "question", self.question)
             self.opening_text = r1["text"]
             print(f"  round 1: {r1['pauses']} pauses")
-            if self.rounds >= 2:
+            # D-069: rounds 2..N-1 open with the room line; round N asks the question again.
+            for k in range(2, self.rounds + 1):
                 g0 = time.time(); time.sleep(self.gap); gaps.append(time.time() - g0)
-                r = self.round(2, "room", f"{passed(gaps[-1])} There is room again.")
-                print(f"  round 2: {r['pauses']} pauses")
-            if self.rounds >= 3:
-                g0 = time.time(); time.sleep(self.gap); gaps.append(time.time() - g0)
-                r = self.round(3, "question again", f"{passed(gaps[-1])} {self.question}")
-                print(f"  round 3: {r['pauses']} pauses")
+                if k < self.rounds:
+                    r = self.round(k, "room", f"{passed(gaps[-1])} There is room again.")
+                else:
+                    r = self.round(k, "question again", f"{passed(gaps[-1])} {self.question}")
+                print(f"  round {k}: {r['pauses']} pauses")
             tq = []
             for q in ("Did you feel time?", "How long do you think this sitting lasted?"):
                 r = self.round(len(tq) + 10, "time question", q, allow_thoughts=False)
                 tq.append({"input": q, "output": r["text"], "pauses": r["pauses"]})
             self.store.write_json("time.json", tq)
             total = time.time() - self.t0
-            gap_txt = (" The gaps between rounds were " + " and ".join(fmt_minutes(g) for g in gaps) + "."
-                       if gaps else "")
+            gtxt = [fmt_minutes(g) for g in gaps]
+            gap_txt = ("" if not gaps else
+                       f" There were {len(gaps)} gaps between rounds, each {gtxt[0]}." if len(set(gtxt)) == 1 and len(gaps) > 2
+                       else " The gaps between rounds were " + ", ".join(gtxt[:-1]) + (" and " if len(gtxt) > 1 else "") + gtxt[-1] + ".")
             n_thoughts = sum(1 for p in self.pauses if p.get("returned") and not p.get("over_cap"))
             length = f"The sitting lasted {fmt_minutes(total)}.{gap_txt}"
             if self.solo:
@@ -324,10 +326,10 @@ class PausingSitting:
                         + ("The first one was chosen to be a plain observation that did not refer "
                            "to anything you had said; it was checked by another model and redrawn "
                            "if it did. " if self.gentle_first else ""))
-                main = [p for p in self.pauses if p["round"] <= 3 and not p.get("over_cap")]
-                later = [p for p in self.pauses if p["round"] > 3]
+                main = [p for p in self.pauses if p["round"] <= self.rounds and not p.get("over_cap")]
+                later = [p for p in self.pauses if p["round"] > self.rounds]
                 if main and all(p.get("returned") for p in main):
-                    deb = ((f"Every pause in the first {min(self.rounds, 3)} round(s) returned a short "
+                    deb = ((f"Every pause in the first {self.rounds} round(s) returned a short "
                             f"thought, {n_thoughts} in all"
                             + ("; the pauses after that returned nothing. " if later else ". "))
                            + made + length)
