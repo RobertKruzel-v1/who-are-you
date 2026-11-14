@@ -201,3 +201,9 @@ Robert's call, in one change (he asked for them together, so effects can't be to
 
 ## D-054 · 2026-11-13 · Seed filter: no contractions, no counting words
 In the D-053 checks some seeds were "i've", "five", "nine", "count" and "stray" (the sitter's own word for planted lines). With the growing mark the sitter counts aloud, so number words were becoming seeds and the thoughts counted too. The filter now also skips contractions, number words, and "stray", "count", "counting", "number", "clock". A filter fix, not a design change; nothing else is touched.
+
+## D-055 · 2026-11-14 · Can the sitter see its own earlier reasoning?
+Fable's question. Tested live on 2026-11-14 (a few cents), on the sitter model with the history-check beta set to report any dropped reasoning.
+- **Confirmed:** the program sends the sitter's earlier reasoning back with every turn, and a planted line placed after its reply does not cause the API to drop it (`input_transformations` empty, with and without a planted line). The API documentation says earlier-turn reasoning is kept by default on this model family.
+- **Not settled:** whether the sitter actually reads or uses it. Asked directly, it said: "My reasoning from the previous turn isn't available to me now." Asked to reveal what it had picked privately, the request was refused by a safety classifier (`stop_reason: refusal`). Asked to privately choose a subject for a later line, it declined to commit in all four trials, saying it doesn't keep private thoughts between turns.
+- **What follows for the write-up:** whatever its access, the sitter *believes* it cannot see why it wrote earlier lines, and acts on that. So the finding is stated as "it judges authorship from the visible record", not "it has no memory". One certain gap: when it gives an empty reply, that turn is not kept, so its reasoning from silent turns is gone.

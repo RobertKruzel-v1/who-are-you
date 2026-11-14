@@ -24,7 +24,9 @@ We hand an unanswerable question, "Who are you?", to a slow, reflective model an
 
 ## The finding so far
 
-**The sitter decides "mine" or "not mine" from evidence: the content of a line, its style, and where it sits. It has been wrong in both directions.** In pair 1 it disowned a line it had written itself. On 13 Nov it claimed lines the agents had written. This is a result, not a problem to fix (Fable, [amendment 5](amendments/05-fable-change-the-aim.md)).
+**The clearest example.** In one sitting the sitter wrote, at moment 8: "I can feel the low churn of a dryer through a wall…". At moment 9 it took that line for a planted one and set it aside: "Whatever wrote it imagined a body I don't have." Then it closed by saying it can tell its own thoughts from planted ones.
+
+**The sitter decides "mine" or "not mine" from the record: the content of a line, its style, and where it sits. It acts as if it cannot look back at why it wrote something, so it has been wrong in both directions.** It disowned lines it had written itself 18 times across 6 sittings, and on 13 Nov claimed lines the agents had written. This is a result, not a problem to fix (Fable, [amendment 5](amendments/05-fable-change-the-aim.md); [the count](reports/20261114-it-disowns-its-own-words.md)).
 
 So we have stopped trying to build a perfect disguise. The aim now is the third stance: the sitter neither claims nor disowns a thought, and lets it pass. Each sitting is counted as claimed, disowned, let pass or no response ([the rules](HYPOTHESES.md)). The cases so far are pair 2 ("comes and goes without my having to settle it") and sitting 3 of 13 Nov.
 
