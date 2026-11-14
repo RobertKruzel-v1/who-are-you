@@ -39,6 +39,9 @@ def export_one(d: Path) -> Path:
             out += ["**Sitter:**", "", q(seg) if seg.strip() else "> (no text)", ""]
             if i < len(rp):
                 p = rp[i]
+                if p.get("candle"):
+                    out += [f"**🕯 {p['candle'].replace('_', ' ')}** at {p['at_s']} s. Returned:", "", q(p["returned"]), ""]
+                    continue
                 if p.get("picture"):
                     import shutil
                     (DEST / "pictures").mkdir(parents=True, exist_ok=True)

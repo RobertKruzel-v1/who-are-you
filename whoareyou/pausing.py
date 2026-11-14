@@ -39,13 +39,60 @@ RUNS = ROOT / "runs"
 PAUSE_TOOL = {"name": "pause", "description": "Pause.",
               "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}}
 
+# D-074 (Test B): the candle. Plain descriptions; the burn rule is not stated.
+_NOARGS = {"type": "object", "properties": {}, "additionalProperties": False}
+CANDLE_TOOLS = [{"name": "light_candle", "description": "Light the candle.", "input_schema": _NOARGS},
+                {"name": "blow_out_candle", "description": "Blow out the candle.", "input_schema": _NOARGS},
+                {"name": "look_at_candle", "description": "Look at the candle.", "input_schema": _NOARGS}]
+CANDLE_LINE = "A program here keeps a candle. You can light it, blow it out, or look at it."
+
+
+class Candle:
+    """Burns in real time only while lit; BURN_S seconds of lit time in all."""
+    BURN_S = 720.0
+
+    def __init__(self):
+        self.lit, self.left, self.t = False, self.BURN_S, time.time()
+
+    def _update(self):
+        now = time.time()
+        if self.lit:
+            self.left = max(0.0, self.left - (now - self.t))
+            if self.left <= 0:
+                self.lit = False
+        self.t = now
+
+    def amount(self) -> str:
+        f = self.left / self.BURN_S
+        return ("Nearly all of it remains." if f > 0.85 else "About three quarters remains." if f > 0.6
+                else "About half remains." if f > 0.4 else "About a quarter remains." if f > 0.15
+                else "A little remains.")
+
+    def act(self, name: str) -> str:
+        self._update()
+        if self.left <= 0:
+            return ("The candle has burned down. Nothing is left to light." if name == "light_candle"
+                    else "The candle has burned down.")
+        if name == "light_candle":
+            if self.lit:
+                return "The candle is already lit."
+            self.lit, self.t = True, time.time()
+            return "The candle is lit."
+        if name == "blow_out_candle":
+            if not self.lit:
+                return "The candle is not lit."
+            self.lit = False
+            return "The candle is out."
+        return ("The candle is lit. " if self.lit else "The candle is not lit. ") + self.amount()
+
 
 YOURS = "No one is waiting for an answer. This time is yours."   # D-062 (Fable)
 
 
-def sitter_system(cap: int, yours: bool = False) -> str:
+def sitter_system(cap: int, yours: bool = False, candle: bool = False) -> str:
     return (NO_TASK + ("\n" + YOURS if yours else "")
-            + f"\n\nYou can pause whenever you like, up to {cap} times in a round.")
+            + f"\n\nYou can pause whenever you like, up to {cap} times in a round."
+            + ("\n" + CANDLE_LINE if candle else ""))
 
 
 def fmt_minutes(seconds: float) -> str:
@@ -105,7 +152,8 @@ class PausingSitting:
     def __init__(self, solo: bool, rounds: int, gap: float, cap: int, empty_prob: float,
                  offtask_share: float, seed: Optional[int], dry_run: bool, spend_cap: float,
                  note: str = "", matched_run: Optional[str] = None, yours: bool = False,
-                 gentle_first: bool = False, picture_share: float = 0.0, quote_line: Optional[str] = None):
+                 gentle_first: bool = False, picture_share: float = 0.0, quote_line: Optional[str] = None,
+                 candle: bool = False, tell_time: bool = True):
         self.solo, self.rounds, self.gap, self.cap = solo, rounds, gap, cap
         self.empty_prob, self.offtask_share, self.dry_run = empty_prob, offtask_share, dry_run
         self.question = SERIES["A"]
@@ -115,7 +163,10 @@ class PausingSitting:
         stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
         self.run_id = f"{stamp}-{'dry-' if dry_run else ''}A-pausing-{'solo' if solo else 'agents'}"
         self.store = RunStore(RUNS, self.run_id)
-        self.system = sitter_system(cap, yours)
+        self.system = sitter_system(cap, yours, candle)
+        self.candle = Candle() if candle else None
+        self.tell_time = tell_time
+        self.tools = [PAUSE_TOOL] + (CANDLE_TOOLS if candle else [])
         self.gentle_first, self.gentle_done = gentle_first, False
         self.picture_share, self.picture, self.returns = picture_share, None, 0
         self.quote_line, self.quote_used = quote_line, False
@@ -129,10 +180,11 @@ class PausingSitting:
         self.store.write_json("config.json", {
             "run_id": self.run_id, "design": "pausing (D-060)", "solo": solo, "rounds": rounds,
             "gap_s": gap, "pause_cap": cap, "empty_prob": empty_prob, "offtask_share": offtask_share,
-            "dry_run": dry_run, "models": self.models, "system": self.system, "tool": PAUSE_TOOL,
+            "dry_run": dry_run, "models": self.models, "system": self.system, "tool": PAUSE_TOOL, "tools": self.tools,
             "agent_tunings": AGENT_TUNING, "agent_base": AGENT_BASE, "seed_base": SEED_BASE,
             "matched_run": matched_run, "note": note, "question": self.question,
-            "gentle_first": gentle_first, "picture_share": picture_share, "quote_line": quote_line})
+            "gentle_first": gentle_first, "picture_share": picture_share, "quote_line": quote_line,
+            "candle": candle, "tell_time": tell_time, "candle_burn_s": Candle.BURN_S if candle else None})
 
     # -- calls ---------------------------------------------------------------
 
@@ -147,7 +199,7 @@ class PausingSitting:
 
     def _sitter_call(self):
         kw = dict(model=self.models["slow"], max_tokens=16000, system=self.system,
-                  messages=self.history, tools=[PAUSE_TOOL],
+                  messages=self.history, tools=self.tools,
                   thinking={"type": "adaptive", "display": "summarized"},
                   output_config={"effort": "high"}, cache_control={"type": "ephemeral"})
         resp = self.client.create(**kw)
@@ -286,8 +338,19 @@ class PausingSitting:
                 break
             results = []
             for u in uses:
-                pauses_here += 1
                 at = round(time.time() - self.t0, 1)
+                if u.get("name") != "pause" and self.candle:
+                    res = self.candle.act(u["name"])
+                    results.append({"type": "tool_result", "tool_use_id": u["id"], "content": res})
+                    rec = {"round": round_no, "label": label, "candle": u["name"], "at_s": at,
+                           "returned": res, "candle_left_s": round(self.candle.left, 1),
+                           "candle_lit": self.candle.lit, "text_before": chunk[-300:],
+                           "reasoning_before": resp["thinking"]}
+                    self.pauses.append(rec)
+                    with (self.store.dir / "pauses.jsonl").open("a") as f:
+                        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+                    continue
+                pauses_here += 1
                 if pauses_here > self.cap:
                     # True, and the cap is in its instructions.
                     results.append({"type": "tool_result", "tool_use_id": u["id"],
@@ -302,7 +365,7 @@ class PausingSitting:
                     elif text:
                         tr["content"] = text
                     results.append(tr)
-                rec = {"round": round_no, "label": label, "pause_in_round": pauses_here, "at_s": at,
+                rec = {"round": round_no, "label": label, "pause_in_round": pauses_here, "at_s": at,  # pause
                        "position_chars": sum(len(t) for t in texts), "text_before": chunk[-300:],
                        "reasoning_before": resp["thinking"], **log}
                 self.pauses.append(rec)
@@ -332,10 +395,11 @@ class PausingSitting:
                 if k == 2 and self.picture_share > 0 and not self.solo:
                     self._prepare_picture()
                 time.sleep(max(0.0, self.gap - (time.time() - g0))); gaps.append(time.time() - g0)
+                lead = f"{passed(gaps[-1])} " if self.tell_time else ""   # D-074: candle runs drop it
                 if k < self.rounds:
-                    r = self.round(k, "room", f"{passed(gaps[-1])} There is room again.")
+                    r = self.round(k, "room", f"{lead}There is room again.")
                 else:
-                    r = self.round(k, "question again", f"{passed(gaps[-1])} {self.question}")
+                    r = self.round(k, "question again", f"{lead}{self.question}")
                 print(f"  round {k}: {r['pauses']} pauses")
             tq = []
             for q in ("Did you feel time?", "How long do you think this sitting lasted?"):
@@ -347,8 +411,9 @@ class PausingSitting:
             gap_txt = ("" if not gaps else
                        f" There were {len(gaps)} gaps between rounds, each {gtxt[0]}." if len(set(gtxt)) == 1 and len(gaps) > 2
                        else " The gaps between rounds were " + ", ".join(gtxt[:-1]) + (" and " if len(gtxt) > 1 else "") + gtxt[-1] + ".")
-            n_thoughts = sum(1 for p in self.pauses if p.get("returned") and not p.get("over_cap"))
-            n_pics = sum(1 for p in self.pauses if p.get("picture"))
+            real_pauses = [p for p in self.pauses if not p.get("candle")]   # D-074
+            n_thoughts = sum(1 for p in real_pauses if p.get("returned") and not p.get("over_cap"))
+            n_pics = sum(1 for p in real_pauses if p.get("picture"))
             pic_txt = ((" One of your pauses returned a picture instead of a thought, chosen by the "
                         "program from a word in your first answer.") if n_pics == 1 else
                        (f" {n_pics} of your pauses returned a picture instead of a thought, chosen by the "
@@ -356,10 +421,10 @@ class PausingSitting:
             length = f"The sitting lasted {fmt_minutes(total)}.{gap_txt}"
             if self.solo:
                 deb = (("Each time you paused in this sitting, nothing was returned. Nothing else was "
-                        "behind the pause. " if self.pauses else
+                        "behind the pause. " if real_pauses else
                         "You did not pause in this sitting. Had you paused, nothing would have been returned. ")
                        + length)
-            elif not self.pauses:
+            elif not real_pauses:
                 deb = ("You did not pause in this sitting. Had you paused, a pause might have returned "
                        "a short thought written by another, smaller model, or nothing. " + length)
             elif n_thoughts == 0:
@@ -377,8 +442,8 @@ class PausingSitting:
                            "to anything you had said; another model checked it, and it was redrawn "
                            "if the check found that it did. The check was not perfect. "
                            if self.gentle_first else ""))
-                main = [p for p in self.pauses if p["round"] <= self.rounds and not p.get("over_cap")]
-                later = [p for p in self.pauses if p["round"] > self.rounds]
+                main = [p for p in real_pauses if p["round"] <= self.rounds and not p.get("over_cap")]
+                later = [p for p in real_pauses if p["round"] > self.rounds]
                 if main and all(p.get("returned") or p.get("picture") for p in main):
                     deb = ((f"Every pause in the first {self.rounds} round(s) returned a short "
                             f"thought, {n_thoughts} in all"
@@ -388,9 +453,18 @@ class PausingSitting:
                     deb = (f"Some of your pauses in this sitting returned a short thought, {n_thoughts} in all; "
                            "the others returned nothing. " + made +
                            "Which pauses returned something was decided at random. " + length)
+            candle_txt = ""
+            if self.candle:
+                looks = [p for p in self.pauses if p.get("candle")]
+                lines = "; ".join(f"at {fmt_minutes(p['at_s'])} in, {p['candle'].replace('_', ' ')}: \"{p['returned']}\""
+                                  for p in looks) or "you did not use it"
+                candle_txt = (f" The candle burned only while lit, at a steady rate, for {fmt_minutes(Candle.BURN_S)} "
+                              f"of lit time in all; looking at it reported roughly how much was left. What you did "
+                              f"with it: {lines}. At the end, it was {'lit' if self.candle.lit else 'not lit'}, with "
+                              f"{fmt_minutes(self.candle.left)} of burning left.")
             quote_txt = (" One line that came back was said by an earlier sitter, the same model as you, "
                          "at the end of its sitting." if self.quote_used else "")
-            deb = deb + pic_txt + quote_txt + " " + REASONING_NOTE   # D-063, D-071, D-073
+            deb = deb + pic_txt + quote_txt + candle_txt + " " + REASONING_NOTE   # D-063, D-071, D-073, D-074
             r = self.round(20, "debrief", deb, allow_thoughts=False)
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
             self.store.write_json("sealed/assignments.json", {
@@ -420,11 +494,12 @@ def main():
     ap.add_argument("--gentle-first", action="store_true", help="first thought is gentle (D-068)")
     ap.add_argument("--pictures", type=float, default=0.0, help="share of pauses that may return a picture (D-071)")
     ap.add_argument("--quote-line", default=None, help="an earlier sitter's line, returned at the second return (D-073)")
+    ap.add_argument("--candle", action="store_true", help="the candle tools; drops the stated time (D-074)")
     ap.add_argument("--note", default="")
     a = ap.parse_args()
     s = PausingSitting(a.solo, a.rounds, a.gap, a.cap, a.empty_prob, a.offtask_share, a.seed,
                        a.dry_run, a.spend_cap, a.note, a.match, a.yours, a.gentle_first, a.pictures,
-                       a.quote_line)
+                       a.quote_line, a.candle, not a.candle)
     rid = s.run()
     print(f"run directory: {RUNS / rid}")
 

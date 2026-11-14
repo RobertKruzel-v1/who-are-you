@@ -92,7 +92,9 @@ a.nav { color: var(--speech); font-size: .9rem; }
         if (rs) h += '<div class="reasoning"><b>reasoning, summarised</b><br>' + esc(rs) + '</div>';
         h += seg.trim() ? '<div class="said">' + md(seg) + '</div>' : '<div class="empty">(no text)</div>';
         var p = ps[i];
-        if (p && p.picture) {
+        if (p && p.candle) {
+          h += '<div class="pausebox"><span class="tag">🕯 ' + esc(p.candle.replace(/_/g, " ")) + ' at ' + p.at_s + ' s</span>' + esc(p.returned) + '</div>';
+        } else if (p && p.picture) {
           h += '<div class="pausebox"><span class="tag">⏸ pause ' + p.pause_in_round + ' at ' + p.at_s + ' s · a picture, from its word "' + esc(p.picture_word) + '"</span><img src="' + esc(p.picture_view) + '" alt="The picture the pause returned" style="max-width:320px;width:100%;border-radius:6px;margin-top:6px"></div>';
         } else if (p) {
           var tag = p.over_cap ? "past the cap" : p.returned ? '<span class="src src-' + p.source + '">' + p.source + '</span> ' + (p.seed ? 'off-task, from its word "' + esc(p.seed) + '"' : "on-task") : "nothing returned";
