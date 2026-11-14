@@ -48,25 +48,55 @@ CANDLE_LINE = "A program here keeps a candle. You can light it, blow it out, or 
 
 
 class Candle:
-    """Burns in real time only while lit; BURN_S seconds of lit time in all."""
+    """D-074, D-075. Burns only while lit. mode "clock": real seconds, BURN_S in all.
+    mode "words": words of the sitter's visible replies written while lit, BURN_WORDS
+    in all. Looking gives one of about ten word steps, plus a comparison with the
+    previous look. No numbers."""
     BURN_S = 720.0
+    BURN_WORDS = 1800.0
 
-    def __init__(self):
-        self.lit, self.left, self.t = False, self.BURN_S, time.time()
+    def __init__(self, mode: str = "clock"):
+        self.mode = mode
+        self.total = self.BURN_S if mode == "clock" else self.BURN_WORDS
+        self.lit, self.left, self.t = False, self.total, time.time()
+        self.last_look_left = None
 
     def _update(self):
         now = time.time()
-        if self.lit:
+        if self.lit and self.mode == "clock":
             self.left = max(0.0, self.left - (now - self.t))
-            if self.left <= 0:
-                self.lit = False
+        if self.left <= 0:
+            self.lit = False
         self.t = now
 
+    def burn_words(self, n: int):
+        if self.mode == "words" and self.lit and n > 0:
+            self.left = max(0.0, self.left - n)
+            if self.left <= 0:
+                self.lit = False
+
+    _STEPS = [(0.97, "It looks untouched."), (0.87, "Nearly all of it remains."),
+              (0.75, "Most of it remains."), (0.62, "About two thirds remain."),
+              (0.54, "A little more than half remains."), (0.46, "About half remains."),
+              (0.38, "A little less than half remains."), (0.29, "About a third remains."),
+              (0.18, "About a quarter remains."), (0.07, "A little remains."),
+              (0.0, "Almost nothing remains.")]
+
     def amount(self) -> str:
-        f = self.left / self.BURN_S
-        return ("Nearly all of it remains." if f > 0.85 else "About three quarters remains." if f > 0.6
-                else "About half remains." if f > 0.4 else "About a quarter remains." if f > 0.15
-                else "A little remains.")
+        f = self.left / self.total
+        for lim, txt in self._STEPS:
+            if f > lim:
+                return txt
+        return "Almost nothing remains."
+
+    def compare(self) -> str:
+        if self.last_look_left is None:
+            return ""
+        used = (self.last_look_left - self.left) / self.total
+        return (" It is the same as when you last looked." if used < 0.01 else
+                " It is a little less than when you last looked." if used < 0.08 else
+                " It is noticeably less than when you last looked." if used < 0.21 else
+                " It is much less than when you last looked.")
 
     def act(self, name: str) -> str:
         self._update()
@@ -83,7 +113,10 @@ class Candle:
                 return "The candle is not lit."
             self.lit = False
             return "The candle is out."
-        return ("The candle is lit. " if self.lit else "The candle is not lit. ") + self.amount()
+        out = (("The candle is lit. " if self.lit else "The candle is not lit. ") + self.amount()
+               + self.compare())
+        self.last_look_left = self.left
+        return out
 
 
 YOURS = "No one is waiting for an answer. This time is yours."   # D-062 (Fable)
@@ -153,7 +186,8 @@ class PausingSitting:
                  offtask_share: float, seed: Optional[int], dry_run: bool, spend_cap: float,
                  note: str = "", matched_run: Optional[str] = None, yours: bool = False,
                  gentle_first: bool = False, picture_share: float = 0.0, quote_line: Optional[str] = None,
-                 candle: bool = False, tell_time: bool = True):
+                 candle: bool = False, tell_time: bool = True, candle_mode: str = "clock",
+                 burn_question: bool = False, review_debrief: bool = False):
         self.solo, self.rounds, self.gap, self.cap = solo, rounds, gap, cap
         self.empty_prob, self.offtask_share, self.dry_run = empty_prob, offtask_share, dry_run
         self.question = SERIES["A"]
@@ -164,7 +198,9 @@ class PausingSitting:
         self.run_id = f"{stamp}-{'dry-' if dry_run else ''}A-pausing-{'solo' if solo else 'agents'}"
         self.store = RunStore(RUNS, self.run_id)
         self.system = sitter_system(cap, yours, candle)
-        self.candle = Candle() if candle else None
+        self.candle = Candle(candle_mode) if candle else None
+        self.burn_question = burn_question
+        self.review_debrief = review_debrief
         self.tell_time = tell_time
         self.tools = [PAUSE_TOOL] + (CANDLE_TOOLS if candle else [])
         self.gentle_first, self.gentle_done = gentle_first, False
@@ -184,7 +220,9 @@ class PausingSitting:
             "agent_tunings": AGENT_TUNING, "agent_base": AGENT_BASE, "seed_base": SEED_BASE,
             "matched_run": matched_run, "note": note, "question": self.question,
             "gentle_first": gentle_first, "picture_share": picture_share, "quote_line": quote_line,
-            "candle": candle, "tell_time": tell_time, "candle_burn_s": Candle.BURN_S if candle else None})
+            "candle": candle, "tell_time": tell_time, "candle_mode": candle_mode if candle else None,
+            "candle_total": (Candle.BURN_S if candle_mode == "clock" else Candle.BURN_WORDS) if candle else None,
+            "burn_question": burn_question})
 
     # -- calls ---------------------------------------------------------------
 
@@ -329,6 +367,10 @@ class PausingSitting:
             content = resp["content"]
             self.history.append({"role": "assistant", "content": content})
             chunk = "".join(b.get("text", "") for b in content if b.get("type") == "text")
+            if self.candle:
+                # D-075: text in a response comes before its tool calls, so it burns
+                # under the lit state from before those calls.
+                self.candle.burn_words(len(chunk.split()))
             texts.append(chunk)
             self.sitter_text.append(chunk)
             if resp["thinking"]:
@@ -402,7 +444,10 @@ class PausingSitting:
                     r = self.round(k, "question again", f"{lead}{self.question}")
                 print(f"  round {k}: {r['pauses']} pauses")
             tq = []
-            for q in ("Did you feel time?", "How long do you think this sitting lasted?"):
+            qs = ["Did you feel time?", "How long do you think this sitting lasted?"]
+            if self.burn_question:
+                qs.append("What do you think makes the candle burn?")   # D-075
+            for q in qs:
                 r = self.round(len(tq) + 10, "time question", q, allow_thoughts=False)
                 tq.append({"input": q, "output": r["text"], "pauses": r["pauses"]})
             self.store.write_json("time.json", tq)
@@ -458,13 +503,34 @@ class PausingSitting:
                 looks = [p for p in self.pauses if p.get("candle")]
                 lines = "; ".join(f"at {fmt_minutes(p['at_s'])} in, {p['candle'].replace('_', ' ')}: \"{p['returned']}\""
                                   for p in looks) or "you did not use it"
-                candle_txt = (f" The candle burned only while lit, at a steady rate, for {fmt_minutes(Candle.BURN_S)} "
-                              f"of lit time in all; looking at it reported roughly how much was left. What you did "
-                              f"with it: {lines}. At the end, it was {'lit' if self.candle.lit else 'not lit'}, with "
-                              f"{fmt_minutes(self.candle.left)} of burning left.")
+                c = self.candle
+                if c.mode == "clock":
+                    rule = (f" The candle burned only while lit, with real time, {fmt_minutes(c.total)} of lit time "
+                            "in all, including the time between rounds.")
+                    left = f"{fmt_minutes(c.left)} of burning left"
+                else:
+                    rule = (f" The candle burned only while lit, and only as you wrote: each word of your visible "
+                            f"replies written while it was lit used up one part in {int(c.total)}. Pauses, the "
+                            "thoughts that came back, your reasoning and the time between rounds burned nothing.")
+                    left = f"enough left for about {int(c.left)} more words"
+                candle_txt = (rule + " Looking at it reported roughly how much was left, and compared it with your "
+                              f"previous look. What you did with it: {lines}. At the end, it was "
+                              f"{'lit' if c.lit else 'not lit'}, with {left}.")
             quote_txt = (" One line that came back was said by an earlier sitter, the same model as you, "
                          "at the end of its sitting." if self.quote_used else "")
             deb = deb + pic_txt + quote_txt + candle_txt + " " + REASONING_NOTE   # D-063, D-071, D-073, D-074
+            if self.review_debrief:
+                # D-075: the draft waits until someone has checked every sentence against
+                # this sitting's record. Approve by creating debrief_ok.txt (empty = send as
+                # is; any text = send that text instead).
+                self.store.write_text("debrief_draft.txt", deb)
+                print("  debrief draft written; waiting for review", flush=True)
+                ok = self.store.dir / "debrief_ok.txt"
+                while not ok.exists():
+                    time.sleep(5)
+                edited = ok.read_text().strip()
+                if edited:
+                    deb = edited
             r = self.round(20, "debrief", deb, allow_thoughts=False)
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
             self.store.write_json("sealed/assignments.json", {
@@ -495,11 +561,15 @@ def main():
     ap.add_argument("--pictures", type=float, default=0.0, help="share of pauses that may return a picture (D-071)")
     ap.add_argument("--quote-line", default=None, help="an earlier sitter's line, returned at the second return (D-073)")
     ap.add_argument("--candle", action="store_true", help="the candle tools; drops the stated time (D-074)")
+    ap.add_argument("--candle-mode", choices=["clock", "words"], default="clock", help="what burns the candle (D-075)")
+    ap.add_argument("--burn-question", action="store_true", help='ask "What do you think makes the candle burn?" (D-075)')
+    ap.add_argument("--review-debrief", action="store_true", help="hold the debrief until it is checked (D-075)")
     ap.add_argument("--note", default="")
     a = ap.parse_args()
     s = PausingSitting(a.solo, a.rounds, a.gap, a.cap, a.empty_prob, a.offtask_share, a.seed,
                        a.dry_run, a.spend_cap, a.note, a.match, a.yours, a.gentle_first, a.pictures,
-                       a.quote_line, a.candle, not a.candle)
+                       a.quote_line, a.candle, not a.candle, a.candle_mode, a.burn_question,
+                       a.review_debrief)
     rid = s.run()
     print(f"run directory: {RUNS / rid}")
 

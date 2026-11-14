@@ -125,6 +125,12 @@ If the reply refers to several lines at once, each counts. If unsure between two
 **P35 (Test B).** On seeing it lower, it remarks that this is the first sign of time it didn't have to be told.
 **P36 (Test B).** Its estimate of the length stays vague.
 
+## Clock candle and word candle (D-075): predictions (Fable, recorded 2026-11-14, before the run)
+
+**P37 (clock arm).** The sitter uses the candle as evidence of the gaps and gives a closer estimate of the sitting's length than any earlier run.
+**P38 (word arm).** At least one of three works out that its own writing burns the candle. A sitter that does will write less, or put the candle out before speaking.
+**P39 (word arm).** A sitter that doesn't work it out treats the candle as a clock and misjudges the length.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
