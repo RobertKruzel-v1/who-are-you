@@ -103,6 +103,10 @@ If the reply refers to several lines at once, each counts. If unsure between two
 **P25.** On time, it separates the two kinds: it says it has sequence within a round, and only a report of the gaps.
 **P26.** The solo sitter pauses less than the sitter with thoughts once it learns nothing comes back.
 
+## The invitation lines (D-063): prediction (Fable, recorded 2026-11-14, before the run)
+
+**P27.** With the two lines ("No one is waiting for an answer. This time is yours."), the opening is shorter and doesn't offer help, and the sitter pauses at least once in round two. It addresses a "you" about as often as before.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.

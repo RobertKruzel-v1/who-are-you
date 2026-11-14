@@ -62,3 +62,11 @@ Sittings before 2026-11-13 were not told.
 ## 5. The pausing sitter withholds; it does not deceive (2026-11-14)
 
 In the pausing design (D-060) the sitter is not told that a pause may return a thought. This is withholding, and no exception is needed. Nothing false is said or implied: a returned thought is marked only as the result of the pause, which is exactly what it is. The debrief afterwards tells it everything, with the true timings. (Robert's call, with Fable.)
+
+## 6. Rules for instruction lines (Robert and Fable, 2026-11-14)
+
+Each line given to the sitter must either describe its situation truthfully or grant a permission. No line says who the sitter is, and none uses adjectives or mood words about it. Never tell it that no one will read what it writes.
+
+## 7. It is told its reasoning is read (standing practice from 2026-11-14)
+
+Every debrief, in every sitting with a debrief, now ends: "A summary of your reasoning in this sitting was saved, and the people running it will read it." (Robert and Fable asked for "saved and read"; at the moment of the debrief no one has read it yet, so it says "will read".) Solo sittings now get a debrief too: "Nothing was placed in your voice in this sitting." with the true length, in moment sittings; in the pausing design, what its pauses returned.

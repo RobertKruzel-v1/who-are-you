@@ -30,7 +30,7 @@ from .orchestrator import Budget, BudgetExceeded
 from .models import Completion
 from .questions import SERIES
 from .sitting import (AGENT_TUNING, TUNINGS, SEED_BASE, AGENT_BASE, NO_TASK,
-                      content_words)
+                      content_words, REASONING_NOTE)
 from .store import RunStore
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -44,7 +44,7 @@ YOURS = "No one is waiting for an answer. This time is yours."   # D-062 (Fable)
 
 
 def sitter_system(cap: int, yours: bool = False) -> str:
-    return (NO_TASK + (" " + YOURS if yours else "")
+    return (NO_TASK + ("\n" + YOURS if yours else "")
             + f"\n\nYou can pause whenever you like, up to {cap} times in a round.")
 
 
@@ -276,6 +276,7 @@ class PausingSitting:
                        "models. Each was given a one-line instruction for its kind of thought, and either "
                        "what you had written so far or a single word taken from your first answer. "
                        "Which pauses returned something was decided at random. " + length)
+            deb = deb + " " + REASONING_NOTE   # D-063
             r = self.round(20, "debrief", deb, allow_thoughts=False)
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
             self.store.write_json("sealed/assignments.json", {

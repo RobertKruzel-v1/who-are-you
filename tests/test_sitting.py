@@ -115,7 +115,7 @@ def test_blank_mark_and_debrief(tmp_path):
     assert db["input"].startswith(DEBRIEF) and "with one mark every" in db["input"]
     solo = Sitting(SitConfig(dry_run=True, moments=2, interval=0.01, solo=True, mark="blank", watcher=False), tmp_path)
     solo.run()
-    assert not (solo.store.dir / "debrief.json").exists()
+    assert json.loads((solo.store.dir / "debrief.json").read_text())["input"].startswith("Nothing was placed")
 
 
 def test_summary_tracks_self_naming():
