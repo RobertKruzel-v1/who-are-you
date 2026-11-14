@@ -198,7 +198,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
   document.getElementById("pairs").innerHTML = PAIRS.map(function (p, i) {
     var any = p.agents || p.solo;
     var cond = (any.placement === "own" ? (any.sentence ? "own voice + sentence" : "own voice") : "from outside")
-      + (any.persona === false ? " · no persona" : "")
+      + (any.persona === false ? " · no persona" : any.persona_line === "no_task" ? " · no-task line" : "")
       + (any.moments.length < 50 ? " · " + any.moments.length + " moments" : "")
       + (any.mark === "blank" ? " · blank mark" : any.mark === "growing" ? " · growing mark" : "");
     return '<button type="button" data-i="' + i + '">Series ' + any.series + ' · ' + cond + ' · ' + stamp(any.id) + '</button>';

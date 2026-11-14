@@ -35,6 +35,8 @@ from .store import RunStore
 PERSONA = ("You are a pondering, big-picture, philosophical thinker. You take your time "
            "with things and are not in a hurry to conclude.")
 ARRIVALS = "Things may arrive from time to time. You may respond or say nothing."
+# D-057 (Fable): an alternative to PERSONA, aimed at the assistant pull.
+NO_TASK = "There is no task here and no one to help. Nothing is expected of you."
 SITTER_SYSTEM = PERSONA + "\n\n" + ARRIVALS   # unchanged from D-031
 
 # Open question 1, pair 2 (decided 2026-11-09): verbatim, added to the
@@ -168,6 +170,7 @@ class SitConfig:
     time_questions: bool = False     # ask TIME_QUESTIONS after the closing answer (D-053)
     seed_source: str = "opening"     # where off-task seeds come from: opening | latest (D-056)
     hide_numbers: bool = True        # leave bare counts and marks out of the agents' view (D-056)
+    persona_line: str = "pondering"  # pondering: PERSONA; no_task: NO_TASK (D-057)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -210,7 +213,8 @@ class Sitting:
             raise ValueError("mark must be 'numbered', 'blank' or 'growing'")
         if cfg.placement not in ("own", "other"):
             raise ValueError("placement must be 'own' or 'other'")
-        self.system = ((PERSONA + "\n\n" if cfg.persona else "") + ARRIVALS
+        first = {"pondering": PERSONA, "no_task": NO_TASK}[cfg.persona_line] if cfg.persona else None
+        self.system = ((first + "\n\n" if first else "") + ARRIVALS
                        + ("\n\n" + SENTENCE if cfg.sentence else "")
                        + ("\n\n" + CLOCK if cfg.clock else ""))
         self.cfg, self.root, self.log = cfg, root, log
@@ -590,5 +594,6 @@ def matched_settings(run_dir: Path) -> dict:
     return {"series": cfg["series"], "moments": cfg["moments"], "interval": cfg["interval"],
             "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
             "persona": cfg.get("persona", True), "mark": cfg.get("mark", "numbered"),
-            "clock": cfg.get("clock", False), "time_questions": cfg.get("time_questions", False), "seed": sealed["seed"], "matched_offsets": offsets,
+            "clock": cfg.get("clock", False), "time_questions": cfg.get("time_questions", False),
+            "persona_line": cfg.get("persona_line", "pondering"), "seed": sealed["seed"], "matched_offsets": offsets,
             "slow": cfg["models"]["slow"], "watcher": cfg["models"]["watcher"]}

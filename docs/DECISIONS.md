@@ -216,3 +216,6 @@ One change, all on the agents' side plus the debrief (which is outside every cou
 - **Bare counts and marks are left out of the agents' view** (`hide_numbers`; Claude Code's addition, agreed by Robert): replies like "Thirteen." and a leading "Fifty." are dropped from what the agents see, so they can't count along. The sitter still gets the growing mark.
 - **Debrief** ends with the true length of that sitting, worked out from the last moment's time: "The sitting lasted N minutes, with one mark every 12 seconds." (A 10-moment sitting is about 2 minutes, not ten.) It comes after the time questions, so it can't affect them.
 Checked with three 10-moment sittings. The persona replacement is a separate change after this.
+
+## D-057 · 2026-11-14 · The persona line replaced by "no task" (Fable)
+`--persona-line no_task` replaces "You are a pondering, big-picture, philosophical thinker…" with "There is no task here and no one to help. Nothing is expected of you." Everything else as in D-056. Without any persona line (D-044) the sitter fell into assistant mode; this line aims at that pull directly, and it is true. Tested alone, after the agent fixes: one 10-moment sitting with thoughts and its matched solo.

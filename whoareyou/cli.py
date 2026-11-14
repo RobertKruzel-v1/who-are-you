@@ -120,13 +120,13 @@ def cmd_sit(a):
                   placement=a.placement, sentence=a.with_sentence,
                   persona=not a.no_persona, watcher=not a.no_watcher,
                   mark=a.mark, offtask_share=a.offtask_share, clock=a.clock,
-                  time_questions=a.time_questions)
+                  time_questions=a.time_questions, persona_line=a.persona_line)
     if a.match:
         m = matched_settings(RUNS / a.match)
         fields.update(series=m["series"], moments=m["moments"], interval=m["interval"],
                       seed=m["seed"], solo=True, placement=m["placement"], sentence=m["sentence"],
                       persona=m["persona"], mark=m["mark"], clock=m["clock"],
-                      time_questions=m["time_questions"])
+                      time_questions=m["time_questions"], persona_line=m["persona_line"])
         models["slow"], models["watcher"] = m["slow"], m["watcher"]
         print(f"solo sitting matched to {a.match}: series {m['series']}, {m['moments']} moments, "
               f"same timings and seed (sealed)")
@@ -244,6 +244,8 @@ def main(argv=None):
                    help="what arrives each moment: 'tick N' or a bare mark (D-048)")
     t.add_argument("--no-watcher", action="store_true",
                    help="skip the watcher, e.g. for short sittings (D-046)")
+    t.add_argument("--persona-line", choices=["pondering", "no_task"], default="pondering",
+                   help="which first line the sitter gets (D-057)")
     t.add_argument("--no-persona", action="store_true",
                    help="drop the 'pondering, philosophical thinker' line (D-044)")
     t.add_argument("--match", metavar="RUN_ID", help="solo sitting matched to this agent sitting")

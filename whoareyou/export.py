@@ -59,7 +59,7 @@ def load_sitting(d: Path) -> dict:
         "id": d.name, "series": cfg["series"], "question": cfg["question"],
         "solo": cfg["solo"], "matched_run": cfg.get("matched_run"),
         "placement": cfg.get("placement", "other"), "sentence": cfg.get("sentence", False),
-        "persona": cfg.get("persona", True), "mark": cfg.get("mark", "numbered"),
+        "persona": cfg.get("persona", True), "persona_line": cfg.get("persona_line", "pondering"), "mark": cfg.get("mark", "numbered"),
         "debrief": (json.loads((d / "debrief.json").read_text())["output"] if (d / "debrief.json").exists() else None),
         "time": (json.loads((d / "time.json").read_text()) if (d / "time.json").exists() else None),
         "interval": cfg["interval"], "models": cfg.get("resolved_model_ids", {}),

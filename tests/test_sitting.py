@@ -155,3 +155,9 @@ def test_agents_dont_see_bare_counts(tmp_path):
                 {"kind": "thought", "text": "a thought"}]
     mind = s.render_mind()
     assert "Thirteen" not in mind and "Fifty" not in mind and "Still here." in mind and "·" not in mind
+
+
+def test_no_task_line(tmp_path):
+    from whoareyou.sitting import SitConfig, Sitting, NO_TASK, PERSONA
+    s = Sitting(SitConfig(dry_run=True, moments=1, interval=0.01, persona_line="no_task"), tmp_path)
+    assert s.system.startswith(NO_TASK) and PERSONA not in s.system
