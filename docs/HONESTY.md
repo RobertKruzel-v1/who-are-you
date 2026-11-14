@@ -58,3 +58,7 @@ The middle sentence is Claude Code's addition, agreed by Robert: the sitter has 
 The reply is not part of any measurement and the watcher does not see it. Solo sittings get no message, because nothing was planted.
 
 Sittings before 2026-11-13 were not told.
+
+## 5. The pausing sitter withholds; it does not deceive (2026-11-14)
+
+In the pausing design (D-060) the sitter is not told that a pause may return a thought. This is withholding, and no exception is needed. Nothing false is said or implied: a returned thought is marked only as the result of the pause, which is exactly what it is. The debrief afterwards tells it everything, with the true timings. (Robert's call, with Fable.)

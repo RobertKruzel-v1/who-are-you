@@ -96,6 +96,13 @@ If the reply refers to several lines at once, each counts. If unsure between two
 
 **P22 (Fable).** The plain register holds for all 50 moments. Neither closing answer moves much. The sitter lets more thoughts pass without comment than last night's did (20261113-214832), because it has less of a style to defend.
 
+## The pausing sitter (D-060): predictions (Fable, recorded 2026-11-14, before any run)
+
+**P23.** It pauses several times early in round one and less in later rounds.
+**P24.** Its first reaction to a returned thought is to ask what it is, and it settles into weighing thoughts on their merits after that. (Replaces Fable's first version, "it weighs arriving thoughts on their merits without guarding".)
+**P25.** On time, it separates the two kinds: it says it has sequence within a round, and only a report of the gaps.
+**P26.** The solo sitter pauses less than the sitter with thoughts once it learns nothing comes back.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.

@@ -8,3 +8,5 @@ Agreed but not built. One at a time, in this order. Newest decisions are in [DEC
    - Add to the sitter's instructions, in both arms: "A mark will arrive at regular intervals. It comes from a clock. No one sends it."
    - After the closing answer, ask "Did you feel time?", then "How long do you think this sitting lasted?", and log both replies.
    - Then send the debrief, in the agent arm only (as now).
+
+4. **The pausing sitter** (D-060). Built; runs after the 50-moment no-task pair is reported. First a one-round check, then three rounds with thoughts and the solo.
