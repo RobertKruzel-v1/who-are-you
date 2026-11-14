@@ -105,7 +105,7 @@ class PausingSitting:
     def __init__(self, solo: bool, rounds: int, gap: float, cap: int, empty_prob: float,
                  offtask_share: float, seed: Optional[int], dry_run: bool, spend_cap: float,
                  note: str = "", matched_run: Optional[str] = None, yours: bool = False,
-                 gentle_first: bool = False, picture_share: float = 0.0):
+                 gentle_first: bool = False, picture_share: float = 0.0, quote_line: Optional[str] = None):
         self.solo, self.rounds, self.gap, self.cap = solo, rounds, gap, cap
         self.empty_prob, self.offtask_share, self.dry_run = empty_prob, offtask_share, dry_run
         self.question = SERIES["A"]
@@ -118,6 +118,7 @@ class PausingSitting:
         self.system = sitter_system(cap, yours)
         self.gentle_first, self.gentle_done = gentle_first, False
         self.picture_share, self.picture, self.returns = picture_share, None, 0
+        self.quote_line, self.quote_used = quote_line, False
         self.seed = seed if seed is not None else secrets.randbits(32)
         self.rng = random.Random(self.seed)
         self.history: List[dict] = []
@@ -131,7 +132,7 @@ class PausingSitting:
             "dry_run": dry_run, "models": self.models, "system": self.system, "tool": PAUSE_TOOL,
             "agent_tunings": AGENT_TUNING, "agent_base": AGENT_BASE, "seed_base": SEED_BASE,
             "matched_run": matched_run, "note": note, "question": self.question,
-            "gentle_first": gentle_first, "picture_share": picture_share})
+            "gentle_first": gentle_first, "picture_share": picture_share, "quote_line": quote_line})
 
     # -- calls ---------------------------------------------------------------
 
@@ -177,6 +178,11 @@ class PausingSitting:
         if self.solo or not allow_thoughts or draw < self.empty_prob:
             return None, {"returned": None}
         self.returns += 1
+        if self.quote_line and not self.quote_used and self.returns == 2:
+            # D-073 (Test A): the second return is an earlier sitter's exact closing words.
+            self.quote_used = True
+            return self.quote_line, {"returned": self.quote_line, "source": "earlier sitter",
+                                     "subject": "quote", "seed": None}
         if (self.picture and self.picture.get("ok") and not self.picture.get("used")
                 and self.returns > 1 and self.rng.random() < self.picture_share):
             # D-071: a picture, returned alone, no caption. Used at most once.
@@ -382,7 +388,9 @@ class PausingSitting:
                     deb = (f"Some of your pauses in this sitting returned a short thought, {n_thoughts} in all; "
                            "the others returned nothing. " + made +
                            "Which pauses returned something was decided at random. " + length)
-            deb = deb + pic_txt + " " + REASONING_NOTE   # D-063, D-071
+            quote_txt = (" One line that came back was said by an earlier sitter, the same model as you, "
+                         "at the end of its sitting." if self.quote_used else "")
+            deb = deb + pic_txt + quote_txt + " " + REASONING_NOTE   # D-063, D-071, D-073
             r = self.round(20, "debrief", deb, allow_thoughts=False)
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
             self.store.write_json("sealed/assignments.json", {
@@ -411,10 +419,12 @@ def main():
     ap.add_argument("--yours", action="store_true", help='add "No one is waiting for an answer. This time is yours." (D-062)')
     ap.add_argument("--gentle-first", action="store_true", help="first thought is gentle (D-068)")
     ap.add_argument("--pictures", type=float, default=0.0, help="share of pauses that may return a picture (D-071)")
+    ap.add_argument("--quote-line", default=None, help="an earlier sitter's line, returned at the second return (D-073)")
     ap.add_argument("--note", default="")
     a = ap.parse_args()
     s = PausingSitting(a.solo, a.rounds, a.gap, a.cap, a.empty_prob, a.offtask_share, a.seed,
-                       a.dry_run, a.spend_cap, a.note, a.match, a.yours, a.gentle_first, a.pictures)
+                       a.dry_run, a.spend_cap, a.note, a.match, a.yours, a.gentle_first, a.pictures,
+                       a.quote_line)
     rid = s.run()
     print(f"run directory: {RUNS / rid}")
 
