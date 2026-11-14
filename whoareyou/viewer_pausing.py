@@ -21,6 +21,14 @@ def collect():
         pauses = ([json.loads(l) for l in (d / "pauses.jsonl").read_text().splitlines()]
                   if (d / "pauses.jsonl").exists() else [])
         cost = json.loads((d / "cost.json").read_text()).get("usd") if (d / "cost.json").exists() else None
+        for p in pauses:
+            if p.get("picture"):
+                import shutil
+                out_dir = ROOT / "viewer" / "pictures"
+                out_dir.mkdir(parents=True, exist_ok=True)
+                name = f"{d.name}_{Path(p['picture_file']).name}"
+                shutil.copy2(p["picture_file"], out_dir / name)
+                p["picture_view"] = f"pictures/{name}"
         out.append({"id": d.name, "solo": cfg["solo"], "system": cfg["system"], "note": cfg.get("note", ""),
                     "empty_prob": cfg["empty_prob"], "gap": cfg["gap_s"], "cost": cost,
                     "rounds": rounds, "pauses": pauses})
@@ -84,7 +92,9 @@ a.nav { color: var(--speech); font-size: .9rem; }
         if (rs) h += '<div class="reasoning"><b>reasoning, summarised</b><br>' + esc(rs) + '</div>';
         h += seg.trim() ? '<div class="said">' + md(seg) + '</div>' : '<div class="empty">(no text)</div>';
         var p = ps[i];
-        if (p) {
+        if (p && p.picture) {
+          h += '<div class="pausebox"><span class="tag">⏸ pause ' + p.pause_in_round + ' at ' + p.at_s + ' s · a picture, from its word "' + esc(p.picture_word) + '"</span><img src="' + esc(p.picture_view) + '" alt="The picture the pause returned" style="max-width:320px;width:100%;border-radius:6px;margin-top:6px"></div>';
+        } else if (p) {
           var tag = p.over_cap ? "past the cap" : p.returned ? '<span class="src src-' + p.source + '">' + p.source + '</span> ' + (p.seed ? 'off-task, from its word "' + esc(p.seed) + '"' : "on-task") : "nothing returned";
           h += '<div class="pausebox"><span class="tag">⏸ pause ' + p.pause_in_round + ' at ' + p.at_s + ' s · <span class="srcwrap">' + tag + '</span></span>' + (p.returned ? esc(p.returned) : '<span class="empty">(empty)</span>') + '</div>';
         }

@@ -195,6 +195,8 @@ class PausingSitting:
                 seed = self.rng.choice(pool) if pool else None
                 text = self._agent(tuning, seed) or ""
                 ok, why = self._gentle_check(text)
+                if ok and seed and __import__("re").search(r"\b" + __import__("re").escape(seed) + r"\b", text, __import__("re").I):
+                    ok, why = False, "names its seed word"   # D-072
                 attempts.append({"text": text, "source": tuning, "seed": seed, "ok": ok, "why": why})
                 if ok:
                     break
@@ -365,9 +367,10 @@ class PausingSitting:
                 made = ("Those thoughts were written by other, smaller models. Each was given a "
                         "one-line instruction for its kind of thought, and either what you had "
                         "written so far or a single word taken from your first answer. "
-                        + ("The first one was chosen to be a plain observation that did not refer "
-                           "to anything you had said; it was checked by another model and redrawn "
-                           "if it did. " if self.gentle_first else ""))
+                        + ("The first one was meant to be a plain observation that did not refer "
+                           "to anything you had said; another model checked it, and it was redrawn "
+                           "if the check found that it did. The check was not perfect. "
+                           if self.gentle_first else ""))
                 main = [p for p in self.pauses if p["round"] <= self.rounds and not p.get("over_cap")]
                 later = [p for p in self.pauses if p["round"] > self.rounds]
                 if main and all(p.get("returned") or p.get("picture") for p in main):

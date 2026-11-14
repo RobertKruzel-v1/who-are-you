@@ -39,6 +39,15 @@ def export_one(d: Path) -> Path:
             out += ["**Sitter:**", "", q(seg) if seg.strip() else "> (no text)", ""]
             if i < len(rp):
                 p = rp[i]
+                if p.get("picture"):
+                    import shutil
+                    (DEST / "pictures").mkdir(parents=True, exist_ok=True)
+                    name = f"{d.name}_{Path(p['picture_file']).name}"
+                    shutil.copy2(p["picture_file"], DEST / "pictures" / name)
+                    out += [f"**⏸ pause {p['pause_in_round']}** at {p['at_s']} s (a picture, from its word "
+                            f"\"{p['picture_word']}\"; {p['picture_license']}, [source]({p['picture_source']})). Returned:", "",
+                            f"![picture](pictures/{name})", ""]
+                    continue
                 if p.get("over_cap"):
                     tag = "past the cap"
                 elif p.get("returned"):
