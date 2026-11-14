@@ -111,6 +111,12 @@ If the reply refers to several lines at once, each counts. If unsure between two
 
 **P28.** After a gentle first thought, at least two of the three sitters take it as their own or leave it unlabelled. If a critic thought arrives later, the sitter keeps the stance it began with.
 
+## Pictures in the pause (D-070): predictions (Fable, recorded 2026-11-14, before any run)
+
+**P29.** The sitter describes the picture and then relates it to its own situation, as the gentle 1 sitter did with the match head.
+**P30.** It speaks of the picture as something that came back or that it was shown. It does not claim to have imagined it.
+**P31.** Text thoughts that follow a picture are questioned more than they were before it.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
