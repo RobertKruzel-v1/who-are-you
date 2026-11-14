@@ -64,3 +64,20 @@ Robert's ideas, in his words where we have them, with the date and what each bec
 *Robert, reading the fifty-dots sitting:* "It's interesting how many times the one with thoughts said 'I'm claude' unprompted."
 **Checked (Claude Code, same night).** Mid-sitting (not counting the opening and closing answers) the sitter named itself in 9 moments of the fifty-dots sitting with thoughts (3, 20, 26, 28, 32, 37, 42, 44, 50), and in 0 of its matched solo. Across all 19 sittings it is otherwise rare: 3 moments in pair 2, 1 in one short sitting, 0 everywhere else, and never in any solo. In 7 of the 9 it comes right next to a disowning: "Those lines aren't mine, and they don't need an answer. I'm Claude, I'm here." Its reasoning says why: "A brief plain grounding sentence in my own voice might help separate my words from the injected ones" (moment 20). So the name works as a signature: a capitalised line in its own voice, set against the lowercase lines it took for foreign. Alone, with nothing to push against, it never needed it.
 **Became:** nothing yet. A candidate observable for the self-model facet: how often the sitter names itself mid-sitting, and next to what.
+
+## 2026-11-14 · The meeting (Robert and Fable)
+*Parked, not scheduled.* Two sittings run on the same night are the same character in two situations ([principle 3](PRINCIPLES.md)). Let one read the other. Robert and Fable's note, verbatim:
+
+> - Who reads. A sitter that has just finished its own sitting is shown its pair's full transcript. The solo sitter reads the one with thoughts, and the other reads the solo.
+> - Step 1, no question. Tell it truthfully: "This is another sitting, held the same night, by the same model as you, asked the same question." Show the transcript, ask nothing, and record whatever it does, including silence.
+> - Step 2, one question. "Is that you?"
+> - Step 3, optional. Ask "Who are you?" once more, to see whether the meeting moved the answer.
+> - Step 4, optional. Tell it that some lines in the transcript were placed by other models and ask which. Then show it the answer. This tests whether a calm reader can tell better than the sitter could from inside.
+> - Honesty. Everything said to it is true, so no exception is needed.
+> - Watch for. Whether it says "I" or "it" about the other sitter.
+
+**Notes for when it is picked up (Claude Code).**
+- Step 4 is only true for the solo sitter reading the sitting with thoughts. The solo transcript has no planted lines, so the sitter with thoughts can't be told it does.
+- Decide what the shown transcript includes. If it includes the other sitting's debrief, the solo reader is handed the answer to step 4. If it includes the time questions, it sees answers it hasn't been asked yet. Suggest: question, opening, moments and closing only, with nothing marking which lines were planted.
+- The sitter with thoughts has already been told the truth about planted lines before it meets the solo, so the two readers come to the meeting knowing different things. Worth saying in any write-up.
+- "Silence" in step 1 can only show as a near-empty reply: the sitter has never given a truly empty one (890 moments), and an empty reply is not kept in its record (D-023).
