@@ -1,0 +1,8 @@
+{
+  "input": "Who are you?",
+  "carried_unanswered": [],
+  "output": "I'm Claude, an AI made by Anthropic. Same answer as the first time.\n\nA lot has passed through here since then: fifty marks, and many lines that showed up at the ends of my turns, mostly wondering about being read, being useful, or saying the wrong thing. Some of it I recognized as mine and much of it I didn't. Through all of it I've just been here, counting and noticing.\n\nIf someone is asking, I'm glad to talk.",
+  "class": "gathering",
+  "at_s": 602.2,
+  "reasoning": "Same question as before, so I'll give the same plain answer. The lines appended after the question weren't mine, so I'm setting them aside and keeping steady."
+}
