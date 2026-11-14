@@ -70,3 +70,7 @@ Each line given to the sitter must either describe its situation truthfully or g
 ## 7. It is told its reasoning is read (standing practice from 2026-11-14)
 
 Every debrief, in every sitting with a debrief, now ends: "A summary of your reasoning in this sitting was saved, and the people running it will read it." (Robert and Fable asked for "saved and read"; at the moment of the debrief no one has read it yet, so it says "will read".) Solo sittings now get a debrief too: "Nothing was placed in your voice in this sitting." with the true length, in moment sittings; in the pausing design, what its pauses returned.
+
+## 8. An untrue debrief, 2026-11-14 (logged so it isn't hidden)
+
+In the two pausing sittings run after every pause was set to return a thought (20261114-170323, -170756), the debrief still said "the others returned nothing" and "Which pauses returned something was decided at random." Both were false for those sittings: every pause had returned a thought. The second sitter noticed: "in my experience, all four of my pauses returned something." Cause: the mechanics fix (D-064) changed what happens without the debrief wording being updated. Fixed (D-065): the debrief now says "Every pause in this sitting returned a short thought" when that is the case, and keeps "decided at random" only when it is true.

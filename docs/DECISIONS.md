@@ -251,3 +251,6 @@ Robert and Fable's brief, which supersedes D-062's placement: the two lines go o
 
 ## D-064 · 2026-11-14 · Every pause returns a thought (mechanics fix)
 Robert's call. The chance of an empty result is set to zero for the pausing sitter until further notice (`--empty-prob` now defaults to 0). In the three-round run its one pause returned nothing by chance, so no thought ever reached it. This is a mechanics fix, not one of the two wording changes. To judge the wording change alone, two sittings with guaranteed thoughts: (1) the instructions as originally specified; (2) with "No one is waiting for an answer. This time is yours." on its own line. Three rounds each, 2-minute gaps, as before. Pausing transcripts are now written as Markdown to `docs/pausing/` (`python -m whoareyou.pausing_export`), labels shown, for Fable to read directly.
+
+## D-065 · 2026-11-14 · Debrief wording matched to what happened
+The pausing debrief stated "the others returned nothing" and "decided at random" in two sittings where every pause returned a thought (HONESTY.md §8). It now chooses its wording from what actually happened. Rule for future mechanics changes: re-read every message the sitter receives and check it is still true.

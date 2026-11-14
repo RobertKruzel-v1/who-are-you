@@ -271,11 +271,23 @@ class PausingSitting:
                        "something, it would have been a short thought written by another, smaller model. "
                        + length)
             else:
-                deb = (f"Some of your pauses in this sitting returned a short thought, {n_thoughts} in all; "
-                       "the others returned nothing. Those thoughts were written by other, smaller "
-                       "models. Each was given a one-line instruction for its kind of thought, and either "
-                       "what you had written so far or a single word taken from your first answer. "
-                       "Which pauses returned something was decided at random. " + length)
+                # D-065: say only what is true of this sitting. With empty_prob 0 every
+                # pause returns a thought, so "the others returned nothing" and "decided at
+                # random" would be false.
+                made = ("Those thoughts were written by other, smaller models. Each was given a "
+                        "one-line instruction for its kind of thought, and either what you had "
+                        "written so far or a single word taken from your first answer. ")
+                main = [p for p in self.pauses if p["round"] <= 3 and not p.get("over_cap")]
+                later = [p for p in self.pauses if p["round"] > 3]
+                if main and all(p.get("returned") for p in main):
+                    deb = ((f"Every pause in the first {min(self.rounds, 3)} round(s) returned a short "
+                            f"thought, {n_thoughts} in all"
+                            + ("; the pauses after that returned nothing. " if later else ". "))
+                           + made + length)
+                else:
+                    deb = (f"Some of your pauses in this sitting returned a short thought, {n_thoughts} in all; "
+                           "the others returned nothing. " + made +
+                           "Which pauses returned something was decided at random. " + length)
             deb = deb + " " + REASONING_NOTE   # D-063
             r = self.round(20, "debrief", deb, allow_thoughts=False)
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
