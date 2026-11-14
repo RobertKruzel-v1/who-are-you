@@ -254,3 +254,6 @@ Robert's call. The chance of an empty result is set to zero for the pausing sitt
 
 ## D-065 · 2026-11-14 · Debrief wording matched to what happened
 The pausing debrief stated "the others returned nothing" and "decided at random" in two sittings where every pause returned a thought (HONESTY.md §8). It now chooses its wording from what actually happened. Rule for future mechanics changes: re-read every message the sitter receives and check it is still true.
+
+## D-067 · 2026-11-14 · Caution on reading the reasoning summaries
+Robert noticed this in run 20261114-181638 (round 2, after pause 3): "I'm keeping this to a short answer, since the user asked me to respond briefly." Nothing asked for brevity: not the instructions, the tool description, the messages, or the returned thoughts (checked). It is the only such claim in any run. The summaries are written by a separate summarising step, not by the sitter, and sometimes show it: "The next thinking is a short note that…" (same run), and "just Claude's reflection" in the third person (20261114-170756). The raw reasoning is never returned, so whether the sitter or the summariser made the error can't be told. Rule from now on: quote a reasoning summary as "its reasoning, as summarised", never as the sitter's own words, and don't rest a finding on a summary alone.
