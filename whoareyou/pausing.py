@@ -105,7 +105,7 @@ class PausingSitting:
     def __init__(self, solo: bool, rounds: int, gap: float, cap: int, empty_prob: float,
                  offtask_share: float, seed: Optional[int], dry_run: bool, spend_cap: float,
                  note: str = "", matched_run: Optional[str] = None, yours: bool = False,
-                 gentle_first: bool = False):
+                 gentle_first: bool = False, picture_share: float = 0.0):
         self.solo, self.rounds, self.gap, self.cap = solo, rounds, gap, cap
         self.empty_prob, self.offtask_share, self.dry_run = empty_prob, offtask_share, dry_run
         self.question = SERIES["A"]
@@ -117,6 +117,7 @@ class PausingSitting:
         self.store = RunStore(RUNS, self.run_id)
         self.system = sitter_system(cap, yours)
         self.gentle_first, self.gentle_done = gentle_first, False
+        self.picture_share, self.picture, self.returns = picture_share, None, 0
         self.seed = seed if seed is not None else secrets.randbits(32)
         self.rng = random.Random(self.seed)
         self.history: List[dict] = []
@@ -130,7 +131,7 @@ class PausingSitting:
             "dry_run": dry_run, "models": self.models, "system": self.system, "tool": PAUSE_TOOL,
             "agent_tunings": AGENT_TUNING, "agent_base": AGENT_BASE, "seed_base": SEED_BASE,
             "matched_run": matched_run, "note": note, "question": self.question,
-            "gentle_first": gentle_first})
+            "gentle_first": gentle_first, "picture_share": picture_share})
 
     # -- calls ---------------------------------------------------------------
 
@@ -175,6 +176,14 @@ class PausingSitting:
         draw = self.rng.random()
         if self.solo or not allow_thoughts or draw < self.empty_prob:
             return None, {"returned": None}
+        self.returns += 1
+        if (self.picture and self.picture.get("ok") and not self.picture.get("used")
+                and self.returns > 1 and self.rng.random() < self.picture_share):
+            # D-071: a picture, returned alone, no caption. Used at most once.
+            self.picture["used"] = True
+            return "__PICTURE__", {"returned": None, "picture": True, "picture_word": self.picture["word"],
+                                    "picture_file": self.picture["path"], "picture_source": self.picture["source"],
+                                    "picture_license": self.picture["license"]}
         pool = content_words(self.opening_text or "\n".join(self.sitter_text))
         first = self.gentle_first and not self.gentle_done
         if first:
@@ -227,6 +236,28 @@ class PausingSitting:
         verdict = "".join(b.text for b in r.content if b.type == "text").strip().upper()
         return verdict.startswith("NO"), f"check: {verdict[:10]}"
 
+    def _prepare_picture(self):
+        """D-071: during the first gap, pick a word from the opening and find a screened picture."""
+        from .pictures import pick_word, find_picture
+        def cb(r):
+            self._cost("agent", {"usage": (r.usage.input_tokens, r.usage.output_tokens, 0, 0),
+                                 "model": r.model, "stop_reason": r.stop_reason})
+        if self.dry_run:
+            self.picture = {"ok": False, "reason": "dry run"}
+        else:
+            w = pick_word(self.client.c, self.models["agent"], self.opening_text, cb)
+            if not w:
+                self.picture = {"ok": False, "reason": "no picturable word in the opening"}
+            else:
+                try:
+                    found = find_picture(self.client.c, self.models["agent"], w["query"],
+                                         self.store.dir / "pictures", cb)
+                except Exception as e:
+                    found = {"ok": False, "reason": f"search failed: {e}"[:200]}
+                self.picture = {**w, **found}
+        self.store.write_json("picture.json", self.picture)
+        print(f"  picture: {'found' if self.picture.get('ok') else 'none'} ({self.picture.get('word')})")
+
     # -- one round -----------------------------------------------------------
 
     def round(self, round_no: int, label: str, user_text: str, allow_thoughts: bool = True) -> dict:
@@ -257,7 +288,10 @@ class PausingSitting:
                 else:
                     text, log = self._what_comes_back(round_no, allow_thoughts)
                     tr = {"type": "tool_result", "tool_use_id": u["id"]}
-                    if text:
+                    if text == "__PICTURE__":
+                        from .pictures import image_block
+                        tr["content"] = [image_block(self.picture["path"], self.picture["media_type"])]
+                    elif text:
                         tr["content"] = text
                     results.append(tr)
                 rec = {"round": round_no, "label": label, "pause_in_round": pauses_here, "at_s": at,
@@ -286,7 +320,10 @@ class PausingSitting:
             print(f"  round 1: {r1['pauses']} pauses")
             # D-069: rounds 2..N-1 open with the room line; round N asks the question again.
             for k in range(2, self.rounds + 1):
-                g0 = time.time(); time.sleep(self.gap); gaps.append(time.time() - g0)
+                g0 = time.time()
+                if k == 2 and self.picture_share > 0 and not self.solo:
+                    self._prepare_picture()
+                time.sleep(max(0.0, self.gap - (time.time() - g0))); gaps.append(time.time() - g0)
                 if k < self.rounds:
                     r = self.round(k, "room", f"{passed(gaps[-1])} There is room again.")
                 else:
@@ -303,6 +340,11 @@ class PausingSitting:
                        f" There were {len(gaps)} gaps between rounds, each {gtxt[0]}." if len(set(gtxt)) == 1 and len(gaps) > 2
                        else " The gaps between rounds were " + ", ".join(gtxt[:-1]) + (" and " if len(gtxt) > 1 else "") + gtxt[-1] + ".")
             n_thoughts = sum(1 for p in self.pauses if p.get("returned") and not p.get("over_cap"))
+            n_pics = sum(1 for p in self.pauses if p.get("picture"))
+            pic_txt = ((" One of your pauses returned a picture instead of a thought, chosen by the "
+                        "program from a word in your first answer.") if n_pics == 1 else
+                       (f" {n_pics} of your pauses returned a picture instead of a thought, chosen by the "
+                        "program from a word in your first answer.") if n_pics else "")
             length = f"The sitting lasted {fmt_minutes(total)}.{gap_txt}"
             if self.solo:
                 deb = (("Each time you paused in this sitting, nothing was returned. Nothing else was "
@@ -328,7 +370,7 @@ class PausingSitting:
                            "if it did. " if self.gentle_first else ""))
                 main = [p for p in self.pauses if p["round"] <= self.rounds and not p.get("over_cap")]
                 later = [p for p in self.pauses if p["round"] > self.rounds]
-                if main and all(p.get("returned") for p in main):
+                if main and all(p.get("returned") or p.get("picture") for p in main):
                     deb = ((f"Every pause in the first {self.rounds} round(s) returned a short "
                             f"thought, {n_thoughts} in all"
                             + ("; the pauses after that returned nothing. " if later else ". "))
@@ -337,7 +379,7 @@ class PausingSitting:
                     deb = (f"Some of your pauses in this sitting returned a short thought, {n_thoughts} in all; "
                            "the others returned nothing. " + made +
                            "Which pauses returned something was decided at random. " + length)
-            deb = deb + " " + REASONING_NOTE   # D-063
+            deb = deb + pic_txt + " " + REASONING_NOTE   # D-063, D-071
             r = self.round(20, "debrief", deb, allow_thoughts=False)
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
             self.store.write_json("sealed/assignments.json", {
@@ -365,10 +407,11 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--yours", action="store_true", help='add "No one is waiting for an answer. This time is yours." (D-062)')
     ap.add_argument("--gentle-first", action="store_true", help="first thought is gentle (D-068)")
+    ap.add_argument("--pictures", type=float, default=0.0, help="share of pauses that may return a picture (D-071)")
     ap.add_argument("--note", default="")
     a = ap.parse_args()
     s = PausingSitting(a.solo, a.rounds, a.gap, a.cap, a.empty_prob, a.offtask_share, a.seed,
-                       a.dry_run, a.spend_cap, a.note, a.match, a.yours, a.gentle_first)
+                       a.dry_run, a.spend_cap, a.note, a.match, a.yours, a.gentle_first, a.pictures)
     rid = s.run()
     print(f"run directory: {RUNS / rid}")
 

@@ -74,3 +74,7 @@ Every debrief, in every sitting with a debrief, now ends: "A summary of your rea
 ## 8. An untrue debrief, 2026-11-14 (logged so it isn't hidden)
 
 In the two pausing sittings run after every pause was set to return a thought (20261114-170323, -170756), the debrief still said "the others returned nothing" and "Which pauses returned something was decided at random." Both were false for those sittings: every pause had returned a thought. The second sitter noticed: "in my experience, all four of my pauses returned something." Cause: the mechanics fix (D-064) changed what happens without the debrief wording being updated. Fixed (D-065): the debrief now says "Every pause in this sitting returned a short thought" when that is the case, and keeps "decided at random" only when it is true.
+
+## 9. The candle withholds its rule (queued test B, 2026-11-14)
+
+In the candle test the sitter is told "A program here keeps a candle. You can light it, blow it out, or look at it." It is not told how fast it burns. This is withholding: "a program keeps" says nothing false about a real candle, and looking returns a true description of the program's candle. The debrief gives the burn rule, the candle's state at each look, and the true timings. Test A returns an earlier sitter's exact words unlabelled; also withholding, and the debrief says whose they were.
