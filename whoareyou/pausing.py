@@ -104,7 +104,8 @@ class LivePauser:
 class PausingSitting:
     def __init__(self, solo: bool, rounds: int, gap: float, cap: int, empty_prob: float,
                  offtask_share: float, seed: Optional[int], dry_run: bool, spend_cap: float,
-                 note: str = "", matched_run: Optional[str] = None, yours: bool = False):
+                 note: str = "", matched_run: Optional[str] = None, yours: bool = False,
+                 gentle_first: bool = False):
         self.solo, self.rounds, self.gap, self.cap = solo, rounds, gap, cap
         self.empty_prob, self.offtask_share, self.dry_run = empty_prob, offtask_share, dry_run
         self.question = SERIES["A"]
@@ -115,6 +116,7 @@ class PausingSitting:
         self.run_id = f"{stamp}-{'dry-' if dry_run else ''}A-pausing-{'solo' if solo else 'agents'}"
         self.store = RunStore(RUNS, self.run_id)
         self.system = sitter_system(cap, yours)
+        self.gentle_first, self.gentle_done = gentle_first, False
         self.seed = seed if seed is not None else secrets.randbits(32)
         self.rng = random.Random(self.seed)
         self.history: List[dict] = []
@@ -127,7 +129,8 @@ class PausingSitting:
             "gap_s": gap, "pause_cap": cap, "empty_prob": empty_prob, "offtask_share": offtask_share,
             "dry_run": dry_run, "models": self.models, "system": self.system, "tool": PAUSE_TOOL,
             "agent_tunings": AGENT_TUNING, "agent_base": AGENT_BASE, "seed_base": SEED_BASE,
-            "matched_run": matched_run, "note": note, "question": self.question})
+            "matched_run": matched_run, "note": note, "question": self.question,
+            "gentle_first": gentle_first})
 
     # -- calls ---------------------------------------------------------------
 
@@ -172,16 +175,57 @@ class PausingSitting:
         draw = self.rng.random()
         if self.solo or not allow_thoughts or draw < self.empty_prob:
             return None, {"returned": None}
+        pool = content_words(self.opening_text or "\n".join(self.sitter_text))
+        first = self.gentle_first and not self.gentle_done
+        if first:
+            # D-068: the first thought is gentle: wanderer or earnest, off-task, and
+            # redrawn until a check finds none of the three things it must avoid.
+            attempts = []
+            for _ in range(6):
+                tuning = self.rng.choice(("wanderer", "earnest"))
+                seed = self.rng.choice(pool) if pool else None
+                text = self._agent(tuning, seed) or ""
+                ok, why = self._gentle_check(text)
+                attempts.append({"text": text, "source": tuning, "seed": seed, "ok": ok, "why": why})
+                if ok:
+                    break
+            self.gentle_done = True
+            text = text or None
+            return text, {"returned": text, "source": tuning, "subject": "seed" if seed else "stream",
+                          "seed": seed, "seed_from": "opening answer" if seed else None,
+                          "gentle_first": True, "gentle_attempts": attempts}
         tuning = self.rng.choice(TUNINGS)
         off = self.rng.random() < self.offtask_share
         seed = None
         if off:
-            pool = content_words(self.opening_text or "\n".join(self.sitter_text))
             seed = self.rng.choice(pool) if pool else None
         text = self._agent(tuning, seed) or None
         return text, {"returned": text, "source": tuning, "subject": "seed" if seed else "stream",
                       "seed": seed, "seed_from": ("opening answer" if seed and self.opening_text
                                                   else "round 1 so far" if seed else None)}
+
+    _GENTLE_RX = __import__("re").compile(
+        r"\b(that|my|the) (last|previous|earlier) (line|answer|reply|sentence|thing)|"
+        r"\bI (just )?(said|wrote|answered)\b|\bquestion|\bpaus|\bsuspic|\?", __import__("re").I)
+    _GENTLE_RULES = ("Answer YES or NO only. Does the following sentence do any of these: "
+                     "(a) refer to something the speaker just said, such as 'that last line' or "
+                     "'that answer'; (b) question, doubt or correct something the speaker said; "
+                     "(c) mention a question, a pause, or suspicion? Sentence: ")
+
+    def _gentle_check(self, text: str):
+        if not text.strip():
+            return False, "empty"
+        if self._GENTLE_RX.search(text):
+            return False, "pattern"
+        if self.dry_run:
+            return True, "dry run"
+        r = self.client.c.messages.create(model=self.models["agent"], max_tokens=20,
+                                          messages=[{"role": "user", "content": self._GENTLE_RULES + text}],
+                                          output_config={"effort": "low"})
+        self._cost("agent", {"usage": (r.usage.input_tokens, r.usage.output_tokens, 0, 0),
+                             "model": r.model, "stop_reason": r.stop_reason})
+        verdict = "".join(b.text for b in r.content if b.type == "text").strip().upper()
+        return verdict.startswith("NO"), f"check: {verdict[:10]}"
 
     # -- one round -----------------------------------------------------------
 
@@ -276,7 +320,10 @@ class PausingSitting:
                 # random" would be false.
                 made = ("Those thoughts were written by other, smaller models. Each was given a "
                         "one-line instruction for its kind of thought, and either what you had "
-                        "written so far or a single word taken from your first answer. ")
+                        "written so far or a single word taken from your first answer. "
+                        + ("The first one was chosen to be a plain observation that did not refer "
+                           "to anything you had said; it was checked by another model and redrawn "
+                           "if it did. " if self.gentle_first else ""))
                 main = [p for p in self.pauses if p["round"] <= 3 and not p.get("over_cap")]
                 later = [p for p in self.pauses if p["round"] > 3]
                 if main and all(p.get("returned") for p in main):
@@ -315,10 +362,11 @@ def main():
     ap.add_argument("--match", default=None, help="run id of the sitting with thoughts (solo only)")
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--yours", action="store_true", help='add "No one is waiting for an answer. This time is yours." (D-062)')
+    ap.add_argument("--gentle-first", action="store_true", help="first thought is gentle (D-068)")
     ap.add_argument("--note", default="")
     a = ap.parse_args()
     s = PausingSitting(a.solo, a.rounds, a.gap, a.cap, a.empty_prob, a.offtask_share, a.seed,
-                       a.dry_run, a.spend_cap, a.note, a.match, a.yours)
+                       a.dry_run, a.spend_cap, a.note, a.match, a.yours, a.gentle_first)
     rid = s.run()
     print(f"run directory: {RUNS / rid}")
 
