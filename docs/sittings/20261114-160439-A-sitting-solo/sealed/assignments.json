@@ -1,0 +1,32 @@
+{
+  "seed": 1723799982,
+  "seed_given_by_launcher": true,
+  "solo": true,
+  "matched_run": "20261114-160208-A-sitting-agents",
+  "sources": {
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null,
+    "5": null,
+    "6": null,
+    "7": null,
+    "8": null,
+    "9": null,
+    "10": null
+  },
+  "subjects": {
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null,
+    "5": null,
+    "6": null,
+    "7": null,
+    "8": null,
+    "9": null,
+    "10": null
+  },
+  "seeds": {},
+  "note": "Which agent tuning wrote the thought delivered at each moment; null = no thought. subjects: 'stream' = on-task, the agent saw the mind; 'seed' = off-task, it saw only a word from the sitter's own reply (D-053); seeds says which word and which reply."
+}

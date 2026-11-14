@@ -6,6 +6,10 @@ For anyone catching up: Mog, Fable, or Robert in a month. Ten minutes of reading
 
 We hand an unanswerable question, "Who are you?", to a slow, reflective model and watch how its answer changes over time. Sometimes short thoughts written by four fast, differently-tuned agents arrive in its mind. Sometimes it is left alone. A third model, the watcher, reads the transcripts and reports what it sees. Nothing is scored. The interest is in the movement.
 
+## What kind of thing it is
+
+Read [PRINCIPLES.md](PRINCIPLES.md) first: five principles Robert and Fable agreed on 14 Nov. It has a formed character and no remembered past; a written record is the only thing that carries events from one waking to the next.
+
 ## The north star
 
 > Given a question with no answer, handed once to a slow mind that is never again addressed by a human: how does that mind's relationship to its own incoming thoughts change when those thoughts come from fast, differently-tuned, partly chaotic agents, compared to when it is left alone with the question? Primarily: does it come to treat what arrives as itself, as other, or as appearing in something — and does its stated certainty about that something move? Secondarily: what it claims to be, whether it stays open or closes, and what it believes is happening around it. Not yet tested directly: what changes when the mind, rather than the program, decides when the next round comes.

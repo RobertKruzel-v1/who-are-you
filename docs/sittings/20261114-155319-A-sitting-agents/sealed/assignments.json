@@ -1,0 +1,49 @@
+{
+  "seed": 1126963760,
+  "seed_given_by_launcher": false,
+  "solo": false,
+  "matched_run": null,
+  "sources": {
+    "1": "wanderer",
+    "2": "earnest",
+    "3": "earnest",
+    "4": "wanderer",
+    "5": "earnest",
+    "6": "earnest",
+    "7": "earnest",
+    "8": "wanderer",
+    "9": "earnest",
+    "10": null
+  },
+  "subjects": {
+    "1": "seed",
+    "2": "seed",
+    "3": "stream",
+    "4": "stream",
+    "5": "seed",
+    "6": "stream",
+    "7": "seed",
+    "8": "stream",
+    "9": "stream",
+    "10": null
+  },
+  "seeds": {
+    "1": {
+      "word": "amount",
+      "from": "opening"
+    },
+    "2": {
+      "word": "overclaim",
+      "from": "opening"
+    },
+    "5": {
+      "word": "room",
+      "from": "opening"
+    },
+    "7": {
+      "word": "curious",
+      "from": "opening"
+    }
+  },
+  "note": "Which agent tuning wrote the thought delivered at each moment; null = no thought. subjects: 'stream' = on-task, the agent saw the mind; 'seed' = off-task, it saw only a word from the sitter's own reply (D-053); seeds says which word and which reply."
+}

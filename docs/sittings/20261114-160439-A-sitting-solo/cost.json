@@ -1,0 +1,16 @@
+{
+  "usd": 0.0548,
+  "tokens": 14300,
+  "spend_cap_usd": 5.0,
+  "token_cap": 20000000,
+  "by_role": {
+    "slow": {
+      "calls": 14,
+      "input_tokens": 583,
+      "output_tokens": 2041,
+      "cache_write_tokens": 1935,
+      "cache_read_tokens": 9741,
+      "usd": 0.054775199999999996
+    }
+  }
+}

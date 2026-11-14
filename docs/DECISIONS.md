@@ -219,3 +219,6 @@ Checked with three 10-moment sittings. The persona replacement is a separate cha
 
 ## D-057 · 2026-11-14 · The persona line replaced by "no task" (Fable)
 `--persona-line no_task` replaces "You are a pondering, big-picture, philosophical thinker…" with "There is no task here and no one to help. Nothing is expected of you." Everything else as in D-056. Without any persona line (D-044) the sitter fell into assistant mode; this line aims at that pull directly, and it is true. Tested alone, after the agent fixes: one 10-moment sitting with thoughts and its matched solo.
+
+## D-058 · 2026-11-14 · Principles added
+Robert and Fable's five principles on what kind of thing the sitter is are in [PRINCIPLES.md](PRINCIPLES.md), verbatim, linked first from START_HERE. Claude Code's notes on what they mean for the design are under them, for discussion; nothing in the code changed because of them.
