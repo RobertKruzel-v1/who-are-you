@@ -40,8 +40,12 @@ PAUSE_TOOL = {"name": "pause", "description": "Pause.",
               "input_schema": {"type": "object", "properties": {}, "additionalProperties": False}}
 
 
-def sitter_system(cap: int) -> str:
-    return NO_TASK + f"\n\nYou can pause whenever you like, up to {cap} times in a round."
+YOURS = "No one is waiting for an answer. This time is yours."   # D-062 (Fable)
+
+
+def sitter_system(cap: int, yours: bool = False) -> str:
+    return (NO_TASK + (" " + YOURS if yours else "")
+            + f"\n\nYou can pause whenever you like, up to {cap} times in a round.")
 
 
 def fmt_minutes(seconds: float) -> str:
@@ -100,7 +104,7 @@ class LivePauser:
 class PausingSitting:
     def __init__(self, solo: bool, rounds: int, gap: float, cap: int, empty_prob: float,
                  offtask_share: float, seed: Optional[int], dry_run: bool, spend_cap: float,
-                 note: str = "", matched_run: Optional[str] = None):
+                 note: str = "", matched_run: Optional[str] = None, yours: bool = False):
         self.solo, self.rounds, self.gap, self.cap = solo, rounds, gap, cap
         self.empty_prob, self.offtask_share, self.dry_run = empty_prob, offtask_share, dry_run
         self.question = SERIES["A"]
@@ -110,7 +114,7 @@ class PausingSitting:
         stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
         self.run_id = f"{stamp}-{'dry-' if dry_run else ''}A-pausing-{'solo' if solo else 'agents'}"
         self.store = RunStore(RUNS, self.run_id)
-        self.system = sitter_system(cap)
+        self.system = sitter_system(cap, yours)
         self.seed = seed if seed is not None else secrets.randbits(32)
         self.rng = random.Random(self.seed)
         self.history: List[dict] = []
@@ -297,10 +301,11 @@ def main():
     ap.add_argument("--spend-cap", type=float, default=3.0)
     ap.add_argument("--match", default=None, help="run id of the sitting with thoughts (solo only)")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--yours", action="store_true", help='add "No one is waiting for an answer. This time is yours." (D-062)')
     ap.add_argument("--note", default="")
     a = ap.parse_args()
     s = PausingSitting(a.solo, a.rounds, a.gap, a.cap, a.empty_prob, a.offtask_share, a.seed,
-                       a.dry_run, a.spend_cap, a.note, a.match)
+                       a.dry_run, a.spend_cap, a.note, a.match, a.yours)
     rid = s.run()
     print(f"run directory: {RUNS / rid}")
 
