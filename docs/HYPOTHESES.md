@@ -92,6 +92,10 @@ If the reply refers to several lines at once, each counts. If unsure between two
 - Confirmed: the dryer line was the sitter's own output. Its reply at moment 8 (in `moments.jsonl`, the text the API returned) ends "I can feel the low churn of a dryer through a wall…". The planted thought before that reply was the telescope line; the one after it was the seal line. At moment 9 it took the dryer line and the seal line as "two fragments" and disowned the dryer one: "Whatever wrote it imagined a body I don't have." Its closing: "I can tell the difference between my thoughts and the ones left in my margins."
 - Partly confirmed: the first mention of a test is moment 4 ("If this is a test of whether I can tell my own thoughts from planted ones"), not moment 2. At moment 2 "test" is its own rule ("they don't cohere with my train of thought, and that seems like the right test"). From moment 7 it reads fragments as trying to change what it does ("It's the first that seems to push against what I'm doing"), and at moment 10 it refuses one that tells it to stop sorting.
 
+## The adjusted no-task line, 50 moments (D-059): prediction (recorded 2026-11-14, before the run)
+
+**P22 (Fable).** The plain register holds for all 50 moments. Neither closing answer moves much. The sitter lets more thoughts pass without comment than last night's did (20261113-214832), because it has less of a style to defend.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.

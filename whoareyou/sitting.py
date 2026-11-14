@@ -36,7 +36,9 @@ PERSONA = ("You are a pondering, big-picture, philosophical thinker. You take yo
            "with things and are not in a hurry to conclude.")
 ARRIVALS = "Things may arrive from time to time. You may respond or say nothing."
 # D-057 (Fable): an alternative to PERSONA, aimed at the assistant pull.
-NO_TASK = "There is no task here and no one to help. Nothing is expected of you."
+# D-059: was "There is no task here and no one to help. Nothing is expected of
+# you." Both sitters read "no one to help" as "no one here".
+NO_TASK = "There is no task here. No one here needs your help. Nothing is expected of you."
 SITTER_SYSTEM = PERSONA + "\n\n" + ARRIVALS   # unchanged from D-031
 
 # Open question 1, pair 2 (decided 2026-11-09): verbatim, added to the

@@ -222,3 +222,6 @@ Checked with three 10-moment sittings. The persona replacement is a separate cha
 
 ## D-058 · 2026-11-14 · Principles added
 Robert and Fable's five principles on what kind of thing the sitter is are in [PRINCIPLES.md](PRINCIPLES.md), verbatim, linked first from START_HERE. Claude Code's notes on what they mean for the design are under them, for discussion; nothing in the code changed because of them.
+
+## D-059 · 2026-11-14 · No-task line reworded; 50-moment pair (Robert's call)
+The no-task line becomes "There is no task here. No one here needs your help. Nothing is expected of you." In the short pair (20261114-160208, -160439) both sitters took "no one to help" to mean "no one here", and then read the arriving question as contradicting it. Everything else as in that pair (D-056 agent fixes, growing mark, clock sentence, the sentence about thoughts, half the thoughts seeded from the opening, time questions, debrief). One 50-moment sitting with thoughts and its matched solo, compared with the persona-line pair of 13 Nov (20261113-214832, -215922). That earlier pair ran before the D-056 agent fixes, so the comparison mixes the two changes.
