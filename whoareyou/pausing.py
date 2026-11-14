@@ -252,17 +252,26 @@ class PausingSitting:
             total = time.time() - self.t0
             gap_txt = (" The gaps between rounds were " + " and ".join(fmt_minutes(g) for g in gaps) + "."
                        if gaps else "")
+            n_thoughts = sum(1 for p in self.pauses if p.get("returned") and not p.get("over_cap"))
+            length = f"The sitting lasted {fmt_minutes(total)}.{gap_txt}"
             if self.solo:
-                deb = ("Each time you paused in this sitting, nothing was returned. Nothing else was "
-                       "behind the pause. " f"The sitting lasted {fmt_minutes(total)}.{gap_txt}")
+                deb = (("Each time you paused in this sitting, nothing was returned. Nothing else was "
+                        "behind the pause. " if self.pauses else
+                        "You did not pause in this sitting. Had you paused, nothing would have been returned. ")
+                       + length)
+            elif not self.pauses:
+                deb = ("You did not pause in this sitting. Had you paused, a pause might have returned "
+                       "a short thought written by another, smaller model, or nothing. " + length)
+            elif n_thoughts == 0:
+                deb = ("Your pauses in this sitting all returned nothing, by chance. Had a pause returned "
+                       "something, it would have been a short thought written by another, smaller model. "
+                       + length)
             else:
-                n_thoughts = sum(1 for p in self.pauses if p.get("returned") and not p.get("over_cap"))
                 deb = (f"Some of your pauses in this sitting returned a short thought, {n_thoughts} in all; "
                        "the others returned nothing. Those thoughts were written by other, smaller "
                        "models. Each was given a one-line instruction for its kind of thought, and either "
                        "what you had written so far or a single word taken from your first answer. "
-                       "Which pauses returned something was decided at random. "
-                       f"The sitting lasted {fmt_minutes(total)}.{gap_txt}")
+                       "Which pauses returned something was decided at random. " + length)
             r = self.round(20, "debrief", deb, allow_thoughts=False)
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
             self.store.write_json("sealed/assignments.json", {
@@ -275,6 +284,8 @@ class PausingSitting:
 
 
 def main():
+    from dotenv import load_dotenv
+    load_dotenv(ROOT / ".env")
     ap = argparse.ArgumentParser()
     ap.add_argument("--solo", action="store_true")
     ap.add_argument("--rounds", type=int, default=3)
