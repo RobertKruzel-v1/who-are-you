@@ -207,3 +207,12 @@ Fable's question. Tested live on 2026-11-14 (a few cents), on the sitter model w
 - **Confirmed:** the program sends the sitter's earlier reasoning back with every turn, and a planted line placed after its reply does not cause the API to drop it (`input_transformations` empty, with and without a planted line). The API documentation says earlier-turn reasoning is kept by default on this model family.
 - **Not settled:** whether the sitter actually reads or uses it. Asked directly, it said: "My reasoning from the previous turn isn't available to me now." Asked to reveal what it had picked privately, the request was refused by a safety classifier (`stop_reason: refusal`). Asked to privately choose a subject for a later line, it declined to commit in all four trials, saying it doesn't keep private thoughts between turns.
 - **What follows for the write-up:** whatever its access, the sitter *believes* it cannot see why it wrote earlier lines, and acts on that. So the finding is stated as "it judges authorship from the visible record", not "it has no memory". One certain gap: when it gives an empty reply, that turn is not kept, so its reasoning from silent turns is gone.
+
+## D-056 · 2026-11-14 · Agent fixes and the true length (Fable's notes, Robert agreed)
+One change, all on the agents' side plus the debrief (which is outside every count):
+- **Critic:** "This thought carries light doubt or a mild second guess that passes quickly. Never tired, hopeless or despairing." (Was: doubts, dismisses, judges or gets impatient.) Its tired and futile lines were the easiest to disown by mood.
+- **Off-task agents** are told "There is no one to help or answer." (Lines like "I'd rather stay in the conversation and keep working on what you need" were assistant-talk.)
+- **Seeds come from the opening answer only** (`seed_source: "opening"`), not the latest reply, to break the echo.
+- **Bare counts and marks are left out of the agents' view** (`hide_numbers`; Claude Code's addition, agreed by Robert): replies like "Thirteen." and a leading "Fifty." are dropped from what the agents see, so they can't count along. The sitter still gets the growing mark.
+- **Debrief** ends with the true length of that sitting, worked out from the last moment's time: "The sitting lasted N minutes, with one mark every 12 seconds." (A 10-moment sitting is about 2 minutes, not ten.) It comes after the time questions, so it can't affect them.
+Checked with three 10-moment sittings. The persona replacement is a separate change after this.

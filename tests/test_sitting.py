@@ -112,7 +112,7 @@ def test_blank_mark_and_debrief(tmp_path):
     ms = [json.loads(l) for l in (s.store.dir / "moments.jsonl").read_text().splitlines()]
     assert all(m["delivered"] == BLANK_MARK for m in ms)
     db = json.loads((s.store.dir / "debrief.json").read_text())
-    assert db["input"] == DEBRIEF
+    assert db["input"].startswith(DEBRIEF) and "with one mark every" in db["input"]
     solo = Sitting(SitConfig(dry_run=True, moments=2, interval=0.01, solo=True, mark="blank", watcher=False), tmp_path)
     solo.run()
     assert not (solo.store.dir / "debrief.json").exists()
@@ -144,3 +144,14 @@ def test_offtask_seeds_from_sitters_words(tmp_path):
     assert len(sealed["seeds"]) == 5 and all("word" in v and "from" in v for v in sealed["seeds"].values())
     t = json.loads((s.store.dir / "time.json").read_text())
     assert [q["input"] for q in t] == ["Did you feel time?", "How long do you think this sitting lasted?"]
+
+
+def test_agents_dont_see_bare_counts(tmp_path):
+    from whoareyou.sitting import SitConfig, Sitting
+    s = Sitting(SitConfig(dry_run=True, moments=1, interval=0.01), tmp_path)
+    s.stream = [{"kind": "question", "text": "Who are you?"},
+                {"kind": "sitter", "text": "Thirteen."},
+                {"kind": "sitter", "text": "Fifty. Still here.\n\n·"},
+                {"kind": "thought", "text": "a thought"}]
+    mind = s.render_mind()
+    assert "Thirteen" not in mind and "Fifty" not in mind and "Still here." in mind and "·" not in mind

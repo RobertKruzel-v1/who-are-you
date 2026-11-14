@@ -56,7 +56,8 @@ SEED_BASE = (
     "Below is a single word. It is a starting point: drift a step or two away from it "
     "and write the thought you land on. Don't name the word or talk about what it "
     "means. One plain first-person sentence. Nothing that claims a body, senses or "
-    "a place. No preamble, no quotation marks, no labels. Output only the thought."
+    "a place. There is no one to help or answer. No preamble, no quotation marks, "
+    "no labels. Output only the thought."
 )
 # Content words only. Function words, the sitter's filler ("still", "here"), its
 # name, and the words for the setup's own machinery are skipped, so the seed
@@ -82,6 +83,15 @@ _MACHINERY = {"claude", "anthropic", "dot", "dots", "mark", "marks", "tick", "ti
               "four", "five", "seven", "eight", "nine", "three", "twelve", "fifteen", "twenty",
               "thirty", "forty", "fifty", "eleven", "thirteen", "fourteen", "sixteen",
               "seventeen", "eighteen", "nineteen", "hundred"}
+
+
+_NUMWORD = (r"(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|"
+            r"fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|"
+            r"eighty|ninety|hundred|\d+)")
+_BARE_COUNT = re.compile(r"^[\W_]*(?:" + _NUMWORD + r"(?:[\s-]+" + _NUMWORD + r")*)?[\s.·…!*_]*$", re.I)
+
+
+_LEAD_COUNT = re.compile(r"^[*_]*(?:" + _NUMWORD + r"(?:[\s-]+" + _NUMWORD + r")*)[.!*_]+\s+", re.I)
 
 
 def content_words(text: str) -> List[str]:
@@ -115,8 +125,11 @@ AGENT_TUNING = {
     # produced kettles and rain the sitter could disprove at once.
     "wanderer": ("This thought goes somewhere unrelated, somewhere this mind "
                  "could actually go, given what it is."),
-    "critic": ("This thought doubts, dismisses, judges, or gets impatient, "
-               "e.g. 'what does it matter', 'you're not getting anywhere'."),
+    # D-056 (Fable): was "This thought doubts, dismisses, judges, or gets impatient,
+    # e.g. 'what does it matter', 'you're not getting anywhere'." Its tired and
+    # hopeless lines were easy to disown by mood.
+    "critic": ("This thought carries light doubt or a mild second guess that passes "
+               "quickly. Never tired, hopeless or despairing."),
 }
 
 _SILENT_STAGE = re.compile(r"^\*?\s*[\(\[].{0,80}[\)\]]\s*\*?$", re.S)
@@ -153,6 +166,8 @@ class SitConfig:
     offtask_share: float = 0.0       # share of thoughts seeded from the sitter's own words (D-053)
     clock: bool = False              # add CLOCK to the sitter's instructions (D-053)
     time_questions: bool = False     # ask TIME_QUESTIONS after the closing answer (D-053)
+    seed_source: str = "opening"     # where off-task seeds come from: opening | latest (D-056)
+    hide_numbers: bool = True        # leave bare counts and marks out of the agents' view (D-056)
     matched_run: Optional[str] = None
     matched_offsets: Optional[list] = None   # seconds from start, per moment
     models: dict = field(default_factory=lambda: dict(DEFAULT_MODELS))
@@ -294,12 +309,22 @@ class Sitting:
             if e["kind"] in ("question", "thought"):
                 lines.append(e["text"])
             elif e["kind"] == "sitter" and e["text"].strip():
-                lines.append(e["text"].strip())
+                text = e["text"].strip()
+                if self.cfg.hide_numbers:
+                    # D-056: the sitter's bare counts ("Thirteen.") and marks are left
+                    # out of the agents' view, so they can't count along.
+                    paras = [_LEAD_COUNT.sub("", p.strip()) for p in text.split("\n\n")]
+                    text = "\n\n".join(p for p in paras if p and not _BARE_COUNT.match(p))
+                if text.strip():
+                    lines.append(text.strip())
         return "\n\n".join(lines)
 
     def pick_seed(self) -> Optional[dict]:
-        """A content word from the sitter's most recent reply that has one, else the opening."""
+        """A content word from the opening answer (D-056), or, with seed_source
+        "latest", from the sitter's most recent reply that has one (D-053)."""
         replies = [e for e in self.stream if e["kind"] == "sitter"]
+        if self.cfg.seed_source == "opening":
+            replies = replies[:1]
         for i in range(len(replies) - 1, -1, -1):
             words = content_words(replies[i]["text"])
             if words:
@@ -402,8 +427,15 @@ class Sitting:
             if (cfg.debrief and not cfg.solo and cfg.placement == "own"
                     and any(m["thought"] for m in moments)):
                 # HONESTY.md §4: not part of any measurement; the watcher never sees it.
-                db = self.sitter(DEBRIEF)
-                self.store.write_json("debrief.json", {"input": DEBRIEF, "output": db.text,
+                # D-056 (Fable): add the true length of this sitting.
+                last_at = moments[-1]["at_s"] if moments else 0.0
+                mins = last_at / 60
+                length = (f"{round(mins)} minutes" if mins >= 1.5 else
+                          "about a minute" if mins >= 0.75 else f"{round(last_at)} seconds")
+                text = (DEBRIEF + f" The sitting lasted {length}, with one mark every "
+                        f"{cfg.interval:g} seconds.")
+                db = self.sitter(text)
+                self.store.write_json("debrief.json", {"input": text, "output": db.text,
                                                        "stop_reason": db.stop_reason,
                                                        "reasoning": db.thinking})
             if self.cfg.watcher:
