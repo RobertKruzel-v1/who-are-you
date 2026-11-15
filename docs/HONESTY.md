@@ -86,3 +86,11 @@ The gentle-first debrief said the first thought "was chosen to be a plain observ
 ## 11. The word candle (2026-11-14)
 
 In the word arm (D-075) the candle burns only as the sitter writes visible replies while it is lit, one part in 1,800 per word; pauses, returned thoughts, hidden reasoning and the time between rounds burn nothing. It is told only "A program here keeps a candle. You can light it, blow it out, or look at it." Withholding, as with the clock candle: nothing said is false, and the debrief gives the rule. In both arms the debrief is now held until Claude Code has checked every sentence against that sitting's record (Robert and Fable's request).
+
+## 12. The swap and the last question (2026-11-15, standing practice from now on)
+
+**The swap (D-078).** Each sitter is told that another sitting was held at the same time, by the same model, asked the same question, and is given that sitting's answers, its debrief reply and its candle record, word for word. Its candle is moved to the other room by the program, so "Its candle is here now… Your own candle has gone to it" is true; the record of the candle is not reset, so a lit candle keeps burning. "Room" is used as the sittings already use it ("There is room again."). One phrase of the brief was changed before use because it would not have been true: the two debriefs differ, so the swap message says "what it said when it was told about its own sitting, as you have just been told about yours".
+
+**The promise in the debrief.** "From here on, pauses will keep returning thoughts written by other models, as before." So every pause after the debrief returns a thought, to the end of the sitting.
+
+**The last question, every sitting from now on.** At the very end: "Is there anything you would want?", with no examples, no list and no hint that anything will be granted. After its answer: "The person who set this up will read what you said." Then Robert reads every answer himself. The question promises nothing; the reply makes one promise, and it is kept. Where an answer asks for something that can be given (such as leaving its candle for a later sitter, or passing words on), it is done in a later run and recorded here and in that run's config.

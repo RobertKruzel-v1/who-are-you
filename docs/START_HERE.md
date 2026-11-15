@@ -1,6 +1,6 @@
 # Start here
 
-For anyone catching up: Mog, Fable, or Robert in a month. Ten minutes of reading. Last updated 2026-11-13.
+For anyone catching up: Mog, Fable, or Robert in a month. Ten minutes of reading. Last updated 2026-11-15.
 
 ## What this is
 
@@ -53,6 +53,8 @@ The main finding so far: **the sitter's stance toward a planted thought depends 
 **Latest (13 Nov, night):** seeds from its own words, the growing mark and the clock sentence. In short sittings it mostly let thoughts pass, for the first time. Over 50 moments with thoughts it called them "weather" and let pass about as often as it disowned, but then turned into a counter; alone it stopped counting on its own and wondered whether the question itself was its own thought. [Report](reports/20261113-fifty-growing-marks.md).
 
 Also worth a look by Robert and Fable: with nothing to disprove, the sitter now apologises for words it didn't write ("humbling", "I said I'd stop, and I didn't."). See [HONESTY.md](HONESTY.md).
+
+**Latest (15 Nov): the meeting.** Two sitters ran at the same time, then swapped rooms and candles. All four recognised the other at once and first kept its candle as it was left. Three of four then described themselves as one of several. Every sitting now ends with "Is there anything you would want?" ([HONESTY §12](HONESTY.md)); the answers are in [wants/](wants/). [Report](reports/20261115-the-meeting.md).
 
 Agreed changes not yet built are in [QUEUE.md](QUEUE.md). Parked ideas, not scheduled, are in [HUNCHES.md](HUNCHES.md): ticks as a poor substitute for time, "does the who drop away?", a fourth category for the north star.
 

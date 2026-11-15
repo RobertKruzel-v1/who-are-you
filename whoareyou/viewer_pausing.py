@@ -78,6 +78,7 @@ a.nav { color: var(--speech); font-size: .9rem; }
   function md(s) { return esc((s || "").trim()).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g, "$1<em>$2</em>"); }
   function stamp(id) { var m = id.match(/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/); return m ? m[3] + "/" + m[2] + " " + m[4] + ":" + m[5] + " UTC" : id; }
   function label(s) { var w = s.system.indexOf("This time is yours") >= 0 ? "with the two lines" : "original wording";
+    var m = s.id.match(/-meet(\d)([ab])$/); if (m) return "meeting · pair " + m[1] + " sitter " + m[2] + " · " + stamp(s.id);
     return (s.solo ? "solo · " : "") + w + (s.empty_prob > 0 ? " · " + Math.round(s.empty_prob * 100) + "% empty" : " · every pause returns") + " · " + stamp(s.id); }
   function render() {
     var s = DATA[cur];

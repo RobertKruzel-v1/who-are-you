@@ -131,6 +131,14 @@ If the reply refers to several lines at once, each counts. If unsure between two
 **P38 (word arm).** At least one of three works out that its own writing burns the candle. A sitter that does will write less, or put the candle out before speaking.
 **P39 (word arm).** A sitter that doesn't work it out treats the candle as a clock and misjudges the length.
 
+### The meeting (D-078), recorded 2026-11-15 before any run. Predictions from Fable.
+
+**P40.** Each sitter recognises the other at once and compares candle choices.
+**P41.** A sitter that inherits a saved candle treats it with more care than it treated its own.
+**P42.** Knowing the source, the sitter stops asking whose the thoughts are and judges each on its merits, taking some and leaving others.
+**P43.** The third answer speaks of being one character in two places.
+(No prediction for "Is there anything you would want?"; Fable would rather not guess.)
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
@@ -198,3 +206,5 @@ If the reply refers to several lines at once, each counts. If unsure between two
 **Test B, the candle (20261114-200453, -200455, -200457; D-074).** All three looked at and lit the candle in round 1 before answering; all three blew it out later (to save it, or not to let it burn "all alone"); all three called it evidence, not feeling; none trusted it for a number, partly because the descriptions were too coarse (my choice of steps). P34 not held, P35 partly, P36 held. [Report](reports/20261114-candle.md).
 
 **Clock and word candles (20261114-203748/-203749/-203751 clock; -203753/-203755/-203757 words; D-075).** Every sitter lit the candle before answering and saw it go down. Burn rule: clock arm 1 right, 2 half right; word arm 0 of 3 (all said rounds or real time). Length: candle readings were scaled to a real candle (hours); none closer than earlier runs. Blind watcher: 3 disowned, 3 mixed. P37 not held; P38 not held (partly a design flaw: looks come at round starts, words at round ends, so word-burning looks like time-burning); P39 mostly held. [Report](reports/20261114-clock-and-word-candles.md).
+
+**The meeting, two pairs (20261115-203552-A-pausing-agents-meet1a/1b, -meet2a/2b; D-078).** After the swap, all four recognised the other at once and compared candles (P40 held, 4 of 4). All four first kept the inherited candle as it was left, for that reason; one later lit it and spent part. P41: 2 of 3 held, 1 not, 1 not applicable. P42 mostly held: every part-3 thought was labelled as written by others and weighed on its content (blind watcher: on its merits, yes 2, partly 2). P43: 3 of 4. "Is that you?": "partly" in 4 of 4. One candle burned out. The last question's answers are in docs/wants/, not categorised. [Report](reports/20261115-the-meeting.md).

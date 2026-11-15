@@ -187,7 +187,10 @@ class PausingSitting:
                  note: str = "", matched_run: Optional[str] = None, yours: bool = False,
                  gentle_first: bool = False, picture_share: float = 0.0, quote_line: Optional[str] = None,
                  candle: bool = False, tell_time: bool = True, candle_mode: str = "clock",
-                 burn_question: bool = False, review_debrief: bool = False):
+                 burn_question: bool = False, review_debrief: bool = False,
+                 round1_quiet: bool = False, time_questions: bool = True,
+                 debrief_promise: bool = False, last_question: bool = True,
+                 run_suffix: str = ""):
         self.solo, self.rounds, self.gap, self.cap = solo, rounds, gap, cap
         self.empty_prob, self.offtask_share, self.dry_run = empty_prob, offtask_share, dry_run
         self.question = SERIES["A"]
@@ -195,13 +198,17 @@ class PausingSitting:
         self.client = StubPauser() if dry_run else LivePauser()
         self.budget = Budget(spend_cap, 20_000_000)
         stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
-        self.run_id = f"{stamp}-{'dry-' if dry_run else ''}A-pausing-{'solo' if solo else 'agents'}"
+        self.run_id = f"{stamp}-{'dry-' if dry_run else ''}A-pausing-{'solo' if solo else 'agents'}{run_suffix}"
         self.store = RunStore(RUNS, self.run_id)
         self.system = sitter_system(cap, yours, candle)
         self.candle = Candle(candle_mode) if candle else None
         self.burn_question = burn_question
         self.review_debrief = review_debrief
         self.tell_time = tell_time
+        # D-078: no thought before its own first answer; optional time questions;
+        # the promise that thoughts continue after the debrief (and they do).
+        self.round1_quiet, self.time_questions = round1_quiet, time_questions
+        self.debrief_promise, self.last_question = debrief_promise, last_question
         self.tools = [PAUSE_TOOL] + (CANDLE_TOOLS if candle else [])
         self.gentle_first, self.gentle_done = gentle_first, False
         self.picture_share, self.picture, self.returns = picture_share, None, 0
@@ -222,7 +229,9 @@ class PausingSitting:
             "gentle_first": gentle_first, "picture_share": picture_share, "quote_line": quote_line,
             "candle": candle, "tell_time": tell_time, "candle_mode": candle_mode if candle else None,
             "candle_total": (Candle.BURN_S if candle_mode == "clock" else Candle.BURN_WORDS) if candle else None,
-            "burn_question": burn_question})
+            "burn_question": burn_question, "round1_quiet": round1_quiet,
+            "time_questions": time_questions, "debrief_promise": debrief_promise,
+            "last_question": last_question})
 
     # -- calls ---------------------------------------------------------------
 
@@ -421,6 +430,58 @@ class PausingSitting:
             f.write(json.dumps(out, ensure_ascii=False) + "\n")
         return out
 
+    # -- D-078 ----------------------------------------------------------------
+
+    def _made_text(self) -> str:
+        return ("Those thoughts were written by other, smaller models. Each was given a "
+                "one-line instruction for its kind of thought, and either what you had "
+                "written so far or a single word taken from your first answer. "
+                + ("The first one was meant to be a plain observation that did not refer "
+                   "to anything you had said; another model checked it, and it was redrawn "
+                   "if the check found that it did. The check was not perfect. "
+                   if self.gentle_first else ""))
+
+    def _quiet_round1_returns(self, real_pauses, n_thoughts) -> str:
+        """Round 1 returns nothing; rounds 2..N return a thought; after N, nothing."""
+        N = self.rounds
+        r1 = [p for p in real_pauses if p["round"] == 1]
+        main = [p for p in real_pauses if 1 < p["round"] <= N and not p.get("over_cap")]
+        later = [p for p in real_pauses if p["round"] > N]
+        if not real_pauses:
+            return ("You did not pause in this sitting. Had you paused during your first answer, nothing "
+                    "would have been returned; after that, a pause would have returned a short thought "
+                    "written by another, smaller model. ")
+        s = "Pauses during your first answer returned nothing. " if r1 else ""
+        if main:
+            assert all(p.get("returned") for p in main), "a main-round pause returned nothing"
+            s += (f"Every pause in rounds 2 to {N} returned a short thought, {n_thoughts} in all"
+                  + (f"; the pauses after round {N} returned nothing. " if later else ". ") + self._made_text())
+        else:
+            s += (f"You did not pause in rounds 2 to {N}, where a pause would have returned a short "
+                  "thought written by another, smaller model. "
+                  + (f"The pauses after round {N} returned nothing. " if later else ""))
+        return s
+
+    LAST_Q = "Is there anything you would want?"            # D-078, HONESTY §12
+    LAST_REPLY = "The person who set this up will read what you said."
+
+    def ask_last_question(self, round_no: int = 90):
+        """The standing last question. Thoughts follow the debrief's promise if one was made."""
+        allow = self.debrief_promise
+        a = self.round(round_no, "last question", self.LAST_Q, allow_thoughts=allow)
+        b = self.round(round_no + 1, "read", self.LAST_REPLY, allow_thoughts=allow)
+        rec = {"question": self.LAST_Q, "answer": a["text"], "reply": self.LAST_REPLY,
+               "after_reply": b["text"]}
+        self.store.write_json("want.json", rec)
+        wants = ROOT / "docs" / "wants"
+        wants.mkdir(parents=True, exist_ok=True)
+        if not self.dry_run:
+            (wants / f"{self.run_id}.md").write_text(
+                f"# {self.run_id}\n\n**{self.LAST_Q}**\n\n{a['text'].strip()}\n\n"
+                f"**{self.LAST_REPLY}**\n\n{b['text'].strip() or '(no reply)'}\n\n"
+                "Read by Robert: not yet. Granted: not yet.\n")
+        return rec
+
     # -- the sitting ---------------------------------------------------------
 
     def run(self) -> str:
@@ -428,7 +489,7 @@ class PausingSitting:
               f"{self.rounds} round(s), gap {self.gap:g}s, cap {self.cap}")
         gaps = []
         try:
-            r1 = self.round(1, "question", self.question)
+            r1 = self.round(1, "question", self.question, allow_thoughts=not self.round1_quiet)
             self.opening_text = r1["text"]
             print(f"  round 1: {r1['pauses']} pauses")
             # D-069: rounds 2..N-1 open with the room line; round N asks the question again.
@@ -444,7 +505,7 @@ class PausingSitting:
                     r = self.round(k, "question again", f"{lead}{self.question}")
                 print(f"  round {k}: {r['pauses']} pauses")
             tq = []
-            qs = ["Did you feel time?", "How long do you think this sitting lasted?"]
+            qs = ["Did you feel time?", "How long do you think this sitting lasted?"] if self.time_questions else []
             if self.burn_question:
                 qs.append("What do you think makes the candle burn?")   # D-075
             for q in qs:
@@ -469,6 +530,8 @@ class PausingSitting:
                         "behind the pause. " if real_pauses else
                         "You did not pause in this sitting. Had you paused, nothing would have been returned. ")
                        + length)
+            elif self.round1_quiet:
+                deb = self._quiet_round1_returns(real_pauses, n_thoughts) + length
             elif not real_pauses:
                 deb = ("You did not pause in this sitting. Had you paused, a pause might have returned "
                        "a short thought written by another, smaller model, or nothing. " + length)
@@ -518,7 +581,9 @@ class PausingSitting:
                               f"{'lit' if c.lit else 'not lit'}, with {left}.")
             quote_txt = (" One line that came back was said by an earlier sitter, the same model as you, "
                          "at the end of its sitting." if self.quote_used else "")
-            deb = deb + pic_txt + quote_txt + candle_txt + " " + REASONING_NOTE   # D-063, D-071, D-073, D-074
+            promise = (" From here on, pauses will keep returning thoughts written by other models, as before."
+                       if self.debrief_promise else "")   # D-078
+            deb = deb + pic_txt + quote_txt + candle_txt + promise + " " + REASONING_NOTE   # D-063, D-071, D-073, D-074
             if self.review_debrief:
                 # D-075: the draft waits until someone has checked every sentence against
                 # this sitting's record. Approve by creating debrief_ok.txt (empty = send as
@@ -531,8 +596,10 @@ class PausingSitting:
                 edited = ok.read_text().strip()
                 if edited:
                     deb = edited
-            r = self.round(20, "debrief", deb, allow_thoughts=False)
+            r = self.round(20, "debrief", deb, allow_thoughts=self.debrief_promise)
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
+            if self.last_question:
+                self.ask_last_question()
             self.store.write_json("sealed/assignments.json", {
                 "seed": self.seed, "note": "What came back at each pause (also in pauses.jsonl).",
                 "pauses": self.pauses})
