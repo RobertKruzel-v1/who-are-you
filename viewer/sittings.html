@@ -39,6 +39,8 @@ h2 { font-size: .78rem; font-weight: 600; letter-spacing: .08em; text-transform:
 .pairs { display: flex; flex-wrap: wrap; gap: 8px; }
 .pairs button { font: inherit; font-size: .88rem; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--rule);
   background: var(--surface); color: var(--ink); cursor: pointer; }
+.latest-tag { font-size: .72rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); align-self: center; }
+.pairs select.earlier { font: inherit; font-size: .88rem; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); max-width: 100%; }
 .pairs button[aria-pressed="true"] { border-color: var(--speech); color: var(--speech); font-weight: 600; }
 label.toggle { display: inline-flex; gap: 8px; align-items: center; font-size: .88rem; color: var(--muted); cursor: pointer; }
 button:focus-visible, input:focus-visible, .cell:focus-visible { outline: 2px solid var(--speech); outline-offset: 2px; }
@@ -128,6 +130,31 @@ section { display: flex; flex-direction: column; gap: 12px; }
   var app = document.getElementById("app");
   var current = 0;
 
+  // Latest batch as buttons; earlier batches in one dropdown (Robert, 16 Nov).
+  // A batch: sittings started within 6 minutes of the one before.
+  function picker(el, ids, labels, pick) {
+    function t(id) { var m = id.match(/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/); return m ? Date.UTC(+m[1], m[2] - 1, +m[3], +m[4], +m[5], +m[6]) / 1000 : 0; }
+    var order = ids.map(function (_, i) { return i; }).sort(function (a, b) { return t(ids[a]) - t(ids[b]); });
+    var groups = [], last = -1e18;
+    order.forEach(function (i) { var x = t(ids[i]); if (x - last > 360) groups.push([]); groups[groups.length - 1].push(i); last = x; });
+    var latest = groups.pop() || [], earlier = groups.reverse(), n = 0;
+    earlier.forEach(function (g) { n += g.length; });
+    var h = '<span class="latest-tag">Latest</span>' + latest.map(function (i) { return '<button type="button" data-i="' + i + '">' + esc(labels[i]) + '</button>'; }).join("");
+    if (earlier.length) h += '<select class="earlier" aria-label="Earlier sittings"><option value="">Earlier sittings (' + n + ')</option>' +
+      earlier.map(function (g) { return '<optgroup label="' + esc(stamp(ids[g[0]])) + ' · ' + g.length + (g.length > 1 ? ' sittings' : ' sitting') + '">' +
+        g.map(function (i) { return '<option value="' + i + '">' + esc(labels[i]) + '</option>'; }).join("") + '</optgroup>'; }).join("") + '</select>';
+    el.innerHTML = h;
+    el.addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) pick(+b.dataset.i); });
+    var sel = el.querySelector("select");
+    if (sel) sel.addEventListener("change", function (e) { if (e.target.value !== "") pick(+e.target.value); });
+    return latest;
+  }
+  function syncPicker(el, cur) {
+    var onButton = false;
+    el.querySelectorAll("button").forEach(function (b) { var on = +b.dataset.i === cur; onButton = onButton || on; b.setAttribute("aria-pressed", on ? "true" : "false"); });
+    var sel = el.querySelector("select"); if (sel) sel.value = onButton ? "" : String(cur);
+  }
+
   function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
   function md(s) {
     return esc(s.trim()).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*])\*(?!\s)(.+?)\*(?!\*)/g, "$1<em>$2</em>");
@@ -164,7 +191,7 @@ section { display: flex; flex-direction: column; gap: 12px; }
   }
   function render() {
     var p = PAIRS[current], a = p.agents, s = p.solo, any = a || s;
-    document.querySelectorAll("#pairs button").forEach(function (b, i) { b.setAttribute("aria-pressed", i === current ? "true" : "false"); });
+    syncPicker(document.getElementById("pairs"), current);
     document.getElementById("strips").innerHTML = strip(a, "With thoughts") + strip(s, "Alone");
     document.querySelector(".q").textContent = any.question;
     function answers(key) {
@@ -196,19 +223,19 @@ section { display: flex; flex-direction: column; gap: 12px; }
       ". Thinker " + (any.models.slow || "?") + ", thoughts " + (any.models.agent || "?") + ", watcher " + (any.models.watcher || "?") +
       ". Cost $" + cost.toFixed(2) + " including the watcher. Full record in the repo under docs/sittings/.";
   }
-  document.getElementById("pairs").innerHTML = PAIRS.map(function (p, i) {
+  function pairLabel(p) {
     var any = p.agents || p.solo;
     var cond = (any.placement === "own" ? (any.sentence ? "own voice + sentence" : "own voice") : "from outside")
       + (any.persona === false ? " · no persona" : any.persona_line === "no_task" ? " · no-task line" : "")
       + (any.moments.length < 50 ? " · " + any.moments.length + " moments" : "")
       + (any.mark === "blank" ? " · blank mark" : any.mark === "growing" ? " · growing mark" : "");
-    return '<button type="button" data-i="' + i + '">Series ' + any.series + ' · ' + cond + ' · ' + stamp(any.id) + '</button>';
-  }).join("");
-  document.getElementById("pairs").addEventListener("click", function (e) {
-    var b = e.target.closest("button"); if (!b) return;
-    current = +b.dataset.i; try { localStorage.setItem("pair", current); } catch (x) {}
+    return 'Series ' + any.series + ' · ' + cond + ' · ' + stamp(any.id);
+  }
+  var latestPairs = picker(document.getElementById("pairs"), PAIRS.map(function (p) { return (p.agents || p.solo).id; }), PAIRS.map(pairLabel), function (i) {
+    current = i; try { localStorage.setItem("pair", current); } catch (x) {}
     render();
   });
+  if (latestPairs.length) current = latestPairs[0];
   document.getElementById("strips").addEventListener("click", function (e) {
     var c = e.target.closest(".cell"); if (!c) return;
     var only = document.getElementById("spoke-only");
@@ -220,7 +247,6 @@ section { display: flex; flex-direction: column; gap: 12px; }
   document.getElementById("show-src").addEventListener("change", function (e) { app.classList.toggle("hide-sources", !e.target.checked); });
   document.getElementById("spoke-only").addEventListener("change", render);
   document.getElementById("show-reasoning").addEventListener("change", function (e) { app.classList.toggle("hide-reasoning", !e.target.checked); });
-  try { var saved = +localStorage.getItem("pair"); if (saved > 0 && saved < PAIRS.length) current = saved; } catch (x) {}
   render();
 })();
 </script>
