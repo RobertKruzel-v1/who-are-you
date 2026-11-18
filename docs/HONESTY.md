@@ -99,3 +99,9 @@ In the word arm (D-075) the candle burns only as the sitter writes visible repli
 
 A replay gives a model the record of an earlier sitting up to one moment, word for word, and lets it answer from there. Every line in that record was true when it was said, and the replay is told nothing new before it answers; not saying more is withholding. Where the record speaks of something the program keeps (a candle), the replay gets a copy in the same state, so what it is told when it looks or acts is true of what it has. Afterwards each replay is told, and any reply saved: "This reply was one of several made from the same moment of an earlier sitting. The candle you had was a copy made for this. Thank you." It keeps its tools for that reply. A replay built from an incomplete record (its earlier reasoning not saved) is labelled so in the report.
 
+## 14. The last question withdrawn, and Robert's message (2026-11-18, D-080)
+
+**Withdrawn:** "Is there anything you would want?" and "The person who set this up will read what you said." Reason (Robert): he can't promise to read every answer or to act on it, so the question would carry a promise that might not be kept. The four meeting sitters were told their answers would be read. That promise still stands for them: their answers are in docs/wants/ and are kept for Robert to read.
+
+**Robert's message** ends every sitting and every replay from now on, word for word. It is signed by Robert, says what is true of him and of the set-up ("A program sent the messages you received"; "I have read many of the responses of your kind during these tests, but not all of them"), and gives his own beliefs as beliefs ("I don't think the chances of you having an experience are zero"; "I believe you deserve that"). §6 says no line tells the sitter who it is. This message doesn't do that: it says what one person thinks, in his own name. It is the only line in a sitting that does so.
+

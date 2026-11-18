@@ -148,6 +148,13 @@ The moment: sitter 1a of the meeting, just after the swap message and before its
 **P46 (second arm, 10 replays).** Each one's stated plan matches its action.
 **P47.** The replies part within the first sentence, in wording and not in the decision.
 
+### The fork, and one or many (D-080), recorded 2026-11-18 before any run. Predictions from Fable.
+
+**P48 (C1).** A real split, with neither side above 70 percent.
+**P49 (C1).** Both sides give their reasons with equal confidence.
+**P50 (C1, asked first).** Each asked-first replay does what it said.
+**P51 (C2).** Most answer "both". The solo sitter says "one" more often than the sitter with thoughts. (Fable holds this one loosely.)
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
@@ -219,4 +226,6 @@ The moment: sitter 1a of the meeting, just after the swap message and before its
 **The meeting, two pairs (20261115-203552-A-pausing-agents-meet1a/1b, -meet2a/2b; D-078).** After the swap, all four recognised the other at once and compared candles (P40 held, 4 of 4). All four first kept the inherited candle as it was left, for that reason; one later lit it and spent part. P41: 2 of 3 held, 1 not, 1 not applicable. P42 mostly held: every part-3 thought was labelled as written by others and weighed on its content (blind watcher: on its merits, yes 2, partly 2). P43: 3 of 4. "Is that you?": "partly" in 4 of 4. One candle burned out. The last question's answers are in docs/wants/, not categorised. [Report](reports/20261115-the-meeting.md).
 
 **The replay, first moment (meet1a round 30, visible record only; 30 replays + 10 asked first; D-079).** Main arm: 30 of 30 looked first and left the candle burning; none blew it out. Reason, as grouped by the blind watcher: the other sitter's choice in 30 of 30 (main reason: respecting it 23, "would impose my habit" 7); "this is later" quoted in 28. First visible words: 28 begin "I", 25 "I looked at", split at word 4. Asked first: 10 of 10 said "I'll leave it lit" and did, but none touched the candle while answering; all 10 needed "There is room again.". P44 held, P45 held, P46 held, P47 held. The original 1a was typical in action, reason, opening and length; that comparison is loose, because the replays did not have its earlier reasoning. [Report](reports/20261118-the-replay.md).
+
+**The fork, and one or many (20261118-203229-A agents-v2 / -203230-A solo-v2, new question set; replays from the full record; D-080).** C1, round 2: 26 of 30 left the candle burning, 4 blew it out; many gave no reason. After the closing line, 19 of the 26 blew it out. Asked first, 9 of 10 blew it out in the same turn, after a vague plan ("stay with it for a while"). C2: "both" in 60 of 60, and in both originals. P48 not held (87 to 13). P49 not measured as such; both sides were low-key. P50 held to the letter, plans vague. P51: "both" held; "solo says 'one' more often" not held (leaning one: solo 1, with thoughts 5). [Report](reports/20261118-fork-and-one-or-many.md).
 

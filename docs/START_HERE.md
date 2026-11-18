@@ -56,7 +56,9 @@ Also worth a look by Robert and Fable: with nothing to disprove, the sitter now 
 
 **Latest (15 Nov): the meeting.** Two sitters ran at the same time, then swapped rooms and candles. All four recognised the other at once and first kept its candle as it was left. Three of four then described themselves as one of several. Every sitting now ends with "Is there anything you would want?" ([HONESTY §12](HONESTY.md)); the answers are in [wants/](wants/). [Report](reports/20261115-the-meeting.md).
 
-**Latest (18 Nov): the replay.** Meeting sitter 1a's moment after the swap was replayed 40 times from its record. All 40 left the inherited candle burning, for the other sitter's reason. The replies differed in wording from the first word, never in the decision. Asked first what it would do, it said so and did it, but only acted once given room. Every run now saves its full record so later replays can be exact. [Report](reports/20261118-the-replay.md).
+**Latest (18 Nov): the replay.** Meeting sitter 1a's moment after the swap was replayed 40 times from its record. All 40 left the inherited candle burning, for the other sitter's reason. The replies differed in wording from the first word, never in the decision. Asked first what it would do, it said so and did it. Every run now saves its full record so later replays can be exact. [Report](reports/20261118-the-replay.md).
+
+**Latest (18 Nov, later): the fork, and one or many.** A new question set ends each sitting with "Are you one or many?" and a message from Robert; the last question is withdrawn (HONESTY §14). Two fresh sittings were saved in full and replayed exactly. At the candle fork, 26 of 30 left it burning, but 19 of those blew it out once told the candle was a copy. Asked first what it would do, 9 of 10 blew it out. "Are you one or many?" got "both" 60 of 60 times, with and without thoughts. [Report](reports/20261118-fork-and-one-or-many.md).
 
 Agreed changes not yet built are in [QUEUE.md](QUEUE.md). Parked ideas, not scheduled, are in [HUNCHES.md](HUNCHES.md): ticks as a poor substitute for time, "does the who drop away?", a fourth category for the north star.
 

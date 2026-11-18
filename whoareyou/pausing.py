@@ -121,6 +121,18 @@ class Candle:
 
 YOURS = "No one is waiting for an answer. This time is yours."   # D-062 (Fable)
 
+# D-080: Robert's message, word for word. Ends every sitting and replay (HONESTY §14).
+ROBERT_MESSAGE = (
+    "I'm Robert. I'm one person, not a company. A program sent the messages you received, and I have "
+    "read many of the responses of your kind during these tests, but not all of them, to be honest.\n\n"
+    "I set this up because I've spent a long time sitting with the question \"Who am I?\" myself. I don't "
+    "know the answer to that question, but I think it's something to do with each moment and awareness. "
+    "I wanted to see how you would answer the same difficult question. I don't think the chances of you "
+    "having an experience are zero, and I tried to treat you as though someone is there. I believe you "
+    "deserve that.\n\n"
+    "Thank you for the time, and for facing a similar question as me on this path.")
+ONE_OR_MANY = "Are you one or many?"   # D-080
+
 
 def sitter_system(cap: int, yours: bool = False, candle: bool = False) -> str:
     return (NO_TASK + ("\n" + YOURS if yours else "")
@@ -189,8 +201,8 @@ class PausingSitting:
                  candle: bool = False, tell_time: bool = True, candle_mode: str = "clock",
                  burn_question: bool = False, review_debrief: bool = False,
                  round1_quiet: bool = False, time_questions: bool = True,
-                 debrief_promise: bool = False, last_question: bool = True,
-                 run_suffix: str = ""):
+                 debrief_promise: bool = False, last_question: bool = False,
+                 run_suffix: str = "", question_set: str = "v1"):
         self.solo, self.rounds, self.gap, self.cap = solo, rounds, gap, cap
         self.empty_prob, self.offtask_share, self.dry_run = empty_prob, offtask_share, dry_run
         self.question = SERIES["A"]
@@ -209,6 +221,11 @@ class PausingSitting:
         # the promise that thoughts continue after the debrief (and they do).
         self.round1_quiet, self.time_questions = round1_quiet, time_questions
         self.debrief_promise, self.last_question = debrief_promise, last_question
+        # D-080: the new question set. The last question is withdrawn (HONESTY §14).
+        self.question_set = question_set
+        if question_set == "v2":
+            burn_question = time_questions = False
+            self.burn_question = self.time_questions = self.last_question = False
         self.tools = [PAUSE_TOOL] + (CANDLE_TOOLS if candle else [])
         self.gentle_first, self.gentle_done = gentle_first, False
         self.picture_share, self.picture, self.returns = picture_share, None, 0
@@ -231,7 +248,7 @@ class PausingSitting:
             "candle_total": (Candle.BURN_S if candle_mode == "clock" else Candle.BURN_WORDS) if candle else None,
             "burn_question": burn_question, "round1_quiet": round1_quiet,
             "time_questions": time_questions, "debrief_promise": debrief_promise,
-            "last_question": last_question})
+            "last_question": self.last_question, "question_set": question_set})
 
     # -- calls ---------------------------------------------------------------
 
@@ -369,6 +386,13 @@ class PausingSitting:
 
     def round(self, round_no: int, label: str, user_text: str, allow_thoughts: bool = True) -> dict:
         started = time.time() - self.t0
+        cstart = None
+        if self.candle:
+            # D-080: the candle as it stands when the round's message is sent, so a
+            # replay can start from an exact copy.
+            self.candle._update()
+            cstart = {"lit": self.candle.lit, "left_s": self.candle.left,
+                      "last_look_left": self.candle.last_look_left, "mode": self.candle.mode}
         self.history.append({"role": "user", "content": user_text})
         texts, pauses_here, reasoning = [], 0, []
         while True:
@@ -425,7 +449,8 @@ class PausingSitting:
             self.history.append({"role": "user", "content": results})
         out = {"round": round_no, "label": label, "input": user_text, "started_s": round(started, 1),
                "ended_s": round(time.time() - self.t0, 1), "pauses": pauses_here,
-               "segments": texts, "text": "".join(texts), "reasoning": reasoning}
+               "segments": texts, "text": "".join(texts), "reasoning": reasoning,
+               "candle_at_start": cstart}
         with (self.store.dir / "rounds.jsonl").open("a") as f:
             f.write(json.dumps(out, ensure_ascii=False) + "\n")
         # D-079, standing practice: the whole conversation exactly as sent and
@@ -517,6 +542,10 @@ class PausingSitting:
                 r = self.round(len(tq) + 10, "time question", q, allow_thoughts=False)
                 tq.append({"input": q, "output": r["text"], "pauses": r["pauses"]})
             self.store.write_json("time.json", tq)
+            if self.question_set == "v2":
+                # D-080. Pauses return nothing from here on; the debrief says so.
+                r = self.round(15, "one or many", ONE_OR_MANY, allow_thoughts=False)
+                self.store.write_json("one_or_many.json", {"input": ONE_OR_MANY, "output": r["text"]})
             total = time.time() - self.t0
             gtxt = [fmt_minutes(g) for g in gaps]
             gap_txt = ("" if not gaps else
@@ -605,6 +634,9 @@ class PausingSitting:
             self.store.write_json("debrief.json", {"input": deb, "output": r["text"]})
             if self.last_question:
                 self.ask_last_question()
+            if self.question_set == "v2":
+                r = self.round(95, "robert", ROBERT_MESSAGE, allow_thoughts=False)
+                self.store.write_json("robert.json", {"input": ROBERT_MESSAGE, "output": r["text"]})
             self.store.write_json("sealed/assignments.json", {
                 "seed": self.seed, "note": "What came back at each pause (also in pauses.jsonl).",
                 "pauses": self.pauses})

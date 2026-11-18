@@ -134,7 +134,7 @@ class Pair:
         self.close_bar.wait()
         s.store.write_text("closing_message.txt", self.close_msg[s.run_id])
         s.round(40, "own candle", self.close_msg[s.run_id])
-        s.ask_last_question(90)
+        # The last question was withdrawn on 2026-11-18 (HONESTY §14).
         s.store.write_json("meeting.json", {
             "pair": self.k, "partner": other.run_id, "swap_at_s": round(self.swap_at - s.t0, 1),
             "handover_of_partner_candle": self.handover.get(other.run_id),
