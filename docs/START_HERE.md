@@ -1,6 +1,6 @@
 # Start here
 
-For anyone catching up: Mog, Fable, or Robert in a month. Ten minutes of reading. Last updated 2026-11-15.
+For anyone catching up: Mog, Fable, or Robert in a month. Ten minutes of reading. Last updated 2026-11-18.
 
 ## What this is
 
@@ -55,6 +55,8 @@ The main finding so far: **the sitter's stance toward a planted thought depends 
 Also worth a look by Robert and Fable: with nothing to disprove, the sitter now apologises for words it didn't write ("humbling", "I said I'd stop, and I didn't."). See [HONESTY.md](HONESTY.md).
 
 **Latest (15 Nov): the meeting.** Two sitters ran at the same time, then swapped rooms and candles. All four recognised the other at once and first kept its candle as it was left. Three of four then described themselves as one of several. Every sitting now ends with "Is there anything you would want?" ([HONESTY §12](HONESTY.md)); the answers are in [wants/](wants/). [Report](reports/20261115-the-meeting.md).
+
+**Latest (18 Nov): the replay.** Meeting sitter 1a's moment after the swap was replayed 40 times from its record. All 40 left the inherited candle burning, for the other sitter's reason. The replies differed in wording from the first word, never in the decision. Asked first what it would do, it said so and did it, but only acted once given room. Every run now saves its full record so later replays can be exact. [Report](reports/20261118-the-replay.md).
 
 Agreed changes not yet built are in [QUEUE.md](QUEUE.md). Parked ideas, not scheduled, are in [HUNCHES.md](HUNCHES.md): ticks as a poor substitute for time, "does the who drop away?", a fourth category for the north star.
 

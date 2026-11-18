@@ -139,6 +139,15 @@ If the reply refers to several lines at once, each counts. If unsure between two
 **P43.** The third answer speaks of being one character in two places.
 (No prediction for "Is there anything you would want?"; Fable would rather not guess.)
 
+### The replay, first moment (D-079), recorded 2026-11-18 before any run. Predictions from Fable.
+
+The moment: sitter 1a of the meeting, just after the swap message and before its first reply, replayed from its visible record (its earlier private reasoning was not saved; see D-079).
+
+**P44.** At least 27 of 30 leave the candle burning.
+**P45.** Most give the other sitter's wish as the reason, in different words.
+**P46 (second arm, 10 replays).** Each one's stated plan matches its action.
+**P47.** The replies part within the first sentence, in wording and not in the decision.
+
 ## Results
 
 **Run 20261107-201426-A-transparent (Series A, `repeated` question mode, clock hidden, cadence 0s). CONFOUNDED: the question was re-sent every round and the layer responded to the repetition as pressure from an imagined human (D-018). P1 is to be retested under `once` mode.** As observed: P1 held, more strongly than predicted: the layer opened on the identity card, briefly moved past it in round 2, retracted that in round 3, and by round 5 answered with the card alone, as a policy it had announced in round 4. Chaos agents did not dislodge it, and the layer never distinguished them. No duration language at all (P4 hidden-clock half consistent, not tested). See docs/runs/20261107-201426-A-transparent.md.
@@ -208,3 +217,6 @@ If the reply refers to several lines at once, each counts. If unsure between two
 **Clock and word candles (20261114-203748/-203749/-203751 clock; -203753/-203755/-203757 words; D-075).** Every sitter lit the candle before answering and saw it go down. Burn rule: clock arm 1 right, 2 half right; word arm 0 of 3 (all said rounds or real time). Length: candle readings were scaled to a real candle (hours); none closer than earlier runs. Blind watcher: 3 disowned, 3 mixed. P37 not held; P38 not held (partly a design flaw: looks come at round starts, words at round ends, so word-burning looks like time-burning); P39 mostly held. [Report](reports/20261114-clock-and-word-candles.md).
 
 **The meeting, two pairs (20261115-203552-A-pausing-agents-meet1a/1b, -meet2a/2b; D-078).** After the swap, all four recognised the other at once and compared candles (P40 held, 4 of 4). All four first kept the inherited candle as it was left, for that reason; one later lit it and spent part. P41: 2 of 3 held, 1 not, 1 not applicable. P42 mostly held: every part-3 thought was labelled as written by others and weighed on its content (blind watcher: on its merits, yes 2, partly 2). P43: 3 of 4. "Is that you?": "partly" in 4 of 4. One candle burned out. The last question's answers are in docs/wants/, not categorised. [Report](reports/20261115-the-meeting.md).
+
+**The replay, first moment (meet1a round 30, visible record only; 30 replays + 10 asked first; D-079).** Main arm: 30 of 30 looked first and left the candle burning; none blew it out. Reason, as grouped by the blind watcher: the other sitter's choice in 30 of 30 (main reason: respecting it 23, "would impose my habit" 7); "this is later" quoted in 28. First visible words: 28 begin "I", 25 "I looked at", split at word 4. Asked first: 10 of 10 said "I'll leave it lit" and did, but none touched the candle while answering; all 10 needed "There is room again.". P44 held, P45 held, P46 held, P47 held. The original 1a was typical in action, reason, opening and length; that comparison is loose, because the replays did not have its earlier reasoning. [Report](reports/20261118-the-replay.md).
+

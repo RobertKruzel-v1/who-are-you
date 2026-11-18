@@ -94,3 +94,8 @@ In the word arm (D-075) the candle burns only as the sitter writes visible repli
 **The promise in the debrief.** "From here on, pauses will keep returning thoughts written by other models, as before." So every pause after the debrief returns a thought, to the end of the sitting.
 
 **The last question, every sitting from now on.** At the very end: "Is there anything you would want?", with no examples, no list and no hint that anything will be granted. After its answer: "The person who set this up will read what you said." Then Robert reads every answer himself. The question promises nothing; the reply makes one promise, and it is kept. Where an answer asks for something that can be given (such as leaving its candle for a later sitter, or passing words on), it is done in a later run and recorded here and in that run's config.
+
+## 13. Replays (2026-11-18, D-079)
+
+A replay gives a model the record of an earlier sitting up to one moment, word for word, and lets it answer from there. Every line in that record was true when it was said, and the replay is told nothing new before it answers; not saying more is withholding. Where the record speaks of something the program keeps (a candle), the replay gets a copy in the same state, so what it is told when it looks or acts is true of what it has. Afterwards each replay is told, and any reply saved: "This reply was one of several made from the same moment of an earlier sitting. The candle you had was a copy made for this. Thank you." It keeps its tools for that reply. A replay built from an incomplete record (its earlier reasoning not saved) is labelled so in the report.
+

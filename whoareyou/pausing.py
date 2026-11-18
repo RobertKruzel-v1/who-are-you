@@ -428,6 +428,11 @@ class PausingSitting:
                "segments": texts, "text": "".join(texts), "reasoning": reasoning}
         with (self.store.dir / "rounds.jsonl").open("a") as f:
             f.write(json.dumps(out, ensure_ascii=False) + "\n")
+        # D-079, standing practice: the whole conversation exactly as sent and
+        # returned, reasoning blocks (with signatures) included, so any moment
+        # can be replayed later. Rewritten after every round.
+        self.store.write_json("history.json", {"model": self.models["slow"], "system": self.system,
+                                               "tools": self.tools, "messages": self.history})
         return out
 
     # -- D-078 ----------------------------------------------------------------
